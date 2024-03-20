@@ -10,13 +10,14 @@ import java.util.ArrayList;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class SpriteDataTransferable extends ArrayList<SpriteData> implements Transferable {
-    public static final DataFlavor C64_SPRITEDATA_FLAVOR = new DataFlavor("x-c64/x-spritedata", 
+public class SpriteDataTransferable extends ArrayList<SpriteData> implements Transferable, Serializable {
+    public static final DataFlavor C64_SPRITEDATA_FLAVOR = new DataFlavor(SpriteDataTransferable.class,
             "Commodore 64 sprite data");
     
     @Override

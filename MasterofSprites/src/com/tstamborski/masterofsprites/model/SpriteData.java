@@ -11,7 +11,7 @@ import java.io.*;
  *
  * @author Tobiasz
  */
-public class SpriteData {
+public class SpriteData implements Serializable {
     public static final int SIZE = 64;
     
     private final byte data[];

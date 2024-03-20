@@ -28,8 +28,9 @@ public class MainWindow extends JFrame {
     
     private final Timer timer;
 
-    private final JTabbedPane centralPane;
+    private final JTabbedPane centralPane, westPane;
     private final MemoryPanel memoryPanel;
+    private final JPanel editorPanel;
     private final StatusBar statusBar;
     private JMenuBar menu;
 
@@ -65,6 +66,9 @@ public class MainWindow extends JFrame {
         centralPane = new JTabbedPane();
         memoryPanel = new MemoryPanel(new StandardPalette());
         centralPane.add("Memory", memoryPanel);
+        westPane = new JTabbedPane();
+        editorPanel = new JPanel();
+        westPane.add("Editor", editorPanel);
 
         statusBar = new StatusBar();
         
@@ -72,6 +76,7 @@ public class MainWindow extends JFrame {
 
         setJMenuBar(menu);
         add(centralPane, BorderLayout.CENTER);
+        add(westPane, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
 
         createFileDialogs();

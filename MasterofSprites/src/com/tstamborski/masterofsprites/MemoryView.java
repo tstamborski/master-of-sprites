@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -23,8 +22,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /**
@@ -74,7 +71,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     public void copy() {
-        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Clipboard clip = getToolkit().getSystemClipboard();
         SpriteDataTransferable transfer = new SpriteDataTransferable();
         
         getSelection();
@@ -85,7 +82,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     public void paste() { //TODO
-        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Clipboard clip = getToolkit().getSystemClipboard();
         Transferable transfer = clip.getContents(this);
         SpriteDataTransferable transferData;
         
