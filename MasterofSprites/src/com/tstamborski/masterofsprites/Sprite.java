@@ -54,6 +54,14 @@ public class Sprite {
         return img;
     }
     
+    public SpriteColor getPixel(int x, int y) {
+        return sprite_data.getPixel(x, y);
+    }
+    
+    public void setPixel(int x, int y, SpriteColor color) {
+        sprite_data.setPixel(x, y, color);
+    }
+    
     public C64Color getSpriteColor() {
         return sprite_data.getSpriteC64Color();
     }
