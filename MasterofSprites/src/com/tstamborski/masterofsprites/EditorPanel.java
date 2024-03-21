@@ -5,12 +5,11 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.SpriteProject;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +26,9 @@ import javax.swing.JRadioButton;
  */
 public class EditorPanel extends JPanel {
     private final JPanel spriteChooserPanel, editPanel, colorChoosePanel;
+    private final JPanel toolsPanel;
+    private final JButton slideUpButton, slideDownButton, slideLeftButton, slideRightButton;
+    private final JButton flipHorzButton, flipVertButton;
     private final JButton prevButton;
     private final JButton nextButton;
     private final JLabel spriteChooserLabel;
@@ -45,12 +47,20 @@ public class EditorPanel extends JPanel {
         
         editor = new SpriteEditor(palette, 8);
         editor.setBorder(BorderFactory.createLoweredBevelBorder());
+        
         spriteChooserLabel = new JLabel("none");
         spriteChooserLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         prevButton = new JButton(new ImageIcon(getClass().getResource("icons/rewind-backward16.png")));
-        prevButton.addActionListener((ae)->setSprite(selectionIndex--));
+        prevButton.addActionListener((ae)->setSprite(--selectionIndex));
         nextButton = new JButton(new ImageIcon(getClass().getResource("icons/rewind-forward16.png")));
-        nextButton.addActionListener((ae)->setSprite(selectionIndex++));
+        nextButton.addActionListener((ae)->setSprite(++selectionIndex));
+        
+        slideUpButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
+        slideDownButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-down16.png")));
+        slideLeftButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-left16.png")));
+        slideRightButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
+        flipHorzButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
+        flipVertButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
         
         sprColorButton = new JRadioButton("Sprite Color");
         sprColorButton.setSelected(true);
@@ -76,6 +86,17 @@ public class EditorPanel extends JPanel {
         editPanel.setMinimumSize(new Dimension(editor.getWidth(), editor.getHeight()));
         editPanel.add(editor);
         editPanel.setMaximumSize(editPanel.getPreferredSize());
+        editPanel.setMinimumSize(editPanel.getPreferredSize());
+        
+        toolsPanel = new JPanel();
+        toolsPanel.setLayout(new BoxLayout(toolsPanel, BoxLayout.X_AXIS));
+        toolsPanel.add(slideUpButton);
+        toolsPanel.add(slideDownButton);
+        toolsPanel.add(slideLeftButton);
+        toolsPanel.add(slideRightButton);
+        toolsPanel.add(Box.createHorizontalGlue());
+        toolsPanel.add(flipHorzButton);
+        toolsPanel.add(flipVertButton);
         
         colorChoosePanel = new JPanel();
         colorChoosePanel.setLayout(new GridLayout(4,1));
@@ -83,10 +104,15 @@ public class EditorPanel extends JPanel {
         colorChoosePanel.add(multi0ColorButton);
         colorChoosePanel.add(multi1ColorButton);
         colorChoosePanel.add(bgColorButton);
+        colorChoosePanel.setMaximumSize(new Dimension(
+                Short.MAX_VALUE, 
+                colorChoosePanel.getPreferredSize().height));
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(spriteChooserPanel);
         add(editPanel);
+        add(toolsPanel);
+        //add(Box.createVerticalGlue());
         add(colorChoosePanel);
         add(Box.createVerticalGlue());
         
@@ -112,7 +138,8 @@ public class EditorPanel extends JPanel {
             editor.setEnabled(true);
             spriteChooserLabel.setEnabled(true);
             
-            selectionIndex = 0;
+            if (selectionIndex < 0 || selectionIndex > sel.size()-1)
+                selectionIndex = 0;
             setSprite(selectionIndex);
         }
     }
@@ -122,8 +149,8 @@ public class EditorPanel extends JPanel {
             editor.setSpriteData(project.getMemoryData().get(selection.get(index)));
         
         prevButton.setEnabled(index > 0);
-        nextButton.setEnabled(selection.size() > index+1);
-        spriteChooserLabel.setText(String.format("%d fo %d", selectionIndex, 
+        nextButton.setEnabled(index < selection.size()-1);
+        spriteChooserLabel.setText(String.format("%d of %d", index+1, 
                 selection.size()));
     }
 }

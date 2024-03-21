@@ -92,11 +92,18 @@ public class MainWindow extends JFrame {
             statusBar.showTime(project.getWorkTime());
         });
         timer.start();
+        
+        memoryPanel.getMemoryView().addSelectionListener((se)->editorPanel.setSelection(se.getSelection()));
     }
 
+    private void reloadProject() {
+        memoryPanel.getMemoryView().setMemoryData(project.getMemoryData());
+        editorPanel.setProject(project);
+    }
+    
     public final void newFile() {
         project = SpriteProject.getNewProject(64, false);
-        memoryPanel.getMemoryView().setMemoryData(project.getMemoryData());
+        reloadProject();
     }
 
     public void importPRGFile() {
@@ -115,7 +122,7 @@ public class MainWindow extends JFrame {
                 Util.showError(this, e.getMessage());
                 return;
             }
-            memoryPanel.getMemoryView().setMemoryData(project.getMemoryData());
+            reloadProject();
         }
     }
 
@@ -135,7 +142,7 @@ public class MainWindow extends JFrame {
                 Util.showError(this, e.getMessage());
                 return;
             }
-            memoryPanel.getMemoryView().setMemoryData(project.getMemoryData());
+            reloadProject();
         }
     }
     

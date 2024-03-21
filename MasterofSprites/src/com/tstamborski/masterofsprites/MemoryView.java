@@ -46,6 +46,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<Integer> selection;
     
     private final ArrayList<ActionListener> actionListeners;
+    private final ArrayList<SelectionListener> selectionListeners;
     
     public MemoryView(Palette palette, int zoom, int columns) {
         this.palette = palette;
@@ -63,6 +64,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
+        selectionListeners = new ArrayList<>();
     }
     
     public void cut() {
@@ -129,6 +131,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         setPreferredSize();
         repaint();
+        fireSelectionEvent();
     }
     
     public void delete() {
@@ -157,6 +160,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         selection.clear();
         setPreferredSize();
         repaint();
+        fireSelectionEvent();
     }
     
     public void setPalette(Palette palette) {
@@ -309,6 +313,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             }
             
             repaint();
+            fireSelectionEvent();
         }
     }
     
@@ -365,8 +370,17 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         actionListeners.forEach((al)->al.actionPerformed(event));
     }
     
+    private void fireSelectionEvent() {
+        SelectionEvent event = new SelectionEvent(this, getSelection());
+        selectionListeners.forEach((sl)->sl.selectionPerformed(event));
+    }
+    
     public void addActionListener(ActionListener al) {
         actionListeners.add(al);
+    }
+    
+    public void addSelectionListener(SelectionListener sl) {
+        selectionListeners.add(sl);
     }
     
     public boolean isGrid() {
