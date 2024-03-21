@@ -25,6 +25,7 @@ public class SpriteEditor extends JComponent {
         bgColor = C64Color.Black;
         
         setPreferredSize(new Dimension(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom));
+        setMaximumSize(new Dimension(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom));
     }
 
     @Override
@@ -41,6 +42,7 @@ public class SpriteEditor extends JComponent {
     
     public void setSpriteData(SpriteData data) {
         spriteImg = new Sprite(data, palette);
+        repaint();
     }
 
     public Palette getPalette() {

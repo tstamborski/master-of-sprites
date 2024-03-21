@@ -28,9 +28,9 @@ public class MainWindow extends JFrame {
     
     private final Timer timer;
 
-    private final JTabbedPane centralPane, westPane;
+    private final JTabbedPane centralPane;
     private final MemoryPanel memoryPanel;
-    private final JPanel editorPanel;
+    private final EditorPanel editorPanel;
     private final StatusBar statusBar;
     private JMenuBar menu;
 
@@ -58,17 +58,17 @@ public class MainWindow extends JFrame {
     private JMenuItem copyMenuItem;
 
     public MainWindow() {
+        Palette palette = new StandardPalette();
+        
         setTitle(MasterofSprites.PROGRAM_NAME);
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         centralPane = new JTabbedPane();
-        memoryPanel = new MemoryPanel(new StandardPalette());
+        memoryPanel = new MemoryPanel(palette);
         centralPane.add("Memory", memoryPanel);
-        westPane = new JTabbedPane();
-        editorPanel = new JPanel();
-        westPane.add("Editor", editorPanel);
+        editorPanel = new EditorPanel(palette);
 
         statusBar = new StatusBar();
         
@@ -76,7 +76,7 @@ public class MainWindow extends JFrame {
 
         setJMenuBar(menu);
         add(centralPane, BorderLayout.CENTER);
-        add(westPane, BorderLayout.WEST);
+        add(editorPanel, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
 
         createFileDialogs();
