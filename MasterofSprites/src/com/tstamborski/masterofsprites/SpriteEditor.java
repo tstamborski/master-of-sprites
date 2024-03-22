@@ -33,11 +33,20 @@ public class SpriteEditor extends JComponent {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D)g;
         
+        if (!isEnabled())
+            return;
+        
         g2d.setColor(palette.getColor(bgColor));
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
         if (spriteImg != null)
             g2d.drawImage(spriteImg.getImage(), 0, 0, getWidth(), getHeight(), this);
+    }
+    
+    public void refresh() {
+        if (spriteImg != null)
+            spriteImg.redraw();
+        repaint();
     }
     
     public void setSpriteData(SpriteData data) {

@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
  */
 public class MasterofSprites {
     public static final String PROGRAM_NAME = "Master of Sprites";
-    public static final String PROGRAM_VERSION = "version 0.1";
+    public static final String PROGRAM_VERSION = "version 0.2";
     public static final String PROGRAM_COPYRIGHT = "Copyright (c) 2024 Tobiasz Stamborski";
     /**
      * @param args the command line arguments

@@ -98,14 +98,18 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         getSelection();
         for (int i = 0; i < selection.size(); i++) {
-            SpriteData element = transferData.get(i);
-            if (element != null)
+            if (i < transferData.size()) {
+                SpriteData element = transferData.get(i);
                 System.arraycopy(element.toByteArray(), 0, 
                         data.get(selection.get(i)).toByteArray(), 0,
                         SpriteData.SIZE);
+            } else {
+                break;
+            }
             sprites.get(selection.get(i)).redraw();
         }
         
+        fireActionEvent();
         repaint();
     }
     
@@ -131,7 +135,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         setPreferredSize();
         repaint();
-        fireSelectionEvent();
     }
     
     public void delete() {
@@ -140,7 +143,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             sprites.get(selection.get(i)).redraw();
         }
         
-        setPreferredSize();
+        fireActionEvent();
         repaint();
     }
     
@@ -160,7 +163,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         selection.clear();
         setPreferredSize();
         repaint();
-        fireSelectionEvent();
     }
     
     public void setPalette(Palette palette) {
@@ -326,6 +328,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             else
                 setPreferredSize(new Dimension(data.size()*24*zoom, 21*zoom));
         
+        fireSelectionEvent();
         fireActionEvent();
     }
     

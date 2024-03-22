@@ -94,6 +94,7 @@ public class MainWindow extends JFrame {
         timer.start();
         
         memoryPanel.getMemoryView().addSelectionListener((se)->editorPanel.setSelection(se.getSelection()));
+        memoryPanel.getMemoryView().addActionListener((ae)->editorPanel.getSpriteEditor().refresh());
     }
 
     private void reloadProject() {
@@ -230,7 +231,9 @@ public class MainWindow extends JFrame {
         aboutDialog.setApplicationName(MasterofSprites.PROGRAM_NAME);
         aboutDialog.setApplicationVersion(MasterofSprites.PROGRAM_VERSION);
         aboutDialog.setApplicationCopyright(MasterofSprites.PROGRAM_COPYRIGHT);
-        aboutDialog.setApplicationExtraInfo("The Commodore 64 sprite editor made in Java!");
+        aboutDialog.setApplicationExtraInfo(
+                "<html><i>Master of sprites, I'm pulling your strings<br>Twisting your mind and smashing your dreams<br></i><html>"
+        );
         try {
             aboutDialog.setApplicationLicense(getClass().getResourceAsStream("LICENSE"));
         } catch (IOException e) {
@@ -266,7 +269,7 @@ public class MainWindow extends JFrame {
         bitmapDialog.setMultiSelectionEnabled(false);
     }
     
-    private boolean showOverwriteDialog(File file) {
+    protected boolean showOverwriteDialog(File file) {
         if (file.exists()) {
             return JOptionPane.showConfirmDialog(this, "Do you want to overwrite?", "File Exist!", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION;

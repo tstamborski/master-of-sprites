@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
-import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -118,6 +117,10 @@ public class EditorPanel extends JPanel {
         
         setProject(null);
         setSelection(null);
+    }
+    
+    public SpriteEditor getSpriteEditor() {
+        return editor;
     }
     
     public final void setProject(SpriteProject proj) {
