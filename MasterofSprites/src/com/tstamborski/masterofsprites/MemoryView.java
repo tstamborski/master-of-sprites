@@ -40,7 +40,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     C64Color backgroundC64Color, multi0C64Color, multi1C64Color;
     
     private MemoryData data;
-    private final ArrayList<Sprite> sprites;
+    private final ArrayList<SpriteImage> sprites;
     
     private BufferedImage selection_img, grid_img, background_img;
     private final ArrayList<Integer> selection;
@@ -129,7 +129,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             while (data.size() != quantity) {
                 SpriteData new_sdata = SpriteData.getEmpty(C64Color.Green, false, false);
                 data.add(new_sdata);
-                sprites.add(new Sprite(new_sdata, palette));
+                sprites.add(new SpriteImage(new_sdata, palette));
             }
         }
         
@@ -151,7 +151,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         data = d;
         sprites.clear();
         for (int i = 0; i < data.size(); i++) {
-            sprites.add(new Sprite(data.get(i), palette));
+            sprites.add(new SpriteImage(data.get(i), palette));
         }
         
         sprites.forEach(s->{
@@ -291,6 +291,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
                 if (e.isControlDown()) {
                     if (!selection.contains(new_selection))
                         selection.add(new_selection);
+                    else
+                        selection.remove(new_selection);
                 }
                 else {
                     selection.clear();
@@ -347,21 +349,21 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private void createGridImage() {
         Graphics2D g2d;
         
-        grid_img = new BufferedImage(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
+        grid_img = new BufferedImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
         
         g2d = grid_img.createGraphics();
         g2d.setColor(new Color(0x00,0x00,0x00,0x00));
-        g2d.fillRect(0, 0, Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom);
+        g2d.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
         g2d.setColor(GRID_COLOR);
-        g2d.drawRect(0, 0, Sprite.WIDTH*zoom-1, Sprite.HEIGHT*zoom-1);
+        g2d.drawRect(0, 0, SpriteImage.WIDTH*zoom-1, SpriteImage.HEIGHT*zoom-1);
     }
     
     private void createBackgroundImage() {
-        background_img = new BufferedImage(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
+        background_img = new BufferedImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = background_img.createGraphics();
         
         g.setColor(palette.getColor(backgroundC64Color));
-        g.fillRect(0, 0, Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom);
+        g.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
     }
     
     private int getIndexAt(int x, int y) {
@@ -395,6 +397,16 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         repaint();
     }
 
+    public void refresh() {
+        sprites.forEach(si->si.redraw());
+        repaint();
+    }
+    
+    public void refreshSelection() {
+        selection.forEach(i->sprites.get(i).redraw());
+        repaint();
+    }
+    
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
     }

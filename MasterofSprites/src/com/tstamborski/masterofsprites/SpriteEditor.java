@@ -17,15 +17,15 @@ import javax.swing.JComponent;
  */
 public class SpriteEditor extends JComponent {
     private Palette palette;
-    private Sprite spriteImg;
+    private SpriteImage spriteImg;
     private C64Color bgColor;
 
     public SpriteEditor(Palette pal, int zoom) {
         this.palette = pal;
         bgColor = C64Color.Black;
         
-        setPreferredSize(new Dimension(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom));
-        setMaximumSize(new Dimension(Sprite.WIDTH*zoom, Sprite.HEIGHT*zoom));
+        setPreferredSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
+        setMaximumSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SpriteEditor extends JComponent {
     }
     
     public void setSpriteData(SpriteData data) {
-        spriteImg = new Sprite(data, palette);
+        spriteImg = new SpriteImage(data, palette);
         repaint();
     }
 

@@ -17,7 +17,7 @@ import java.awt.Image;
  *
  * @author Tobiasz
  */
-public class Sprite {
+public class SpriteImage {
     public static final int WIDTH = 24;
     public static final int HEIGHT = 21;
     
@@ -27,7 +27,7 @@ public class Sprite {
     private C64Color multi0_color, multi1_color;
     private final BufferedImage img;
     
-    public Sprite(SpriteData data, Palette palette) {
+    public SpriteImage(SpriteData data, Palette palette) {
         sprite_data = data;
         this.palette = palette;
         

@@ -5,6 +5,7 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.SpriteProject;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -35,6 +36,7 @@ public class EditorPanel extends JPanel {
     private final JRadioButton sprColorButton, multi0ColorButton;
     private final JRadioButton multi1ColorButton, bgColorButton;
     private final ButtonGroup colorButtonGroup;
+    private final C64ColorPicker colorPicker;
     
     private SpriteProject project;
     private ArrayList<Integer> selection;
@@ -71,6 +73,9 @@ public class EditorPanel extends JPanel {
         colorButtonGroup.add(multi0ColorButton);
         colorButtonGroup.add(multi1ColorButton);
         colorButtonGroup.add(bgColorButton);
+        
+        colorPicker = new C64ColorPicker(palette);
+        colorPicker.setBorder(BorderFactory.createLineBorder(Color.black));
         
         spriteChooserPanel = new JPanel();
         spriteChooserPanel.setLayout(new BoxLayout(spriteChooserPanel, BoxLayout.X_AXIS));
@@ -111,8 +116,9 @@ public class EditorPanel extends JPanel {
         add(spriteChooserPanel);
         add(editPanel);
         add(toolsPanel);
-        //add(Box.createVerticalGlue());
         add(colorChoosePanel);
+        add(Box.createVerticalGlue());
+        add(colorPicker);
         add(Box.createVerticalGlue());
         
         setProject(null);

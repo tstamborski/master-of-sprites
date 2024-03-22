@@ -9,6 +9,7 @@ import com.tstamborski.masterofsprites.model.MemoryData;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,6 +49,7 @@ public class MemoryPanel extends JPanel {
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         innerPanel = new JPanel(new GridBagLayout());
         innerPanel.add(memoryView);
+        innerPanel.setBorder(BorderFactory.createLoweredBevelBorder());
         scrollPane.setViewportView(innerPanel);
         
         southPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
