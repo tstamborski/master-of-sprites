@@ -58,17 +58,15 @@ public class MainWindow extends JFrame {
     private JMenuItem copyMenuItem;
 
     public MainWindow() {
-        Palette palette = new StandardPalette();
-        
         setTitle(MasterofSprites.PROGRAM_NAME);
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         centralPane = new JTabbedPane();
-        memoryPanel = new MemoryPanel(palette);
+        memoryPanel = new MemoryPanel();
         centralPane.add("Memory", memoryPanel);
-        editorPanel = new EditorPanel(palette);
+        editorPanel = new EditorPanel();
 
         statusBar = new StatusBar();
         

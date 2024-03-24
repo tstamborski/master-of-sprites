@@ -12,8 +12,8 @@ import com.tstamborski.masterofsprites.model.C64Color;
  *
  * @author Tobiasz
  */
-public class StandardPalette implements Palette {
-    public StandardPalette() {
+public class DefaultPalette implements Palette {
+    private DefaultPalette() {
         colors = new Color[C64Color.values().length];
         
         colors[C64Color.Black.ordinal()] = new Color(0,0,0);
@@ -35,10 +35,18 @@ public class StandardPalette implements Palette {
         colors[C64Color.LightGray.ordinal()] = new Color(0xb8, 0xb8, 0xb8);
     }
     
+    public static DefaultPalette getInstance() {
+        if (instance == null)
+            instance = new DefaultPalette();
+        
+        return instance;
+    }
+    
     @Override
     public Color getColor(C64Color c) {
         return colors[c.ordinal()];
     }
     
     private final Color[] colors;
+    private static DefaultPalette instance;
 }

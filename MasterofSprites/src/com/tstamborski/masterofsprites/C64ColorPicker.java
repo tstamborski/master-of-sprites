@@ -25,8 +25,8 @@ public class C64ColorPicker extends JComponent {
     private final ArrayList<ActionListener> actionListeners;
     private C64Color currentC64Color;
 
-    public C64ColorPicker(Palette pal) {
-        this.palette = pal;
+    public C64ColorPicker() {
+        this.palette = DefaultPalette.getInstance();
         currentC64Color = C64Color.White;
         actionListeners = new ArrayList<>();
         

@@ -41,12 +41,9 @@ public class EditorPanel extends JPanel {
     private SpriteProject project;
     private ArrayList<Integer> selection;
     private int selectionIndex;
-    private final Palette palette;
     
-    public EditorPanel(Palette pal) {
-        this.palette = pal;
-        
-        editor = new SpriteEditor(palette, 8);
+    public EditorPanel() {
+        editor = new SpriteEditor(8);
         editor.setBorder(BorderFactory.createLoweredBevelBorder());
         
         spriteChooserLabel = new JLabel("none");
@@ -74,7 +71,7 @@ public class EditorPanel extends JPanel {
         colorButtonGroup.add(multi1ColorButton);
         colorButtonGroup.add(bgColorButton);
         
-        colorPicker = new C64ColorPicker(palette);
+        colorPicker = new C64ColorPicker();
         colorPicker.setBorder(BorderFactory.createLineBorder(Color.black));
         
         spriteChooserPanel = new JPanel();

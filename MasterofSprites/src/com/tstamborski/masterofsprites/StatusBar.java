@@ -37,23 +37,34 @@ import javax.swing.border.*;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class StatusBar extends JPanel {
-    private final JLabel tipLabel, timeLabel;
+    private final JLabel contextLabel, hintLabel, timeLabel;
     
     public StatusBar() {
-        tipLabel = new JLabel();
-        tipLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        contextLabel = new JLabel();
+        contextLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        contextLabel.setPreferredSize(new Dimension(100,20));
+        contextLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        hintLabel = new JLabel();
+        hintLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        
         timeLabel = new JLabel();
         timeLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         timeLabel.setPreferredSize(new Dimension(100,20));
         timeLabel.setHorizontalAlignment(JLabel.CENTER);
         
         setLayout(new BorderLayout());
-        add(tipLabel, BorderLayout.CENTER);
+        add(contextLabel, BorderLayout.WEST);
+        add(hintLabel, BorderLayout.CENTER);
         add(timeLabel, BorderLayout.EAST);
     }
     
-    public void showTip(String tip) {
-        tipLabel.setText(tip);
+    public void showContextInfo(String info) {
+        contextLabel.setText(info);
+    }
+    
+    public void showHint(String hint) {
+        hintLabel.setText(hint);
     }
     
     public void showTime(Time time) {

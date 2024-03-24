@@ -48,8 +48,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<ActionListener> actionListeners;
     private final ArrayList<SelectionListener> selectionListeners;
     
-    public MemoryView(Palette palette, int zoom, int columns) {
-        this.palette = palette;
+    public MemoryView(int zoom, int columns) {
+        this.palette = DefaultPalette.getInstance();
         this.zoom = zoom;
         this.columns = columns;
         grid = false;

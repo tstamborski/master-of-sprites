@@ -20,8 +20,8 @@ public class SpriteEditor extends JComponent {
     private SpriteImage spriteImg;
     private C64Color bgColor;
 
-    public SpriteEditor(Palette pal, int zoom) {
-        this.palette = pal;
+    public SpriteEditor(int zoom) {
+        this.palette = DefaultPalette.getInstance();
         bgColor = C64Color.Black;
         
         setPreferredSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
