@@ -4,9 +4,11 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -26,7 +29,7 @@ import javax.swing.JRadioButton;
  */
 public class EditorPanel extends JPanel {
     private final JPanel spriteChooserPanel, editPanel, colorChoosePanel;
-    private final JPanel toolsPanel;
+    private final JPanel toolsPanel, attrPanel;
     private final JButton slideUpButton, slideDownButton, slideLeftButton, slideRightButton;
     private final JButton flipHorzButton, flipVertButton;
     private final JButton prevButton;
@@ -36,6 +39,8 @@ public class EditorPanel extends JPanel {
     private final JRadioButton sprColorButton, multi0ColorButton;
     private final JRadioButton multi1ColorButton, bgColorButton;
     private final ButtonGroup colorButtonGroup;
+    private final JCheckBox multicolorCheckBox, overlayCheckBox;
+    private final C64ColorLabel sprColorLabel, multi0ColorLabel, multi1ColorLabel, bgColorLabel;
     private final C64ColorPicker colorPicker;
     
     private SpriteProject project;
@@ -71,8 +76,20 @@ public class EditorPanel extends JPanel {
         colorButtonGroup.add(multi1ColorButton);
         colorButtonGroup.add(bgColorButton);
         
+        sprColorLabel = new C64ColorLabel();
+        sprColorLabel.setC64Color(C64Color.Green);
+        multi0ColorLabel = new C64ColorLabel();
+        multi0ColorLabel.setC64Color(C64Color.LightGray);
+        multi1ColorLabel = new C64ColorLabel();
+        multi1ColorLabel.setC64Color(C64Color.White);
+        bgColorLabel = new C64ColorLabel();
+        bgColorLabel.setC64Color(C64Color.Black);
+        
         colorPicker = new C64ColorPicker();
         colorPicker.setBorder(BorderFactory.createLineBorder(Color.black));
+        
+        multicolorCheckBox = new JCheckBox("Multicolor Mode");
+        overlayCheckBox = new JCheckBox("Overlay Next Sprite");
         
         spriteChooserPanel = new JPanel();
         spriteChooserPanel.setLayout(new BoxLayout(spriteChooserPanel, BoxLayout.X_AXIS));
@@ -100,23 +117,50 @@ public class EditorPanel extends JPanel {
         toolsPanel.add(flipVertButton);
         
         colorChoosePanel = new JPanel();
-        colorChoosePanel.setLayout(new GridLayout(4,1));
-        colorChoosePanel.add(sprColorButton);
-        colorChoosePanel.add(multi0ColorButton);
-        colorChoosePanel.add(multi1ColorButton);
-        colorChoosePanel.add(bgColorButton);
+        colorChoosePanel.setLayout(new GridBagLayout());
+        GridBagConstraints lc = new GridBagConstraints();
+        lc.anchor = GridBagConstraints.WEST;
+        lc.gridx = 0;
+        lc.gridy = 0;
+        colorChoosePanel.add(sprColorLabel, lc);
+        lc.gridx = 1;
+        colorChoosePanel.add(sprColorButton, lc);
+        lc.gridx = 0;
+        lc.gridy = 1;
+        colorChoosePanel.add(multi0ColorLabel, lc);
+        lc.gridx = 1;
+        colorChoosePanel.add(multi0ColorButton, lc);
+        lc.gridx = 0;
+        lc.gridy = 2;
+        colorChoosePanel.add(multi1ColorLabel, lc);
+        lc.gridx = 1;
+        colorChoosePanel.add(multi1ColorButton, lc);
+        lc.gridx = 0;
+        lc.gridy = 3;
+        colorChoosePanel.add(bgColorLabel, lc);
+        lc.gridx = 1;
+        colorChoosePanel.add(bgColorButton, lc);
         colorChoosePanel.setMaximumSize(new Dimension(
                 Short.MAX_VALUE, 
                 colorChoosePanel.getPreferredSize().height));
+        
+        attrPanel = new JPanel();
+        attrPanel.setLayout(new GridBagLayout());
+        lc.gridx = 0;
+        lc.gridy = 0;
+        attrPanel.add(multicolorCheckBox, lc);
+        lc.gridy = 1;
+        attrPanel.add(overlayCheckBox, lc);
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(spriteChooserPanel);
         add(editPanel);
         add(toolsPanel);
-        add(colorChoosePanel);
         add(Box.createVerticalGlue());
+        add(colorChoosePanel);
         add(colorPicker);
         add(Box.createVerticalGlue());
+        add(attrPanel);
         
         setProject(null);
         setSelection(null);
