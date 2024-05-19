@@ -5,6 +5,7 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.C64Color;
+import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,11 +19,15 @@ import javax.swing.JComponent;
 public class SpriteEditor extends JComponent {
     private Palette palette;
     private SpriteImage spriteImg;
-    private C64Color bgColor;
+    private SpriteData spriteData;
+    private C64Color multi0Color, multi1Color, bgColor;
+    private SpriteColor currentSpriteColor;
 
     public SpriteEditor(int zoom) {
         this.palette = DefaultPalette.getInstance();
         bgColor = C64Color.Black;
+        multi0Color = C64Color.LightGray;
+        multi1Color = C64Color.White;
         
         setPreferredSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
         setMaximumSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
@@ -50,8 +55,16 @@ public class SpriteEditor extends JComponent {
     }
     
     public void setSpriteData(SpriteData data) {
+        spriteData = data;
         spriteImg = new SpriteImage(data, palette);
+        spriteImg.setMulti0Color(multi0Color);
+        spriteImg.setMulti1Color(multi1Color);
+        
         repaint();
+    }
+    
+    public SpriteData getSpriteData() {
+        return spriteData;
     }
 
     public Palette getPalette() {
@@ -63,13 +76,48 @@ public class SpriteEditor extends JComponent {
         repaint();
     }
 
-    public C64Color getBgColor() {
+    public C64Color getBgC64Color() {
         return bgColor;
     }
 
-    public void setBgColor(C64Color bgColor) {
+    public void setBgC64Color(C64Color bgColor) {
         this.bgColor = bgColor;
         repaint();
     }
     
+    public void setSpriteC64Color(C64Color color) {
+        if (spriteData == null)
+            return;
+        
+        spriteData.setSpriteC64Color(color);
+        refresh();
+    }
+    
+    public void setMulti0C64Color(C64Color color) {
+        multi0Color = color;
+        
+        if (spriteImg == null)
+            return;
+        
+        spriteImg.setMulti0Color(color);
+        repaint();
+    }
+    
+    public void setMulti1C64Color(C64Color color) {
+        multi1Color = color;
+        
+        if (spriteImg == null)
+            return;
+        
+        spriteImg.setMulti1Color(color);
+        repaint();
+    }
+    
+    public SpriteColor getCurrentSpriteColor() {
+        return currentSpriteColor;
+    }
+    
+    public void setCurrentSpriteColor(SpriteColor color) {
+        currentSpriteColor = color;
+    }
 }

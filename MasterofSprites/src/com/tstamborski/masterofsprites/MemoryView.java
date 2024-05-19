@@ -4,6 +4,7 @@ package com.tstamborski.masterofsprites;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import com.tstamborski.masterofsprites.model.MemoryData;
+import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -37,9 +38,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private boolean grid;
     private Palette palette;
     
-    C64Color backgroundC64Color, multi0C64Color, multi1C64Color;
-    
-    private MemoryData data;
+    private SpriteProject project;
     private final ArrayList<SpriteImage> sprites;
     
     private BufferedImage selection_img, grid_img, background_img;
@@ -58,9 +57,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         sprites = new ArrayList<>();
         createSelectionImage();
         createGridImage();
-        setBackgroundC64Color(C64Color.Black);
-        setMulti0C64Color(C64Color.LightGray);
-        setMulti1C64Color(C64Color.White);
         
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
@@ -78,7 +74,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         getSelection();
         selection.forEach((i) -> {
-            transfer.add(data.get(i).deepCopy());
+            transfer.add(project.getMemoryData().get(i).deepCopy());
         });
         clip.setContents(transfer, this);
     }
@@ -101,7 +97,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             if (i < transferData.size()) {
                 SpriteData element = transferData.get(i);
                 System.arraycopy(element.toByteArray(), 0, 
-                        data.get(selection.get(i)).toByteArray(), 0,
+                        project.getMemoryData().get(selection.get(i)).toByteArray(), 0,
                         SpriteData.SIZE);
             } else {
                 break;
@@ -114,21 +110,21 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     public int getQuantity() {
-        return data.size();
+        return project.getMemoryData().size();
     }
     
     public void setQuantity(int quantity) {
-        if (quantity < data.size()) {
-            for (int i = data.size()-1; i >= quantity; i--) {
-                data.remove(i);
+        if (quantity < project.getMemoryData().size()) {
+            for (int i = project.getMemoryData().size()-1; i >= quantity; i--) {
+                project.getMemoryData().remove(i);
                 sprites.remove(i);
             }
-            selection.removeIf((i) -> {return i >= data.size();});
+            selection.removeIf((i) -> {return i >= project.getMemoryData().size();});
         }
         else {
-            while (data.size() != quantity) {
+            while (project.getMemoryData().size() != quantity) {
                 SpriteData new_sdata = SpriteData.getEmpty(C64Color.Green, false, false);
-                data.add(new_sdata);
+                project.getMemoryData().add(new_sdata);
                 sprites.add(new SpriteImage(new_sdata, palette));
             }
         }
@@ -139,7 +135,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     
     public void delete() {
         for (int i = selection.size()-1; i >= 0; i--) {
-            data.get(selection.get(i)).clear();
+            project.getMemoryData().get(selection.get(i)).clear();
             sprites.get(selection.get(i)).redraw();
         }
         
@@ -147,20 +143,22 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         repaint();
     }
     
-    public final void setMemoryData(MemoryData d) {
-        data = d;
+    public void setProject(SpriteProject project) {
+        this.project = project;
+        
         sprites.clear();
-        for (int i = 0; i < data.size(); i++) {
-            sprites.add(new SpriteImage(data.get(i), palette));
+        for (int i = 0; i < project.getMemoryData().size(); i++) {
+            sprites.add(new SpriteImage(project.getMemoryData().get(i), palette));
         }
         
         sprites.forEach(s->{
-            s.setMulti0Color(multi0C64Color);
-            s.setMulti1Color(multi1C64Color);
+            s.setMulti0Color(project.getMulti0Color());
+            s.setMulti1Color(project.getMulti1Color());
             s.setPalette(palette);
         });
         
         selection.clear();
+        createBackgroundImage();
         setPreferredSize();
         repaint();
     }
@@ -175,17 +173,17 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         Graphics2D g2d;
         BufferedImage img;
         
-        if (data.size()%columns == 0)
-            img = new BufferedImage(columns*24, (data.size()/columns)*21, type);
+        if (project.getMemoryData().size()%columns == 0)
+            img = new BufferedImage(columns*24, (project.getMemoryData().size()/columns)*21, type);
         else
-            if (data.size() > columns)
-                img = new BufferedImage(columns*24, (data.size()/columns+1)*21, type);
+            if (project.getMemoryData().size() > columns)
+                img = new BufferedImage(columns*24, (project.getMemoryData().size()/columns+1)*21, type);
             else
-                img = new BufferedImage(data.size()*24, 21, type);
+                img = new BufferedImage(project.getMemoryData().size()*24, 21, type);
         
         g2d = img.createGraphics();
         if (img.getTransparency() == Transparency.OPAQUE) {
-            g2d.setBackground(palette.getColor(backgroundC64Color));
+            g2d.setBackground(palette.getColor(project.getBgColor()));
             g2d.clearRect(0, 0, img.getWidth(), img.getHeight());
         }
         else {
@@ -200,37 +198,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         return img;
     }
     
-    public void setSpriteC64Color(C64Color c) {
-        getSelection().forEach(i -> {
-            sprites.get(i).setSpriteColor(c);
-        });
-        repaint();
-    }
-
-    public final void setMulti0C64Color(C64Color multi0C64Color) {
-        this.multi0C64Color = multi0C64Color;
-        
-        sprites.forEach(s -> {
-            s.setMulti0Color(multi0C64Color);
-        });
-        repaint();
-    }
-
-    public final void setMulti1C64Color(C64Color multi1C64Color) {
-        this.multi1C64Color = multi1C64Color;
-        
-        sprites.forEach(s -> {
-            s.setMulti1Color(multi1C64Color);
-        });
-        repaint();
-    }
-    
-    public final void setBackgroundC64Color(C64Color c) {
-        backgroundC64Color = c;
-        createBackgroundImage();
-        repaint();
-    }
-    
     public void setColumns(int c) {
         columns = c;
         setPreferredSize();
@@ -240,6 +207,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     public void setZoom(int z) {
         zoom = z;
         createSelectionImage();
+        createGridImage();
         createBackgroundImage();
         setPreferredSize();
         repaint();
@@ -254,7 +222,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;
         
-        if (data == null || palette == null)
+        if (project.getMemoryData() == null || palette == null)
             return;
         
         for (int i = 0; i < sprites.size(); i++) {
@@ -281,7 +249,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1)
             return;
-        if (data == null)
+        if (project.getMemoryData() == null)
             return;
         
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
@@ -322,13 +290,13 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     private void setPreferredSize() {
-        if (data.size()%columns == 0)
-            setPreferredSize(new Dimension(columns*24*zoom, (data.size()/columns)*21*zoom));
+        if (project.getMemoryData().size()%columns == 0)
+            setPreferredSize(new Dimension(columns*24*zoom, (project.getMemoryData().size()/columns)*21*zoom));
         else
-            if (data.size() > columns)
-                setPreferredSize(new Dimension(columns*24*zoom, (data.size()/columns+1)*21*zoom));
+            if (project.getMemoryData().size() > columns)
+                setPreferredSize(new Dimension(columns*24*zoom, (project.getMemoryData().size()/columns+1)*21*zoom));
             else
-                setPreferredSize(new Dimension(data.size()*24*zoom, 21*zoom));
+                setPreferredSize(new Dimension(project.getMemoryData().size()*24*zoom, 21*zoom));
         
         fireSelectionEvent();
         fireActionEvent();
@@ -362,7 +330,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         background_img = new BufferedImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = background_img.createGraphics();
         
-        g.setColor(palette.getColor(backgroundC64Color));
+        g.setColor(palette.getColor(project.getBgColor()));
         g.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
     }
     
@@ -398,7 +366,12 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
 
     public void refresh() {
-        sprites.forEach(si->si.redraw());
+        createBackgroundImage();
+        sprites.forEach((si)->{
+            si.setMulti0Color(project.getMulti0Color());
+            si.setMulti1Color(project.getMulti1Color());
+            si.redraw();
+        });
         repaint();
     }
     

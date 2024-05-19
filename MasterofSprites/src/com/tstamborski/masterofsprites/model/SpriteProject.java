@@ -19,8 +19,8 @@ public class SpriteProject {
     short defaultAddress;
 
     private SpriteProject() {
-        multi0Color = C64Color.Red;
-        multi1Color = C64Color.Blue;
+        multi0Color = C64Color.LightGray;
+        multi1Color = C64Color.White;
         bgColor = C64Color.Black;
         
         workTime = new Time();

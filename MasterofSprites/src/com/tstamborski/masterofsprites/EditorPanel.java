@@ -5,12 +5,15 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.C64Color;
+import com.tstamborski.masterofsprites.model.SpriteColor;
+import com.tstamborski.masterofsprites.model.SpriteData;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -28,26 +31,38 @@ import javax.swing.JRadioButton;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class EditorPanel extends JPanel {
-    private final JPanel spriteChooserPanel, editPanel, colorChoosePanel;
-    private final JPanel toolsPanel, attrPanel;
-    private final JButton slideUpButton, slideDownButton, slideLeftButton, slideRightButton;
-    private final JButton flipHorzButton, flipVertButton;
-    private final JButton prevButton;
-    private final JButton nextButton;
-    private final JLabel spriteChooserLabel;
-    private final SpriteEditor editor;
-    private final JRadioButton sprColorButton, multi0ColorButton;
-    private final JRadioButton multi1ColorButton, bgColorButton;
-    private final ButtonGroup colorButtonGroup;
-    private final JCheckBox multicolorCheckBox, overlayCheckBox;
-    private final C64ColorLabel sprColorLabel, multi0ColorLabel, multi1ColorLabel, bgColorLabel;
-    private final C64ColorPicker colorPicker;
+    private JPanel spriteChooserPanel, editPanel, colorChoosePanel;
+    private JPanel toolsPanel, attrPanel;
+    private JButton slideUpButton, slideDownButton, slideLeftButton, slideRightButton;
+    private JButton flipHorzButton, flipVertButton;
+    private JButton prevButton;
+    private JButton nextButton;
+    private JLabel spriteChooserLabel;
+    private SpriteEditor editor;
+    private JRadioButton sprColorButton, multi0ColorButton;
+    private JRadioButton multi1ColorButton, bgColorButton;
+    private ButtonGroup colorButtonGroup;
+    private JCheckBox multicolorCheckBox, overlayCheckBox;
+    private C64ColorLabel sprColorLabel, multi0ColorLabel, multi1ColorLabel, bgColorLabel;
+    private C64ColorPicker colorPicker;
+    
+    private final ArrayList<ActionListener> actionListeners;
     
     private SpriteProject project;
     private ArrayList<Integer> selection;
     private int selectionIndex;
     
     public EditorPanel() {
+        actionListeners = new ArrayList<>();
+        
+        createControls();
+        layoutControls();
+        
+        setProject(null);
+        setSelection(null);
+    }
+    
+    private void createControls() {
         editor = new SpriteEditor(8);
         editor.setBorder(BorderFactory.createLoweredBevelBorder());
         
@@ -75,6 +90,10 @@ public class EditorPanel extends JPanel {
         colorButtonGroup.add(multi0ColorButton);
         colorButtonGroup.add(multi1ColorButton);
         colorButtonGroup.add(bgColorButton);
+        sprColorButton.addActionListener(ae -> setCurrentSpriteColor(SpriteColor.SpriteColor));
+        multi0ColorButton.addActionListener(ae -> setCurrentSpriteColor(SpriteColor.Multi0Color));
+        multi1ColorButton.addActionListener(ae -> setCurrentSpriteColor(SpriteColor.Multi1Color));
+        bgColorButton.addActionListener(ae -> setCurrentSpriteColor(SpriteColor.BackgroundColor));
         
         sprColorLabel = new C64ColorLabel();
         sprColorLabel.setC64Color(C64Color.Green);
@@ -87,10 +106,13 @@ public class EditorPanel extends JPanel {
         
         colorPicker = new C64ColorPicker();
         colorPicker.setBorder(BorderFactory.createLineBorder(Color.black));
+        colorPicker.addActionListener(ae -> setCurrentC64Color(colorPicker.getCurrentC64Color()));
         
         multicolorCheckBox = new JCheckBox("Multicolor Mode");
         overlayCheckBox = new JCheckBox("Overlay Next Sprite");
-        
+    }
+    
+    private void layoutControls() {
         spriteChooserPanel = new JPanel();
         spriteChooserPanel.setLayout(new BoxLayout(spriteChooserPanel, BoxLayout.X_AXIS));
         spriteChooserPanel.add(prevButton);
@@ -161,9 +183,10 @@ public class EditorPanel extends JPanel {
         add(colorPicker);
         add(Box.createVerticalGlue());
         add(attrPanel);
-        
-        setProject(null);
-        setSelection(null);
+    }
+    
+    public void addActionListener(ActionListener listener) {
+        actionListeners.add(listener);
     }
     
     public SpriteEditor getSpriteEditor() {
@@ -172,6 +195,81 @@ public class EditorPanel extends JPanel {
     
     public final void setProject(SpriteProject proj) {
         this.project = proj;
+        
+        if (proj != null) {
+            setMulti0C64Color(proj.getMulti0Color());
+            setMulti1C64Color(proj.getMulti1Color());
+            setBgC64Color(proj.getBgColor());
+        }
+        
+        setSelection(null);
+    }
+    
+    private void setCurrentSpriteColor(SpriteColor color) {
+        editor.setCurrentSpriteColor(color);
+        
+        switch (color) {
+            case SpriteColor:
+                sprColorButton.setSelected(true);
+                colorPicker.setCurrentC64Color(sprColorLabel.getC64Color());
+                break;
+            case Multi0Color:
+                multi0ColorButton.setSelected(true);
+                colorPicker.setCurrentC64Color(multi0ColorLabel.getC64Color());
+                break;
+            case Multi1Color:
+                multi1ColorButton.setSelected(true);
+                colorPicker.setCurrentC64Color(multi1ColorLabel.getC64Color());
+                break;
+            default:
+                bgColorButton.setSelected(true);
+                colorPicker.setCurrentC64Color(bgColorLabel.getC64Color());
+                break;
+        }
+    }
+    
+    private void setCurrentC64Color(C64Color color) {
+        if (sprColorButton.isSelected())
+            setSpriteC64Color(color);
+        else if (multi0ColorButton.isSelected())
+            setMulti0C64Color(color);
+        else if (multi1ColorButton.isSelected())
+            setMulti1C64Color(color);
+        else
+            setBgC64Color(color);
+        
+        fireActionEvent();
+    }
+    
+    private void setSpriteC64Color(C64Color color) {
+        editor.setSpriteC64Color(color);
+        sprColorLabel.setC64Color(color);
+        if (sprColorButton.isSelected())
+            colorPicker.setCurrentC64Color(color);
+    }
+    
+    private void setMulti0C64Color(C64Color color) {
+        project.setMulti0Color(color);
+        editor.setMulti0C64Color(color);
+        multi0ColorLabel.setC64Color(color);
+        if (multi0ColorButton.isSelected())
+            colorPicker.setCurrentC64Color(color);
+    }
+    
+    private void setMulti1C64Color(C64Color color) {
+        project.setMulti1Color(color);
+        editor.setMulti1C64Color(color);
+        multi1ColorLabel.setC64Color(color);
+        if (multi1ColorButton.isSelected())
+            colorPicker.setCurrentC64Color(color);
+    }
+    
+    private void setBgC64Color(C64Color color) {
+        project.setBgColor(color);
+        editor.setBgC64Color(color);
+        bgColorLabel.setC64Color(color);
+        if (bgColorButton.isSelected())
+            colorPicker.setCurrentC64Color(color);
     }
     
     public final void setSelection(ArrayList<Integer> sel) {
@@ -184,9 +282,20 @@ public class EditorPanel extends JPanel {
             prevButton.setEnabled(false);
             spriteChooserLabel.setEnabled(false);
             nextButton.setEnabled(false);
+            
+            sprColorLabel.setEnabled(false);
+            sprColorButton.setEnabled(false);
+            multi0ColorButton.setEnabled(true);
+            multi0ColorLabel.setEnabled(true);
+            multi1ColorButton.setEnabled(true);
+            multi1ColorLabel.setEnabled(true);
+            if (sprColorButton.isSelected())
+                setCurrentSpriteColor(SpriteColor.Multi0Color);
         } else {
             editor.setEnabled(true);
             spriteChooserLabel.setEnabled(true);
+            sprColorLabel.setEnabled(true);
+            sprColorButton.setEnabled(true);
             
             if (selectionIndex < 0 || selectionIndex > sel.size()-1)
                 selectionIndex = 0;
@@ -195,12 +304,35 @@ public class EditorPanel extends JPanel {
     }
     
     private void setSprite(int index) {
-        if (project != null)
-            editor.setSpriteData(project.getMemoryData().get(selection.get(index)));
+        if (project != null) {
+            SpriteData sd = project.getMemoryData().get(selection.get(index));
+            editor.setSpriteData(sd);
+            setSpriteC64Color(sd.getSpriteC64Color());
+            
+            if (!sd.isMulticolor()) {
+                multi0ColorButton.setEnabled(false);
+                multi0ColorLabel.setEnabled(false);
+                multi1ColorButton.setEnabled(false);
+                multi1ColorLabel.setEnabled(false);
+                if (multi0ColorButton.isSelected() || multi1ColorButton.isSelected())
+                    setCurrentSpriteColor(SpriteColor.SpriteColor);
+            } else {
+                multi0ColorButton.setEnabled(true);
+                multi0ColorLabel.setEnabled(true);
+                multi1ColorButton.setEnabled(true);
+                multi1ColorLabel.setEnabled(true);
+            }
+        }
         
         prevButton.setEnabled(index > 0);
         nextButton.setEnabled(index < selection.size()-1);
         spriteChooserLabel.setText(String.format("%d of %d", index+1, 
                 selection.size()));
+    }
+    
+    private void fireActionEvent() {
+        actionListeners.forEach(
+                al -> al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null))
+        );
     }
 }
