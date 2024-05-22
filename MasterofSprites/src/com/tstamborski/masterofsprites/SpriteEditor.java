@@ -10,6 +10,10 @@ import com.tstamborski.masterofsprites.model.SpriteData;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.JComponent;
 
 /**
@@ -22,17 +26,63 @@ public class SpriteEditor extends JComponent {
     private SpriteData spriteData;
     private C64Color multi0Color, multi1Color, bgColor;
     private SpriteColor currentSpriteColor;
+    
+    private final int zoom;
+    private boolean leftButton, rightButton;
+    
+    private final ArrayList<ActionListener> actionListeners;
 
     public SpriteEditor(int zoom) {
         this.palette = DefaultPalette.getInstance();
+        
         bgColor = C64Color.Black;
         multi0Color = C64Color.LightGray;
         multi1Color = C64Color.White;
+        currentSpriteColor = SpriteColor.BackgroundColor;
+        this.zoom = zoom;
+        
+        actionListeners = new ArrayList<>();
         
         setPreferredSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
         setMaximumSize(new Dimension(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom));
+        
+        enableEvents(MouseEvent.MOUSE_EVENT_MASK | MouseEvent.MOUSE_MOTION_EVENT_MASK);
     }
 
+    @Override
+    protected void processMouseMotionEvent(MouseEvent e) {
+        super.processMouseMotionEvent(e);
+        
+        if (!isEnabled())
+            return;
+        
+        draw(e.getX(), e.getY());
+    }
+
+    @Override
+    protected void processMouseEvent(MouseEvent e) {
+        super.processMouseEvent(e);
+        
+        if (!isEnabled())
+            return;
+        
+        if (e.getID() == MouseEvent.MOUSE_PRESSED) {
+            if (e.getButton() == MouseEvent.BUTTON1)
+                leftButton = true;
+            if (e.getButton() == MouseEvent.BUTTON3)
+                rightButton = true;
+            
+            draw(e.getX(), e.getY());
+        } else if (e.getID() == MouseEvent.MOUSE_RELEASED) {
+            if (e.getButton() == MouseEvent.BUTTON1)
+                leftButton = false;
+            if (e.getButton() == MouseEvent.BUTTON3)
+                rightButton = false;
+            
+            fireActionEvent();
+        }
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -73,6 +123,7 @@ public class SpriteEditor extends JComponent {
 
     public void setPalette(Palette palette) {
         this.palette = palette;
+        spriteImg = new SpriteImage(spriteData, palette);
         repaint();
     }
 
@@ -119,5 +170,30 @@ public class SpriteEditor extends JComponent {
     
     public void setCurrentSpriteColor(SpriteColor color) {
         currentSpriteColor = color;
+    }
+    
+    public void addActionListener(ActionListener listener) {
+        actionListeners.add(listener);
+    }
+    
+    private void draw(int x, int y) {
+        x = x / zoom;
+        y = y / zoom;
+        if (spriteData.isMulticolor())
+            x /= 2;
+            
+        if (leftButton)
+            spriteData.setPixel(x, y, currentSpriteColor);
+        if (rightButton)
+            spriteData.setPixel(x, y, SpriteColor.BackgroundColor);
+        
+        if (leftButton || rightButton)
+            refresh();
+    }
+    
+    private void fireActionEvent() {
+        actionListeners.forEach(al -> al.actionPerformed(new ActionEvent(
+                this, ActionEvent.ACTION_PERFORMED, null
+            )));
     }
 }

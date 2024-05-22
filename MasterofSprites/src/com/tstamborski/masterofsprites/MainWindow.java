@@ -92,9 +92,13 @@ public class MainWindow extends JFrame {
         timer.start();
         
         memoryPanel.getMemoryView().addSelectionListener((se)->editorPanel.setSelection(se.getSelection()));
-        memoryPanel.getMemoryView().addActionListener((ae)->editorPanel.getSpriteEditor().refresh());
+        memoryPanel.getMemoryView().addActionListener((ae)->{
+            editorPanel.getSpriteEditor().refresh();
+            editorPanel.setSelection(memoryPanel.getMemoryView().getSelection());
+        });
         
         editorPanel.addActionListener(ae -> memoryPanel.getMemoryView().refresh());
+        editorPanel.getSpriteEditor().addActionListener(ae -> memoryPanel.getMemoryView().refreshSelection());
     }
 
     private void reloadProject() {
