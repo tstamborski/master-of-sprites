@@ -42,6 +42,9 @@ public class C64ColorLabel extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (!isEnabled())
+            return;
+        
         g.setColor(palette.getColor(color));
         g.fillRect(0, 0, getWidth(), getHeight());
     }

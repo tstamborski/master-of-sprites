@@ -42,7 +42,7 @@ public class StatusBar extends JPanel {
     public StatusBar() {
         contextLabel = new JLabel();
         contextLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        contextLabel.setPreferredSize(new Dimension(100,20));
+        contextLabel.setPreferredSize(new Dimension(150,20));
         contextLabel.setHorizontalAlignment(JLabel.CENTER);
         
         hintLabel = new JLabel();

@@ -16,6 +16,7 @@ public class SpriteProject {
     MemoryData memoryData;
     C64Color multi0Color, multi1Color, bgColor;
     Time workTime;
+    int overlayDistance;
     short defaultAddress;
 
     private SpriteProject() {
@@ -109,4 +110,11 @@ public class SpriteProject {
         this.defaultAddress = defaultAddress;
     }
     
+    public int getOverlayDistance() {
+        return overlayDistance;
+    }
+
+    public void setOverlayDistance(int overlayDistance) {
+        this.overlayDistance = overlayDistance;
+    }
 }

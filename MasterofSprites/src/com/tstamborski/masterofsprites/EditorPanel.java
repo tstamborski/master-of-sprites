@@ -25,6 +25,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  *
@@ -45,8 +47,11 @@ public class EditorPanel extends JPanel {
     private JCheckBox multicolorCheckBox, overlayCheckBox;
     private C64ColorLabel sprColorLabel, multi0ColorLabel, multi1ColorLabel, bgColorLabel;
     private C64ColorPicker colorPicker;
+    private JLabel overlayDistLabel;
+    private JSpinner overlayDistSpinner;
     
     private final ArrayList<ActionListener> actionListeners;
+    private final ArrayList<PreviewListener> previewListeners;
     
     private SpriteProject project;
     private ArrayList<Integer> selection;
@@ -54,6 +59,7 @@ public class EditorPanel extends JPanel {
     
     public EditorPanel() {
         actionListeners = new ArrayList<>();
+        previewListeners = new ArrayList<>();
         
         createControls();
         layoutControls();
@@ -109,7 +115,27 @@ public class EditorPanel extends JPanel {
         colorPicker.addActionListener(ae -> setCurrentC64Color(colorPicker.getCurrentC64Color()));
         
         multicolorCheckBox = new JCheckBox("Multicolor Mode");
+        multicolorCheckBox.setMnemonic('M');
+        multicolorCheckBox.addActionListener(ae -> {
+                editor.getSpriteData().setMulticolor(multicolorCheckBox.isSelected());
+                editor.refresh();
+                setSprite(selectionIndex);
+                
+                fireActionEvent();
+                firePreviewEvent();
+            });
         overlayCheckBox = new JCheckBox("Overlay Next Sprite");
+        overlayCheckBox.setMnemonic('O');
+        overlayCheckBox.addActionListener(ae -> {
+                editor.getSpriteData().setOverlay(overlayCheckBox.isSelected());
+                firePreviewEvent();
+            });
+        overlayDistLabel = new JLabel("Overlay Distance:    ");
+        overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 255, 1));
+        overlayDistSpinner.addChangeListener(che -> {
+                project.setOverlayDistance((Integer)overlayDistSpinner.getValue());
+                firePreviewEvent();
+            });
     }
     
     private void layoutControls() {
@@ -170,9 +196,20 @@ public class EditorPanel extends JPanel {
         attrPanel.setLayout(new GridBagLayout());
         lc.gridx = 0;
         lc.gridy = 0;
+        lc.gridwidth = 2;
         attrPanel.add(multicolorCheckBox, lc);
         lc.gridy = 1;
         attrPanel.add(overlayCheckBox, lc);
+        lc.gridwidth = 1;
+        lc.gridy = 2;
+        lc.gridx = 0;
+        attrPanel.add(overlayDistLabel, lc);
+        lc.gridx = 1;
+        attrPanel.add(overlayDistSpinner, lc);
+        attrPanel.setMaximumSize(new Dimension(
+                Short.MAX_VALUE,
+                attrPanel.getPreferredSize().height
+            ));
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(spriteChooserPanel);
@@ -183,10 +220,15 @@ public class EditorPanel extends JPanel {
         add(colorPicker);
         add(Box.createVerticalGlue());
         add(attrPanel);
+        add(Box.createVerticalGlue());
     }
     
     public void addActionListener(ActionListener listener) {
         actionListeners.add(listener);
+    }
+    
+    public void addPreviewListener(PreviewListener listener) {
+        previewListeners.add(listener);
     }
     
     public SpriteEditor getSpriteEditor() {
@@ -283,6 +325,13 @@ public class EditorPanel extends JPanel {
             spriteChooserLabel.setEnabled(false);
             nextButton.setEnabled(false);
             
+            slideUpButton.setEnabled(false);
+            slideDownButton.setEnabled(false);
+            slideLeftButton.setEnabled(false);
+            slideRightButton.setEnabled(false);
+            flipVertButton.setEnabled(false);
+            flipHorzButton.setEnabled(false);
+            
             sprColorLabel.setEnabled(false);
             sprColorButton.setEnabled(false);
             multi0ColorButton.setEnabled(true);
@@ -291,11 +340,24 @@ public class EditorPanel extends JPanel {
             multi1ColorLabel.setEnabled(true);
             if (sprColorButton.isSelected())
                 setCurrentSpriteColor(SpriteColor.Multi0Color);
+            
+            multicolorCheckBox.setEnabled(false);
+            overlayCheckBox.setEnabled(false);
         } else {
             editor.setEnabled(true);
             spriteChooserLabel.setEnabled(true);
             sprColorLabel.setEnabled(true);
             sprColorButton.setEnabled(true);
+            
+            slideUpButton.setEnabled(true);
+            slideDownButton.setEnabled(true);
+            slideLeftButton.setEnabled(true);
+            slideRightButton.setEnabled(true);
+            flipVertButton.setEnabled(true);
+            flipHorzButton.setEnabled(true);
+            
+            multicolorCheckBox.setEnabled(true);
+            overlayCheckBox.setEnabled(true);
             
             if (selectionIndex < 0 || selectionIndex > sel.size()-1)
                 selectionIndex = 0;
@@ -322,6 +384,9 @@ public class EditorPanel extends JPanel {
                 multi1ColorButton.setEnabled(true);
                 multi1ColorLabel.setEnabled(true);
             }
+            
+            multicolorCheckBox.setSelected(sd.isMulticolor());
+            overlayCheckBox.setSelected(sd.isOverlay());
         }
         
         prevButton.setEnabled(index > 0);
@@ -333,6 +398,12 @@ public class EditorPanel extends JPanel {
     private void fireActionEvent() {
         actionListeners.forEach(
                 al -> al.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null))
+        );
+    }
+    
+    private void firePreviewEvent() {
+        previewListeners.forEach(
+                al -> al.previewChanged(new PreviewEvent(this, PreviewEvent.REFRESH_REQUEST, null))
         );
     }
 }
