@@ -76,6 +76,14 @@ public class SpriteData implements Serializable {
         return data[index];
     }
     
+    public int getWidth() {
+        return (isMulticolor() ? 12 : 24);
+    }
+    
+    public int getHeight() {
+        return 21;
+    }
+    
     public SpriteColor getPixel(int x, int y) {
         int byte_index;
         byte data_byte;

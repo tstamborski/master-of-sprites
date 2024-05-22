@@ -40,6 +40,10 @@ public class Util {
                 return max;
     }
     
+    public static boolean isInBound(int val, int min, int max) {
+        return (val >= min && val <= max);
+    }
+    
     public static void showError(Component parent, String str) {
         JOptionPane.showMessageDialog(parent, str, "Error!", JOptionPane.ERROR_MESSAGE);
     }

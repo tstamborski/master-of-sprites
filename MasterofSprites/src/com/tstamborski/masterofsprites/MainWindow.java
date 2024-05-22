@@ -157,6 +157,8 @@ public class MainWindow extends JFrame {
         if (addressDialog.showDialog()) {
             short addr = (short)addressDialog.getAddress();
             OutputStream ostream;
+            
+            project.setDefaultAddress(addr);
 
             if (prgDialog.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 if (showOverwriteDialog(prgDialog.getSelectedFile()) == false)

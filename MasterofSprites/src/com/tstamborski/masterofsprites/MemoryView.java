@@ -94,14 +94,11 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         getSelection();
         for (int i = 0; i < selection.size(); i++) {
-            if (i < transferData.size()) {
-                SpriteData element = transferData.get(i);
-                System.arraycopy(element.toByteArray(), 0, 
-                        project.getMemoryData().get(selection.get(i)).toByteArray(), 0,
-                        SpriteData.SIZE);
-            } else {
-                break;
-            }
+            SpriteData element = transferData.get(i % transferData.size());
+            System.arraycopy(element.toByteArray(), 0, 
+                    project.getMemoryData().get(selection.get(i)).toByteArray(), 0,
+                    SpriteData.SIZE);
+            
             sprites.get(selection.get(i)).redraw();
         }
         
