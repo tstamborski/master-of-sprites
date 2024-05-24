@@ -14,6 +14,8 @@ import java.io.Serializable;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class SpriteProject implements Serializable {
+    private static final long serialVersionUID = 66623L;
+    
     MemoryData memoryData;
     C64Color multi0Color, multi1Color, bgColor;
     Time workTime;

@@ -122,6 +122,30 @@ public class SpriteEditor extends JComponent {
         repaint();
     }
     
+    public void slideUp() {
+        spriteData.slideUp();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void slideDown() {
+        spriteData.slideDown();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void slideLeft() {
+        spriteData.slideLeft();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void slideRight() {
+        spriteData.slideRight();
+        refresh();
+        fireActionEvent();
+    }
+    
     public void setSpriteData(SpriteData data) {
         spriteData = data;
         spriteImg = new SpriteImage(data, palette);
@@ -194,13 +218,20 @@ public class SpriteEditor extends JComponent {
         actionListeners.add(listener);
     }
     
-    private void draw(int x, int y, SpriteColor color) {
-        x = x / zoom;
-        y = y / zoom;
+    public int getSpriteX(int mousex) {
+        int x = mousex / zoom;
         if (spriteData.isMulticolor())
             x /= 2;
-            
-        spriteData.setPixel(x, y, color);
+        
+        return x;
+    }
+    
+    public int getSpriteY(int mousey) {
+        return mousey / zoom;
+    }
+    
+    private void draw(int x, int y, SpriteColor color) {
+        spriteData.setPixel(getSpriteX(x), getSpriteY(y), color);
         refresh();
     }
     
@@ -208,10 +239,8 @@ public class SpriteEditor extends JComponent {
         Queue<Point> q = new LinkedList<>();
         SpriteColor baseColor;
         
-        x = x / zoom;
-        y = y / zoom;
-        if (spriteData.isMulticolor())
-            x /= 2;
+        x = getSpriteX(x);
+        y = getSpriteY(y);
         
         baseColor = spriteData.getPixel(x, y);
         if (baseColor == targetColor)

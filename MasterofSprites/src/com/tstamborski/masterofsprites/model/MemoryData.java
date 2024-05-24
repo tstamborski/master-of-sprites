@@ -35,6 +35,8 @@ import java.util.ArrayList;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class MemoryData extends ArrayList<SpriteData> implements Serializable {
+    private static final long serialVersionUID = 968555L;
+    
     public static final int MAX_SIZE = 1024;
     
     private MemoryData() {

@@ -80,9 +80,13 @@ public class EditorPanel extends JPanel {
         nextButton.addActionListener((ae)->setSprite(++selectionIndex));
         
         slideUpButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
+        slideUpButton.addActionListener(ae -> editor.slideUp());
         slideDownButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-down16.png")));
+        slideDownButton.addActionListener(ae -> editor.slideDown());
         slideLeftButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-left16.png")));
+        slideLeftButton.addActionListener(ae -> editor.slideLeft());
         slideRightButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
+        slideRightButton.addActionListener(ae -> editor.slideRight());
         flipHorzButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
         flipVertButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
         
@@ -373,9 +377,9 @@ public class EditorPanel extends JPanel {
             
             if (!sd.isMulticolor()) {
                 multi0ColorButton.setEnabled(false);
-                multi0ColorLabel.setEnabled(false);
+                //multi0ColorLabel.setEnabled(false);
                 multi1ColorButton.setEnabled(false);
-                multi1ColorLabel.setEnabled(false);
+                //multi1ColorLabel.setEnabled(false);
                 if (multi0ColorButton.isSelected() || multi1ColorButton.isSelected())
                     setCurrentSpriteColor(SpriteColor.SpriteColor);
             } else {

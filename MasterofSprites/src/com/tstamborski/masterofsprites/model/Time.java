@@ -11,6 +11,8 @@ import java.io.Serializable;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class Time implements Serializable {
+    private static final long serialVersionUID = 4464L;
+    
     private long seconds;
 
     public Time() {

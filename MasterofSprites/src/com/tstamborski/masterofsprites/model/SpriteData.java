@@ -12,6 +12,7 @@ import java.io.*;
  * @author Tobiasz
  */
 public class SpriteData implements Serializable {
+    private static final long serialVersionUID = 14145L;
     public static final int SIZE = 64;
     
     private final byte data[];
@@ -82,6 +83,86 @@ public class SpriteData implements Serializable {
     
     public int getHeight() {
         return 21;
+    }
+    
+    public void slideUp() {
+        byte temp[] = new byte[3];
+        
+        System.arraycopy(data, 0, temp, 0, 3);
+        
+        for (int i = 3; i < 63; i+=3)
+            for (int j = 0; j < 3; j++)
+                data[i+j-3] = data[i+j];
+        
+        System.arraycopy(temp, 0, data, 60, 3);
+    }
+    
+    public void slideDown() {
+        byte temp[] = new byte[3];
+        
+        System.arraycopy(data, 60, temp, 0, 3);
+        
+        for (int i = 60; i >= 3; i-=3)
+            for (int j = 0; j < 3; j++)
+                data[i+j] = data[i+j-3];
+        
+        System.arraycopy(temp, 0, data, 0, 3);
+    }
+    
+    public void slideLeft() {
+        if (isMulticolor())
+            multiSlideLeft(2);
+        else
+            multiSlideLeft(1);
+    }
+    
+    public void slideRight() {
+        if (isMulticolor())
+            multiSlideRight(2);
+        else
+            multiSlideRight(1);
+    }
+    
+    private void multiSlideLeft(int times) {
+        while (times > 0) {
+            int temp[] = new int[3];
+            
+            for (int i = 0; i < 63; i += 3) {
+                temp[2] = data[i+2] << 1;
+                data[i+2] = (byte)(temp[2] & 0xff);
+                temp[1] = data[i+1] << 1;
+                data[i+1] = (byte)(temp[1] & 0xff);
+                temp[0] = data[i] << 1;
+                data[i] = (byte)(temp[0] & 0xff);
+                
+                data[i+2] |= (temp[0] >> 8);
+                data[i+1] |= (temp[2] >> 8);
+                data[i] |= (temp[1] >> 8);
+            }
+            
+            times--;
+        }
+    }
+    
+    private void multiSlideRight(int times) {
+        while (times > 0) {
+            int temp[] = new int[3];
+            
+            for (int i = 0; i < 63; i += 3) {
+                temp[2] = data[i+2] >> 1;
+                data[i+2] = (byte)(temp[2] & 0xff);
+                temp[1] = data[i+1] >> 1;
+                data[i+1] = (byte)(temp[1] & 0xff);
+                temp[0] = data[i] >> 1;
+                data[i] = (byte)(temp[0] & 0xff);
+                
+                data[i+2] |= (temp[1] << 8);
+                data[i+1] |= (temp[0] << 8);
+                data[i] |= (temp[2] << 8);
+            }
+            
+            times--;
+        }
     }
     
     public SpriteColor getPixel(int x, int y) {

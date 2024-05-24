@@ -331,7 +331,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         g.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
     }
     
-    private int getIndexAt(int x, int y) {
+    public int getIndexAt(int x, int y) {
         return (y/(21*zoom))*columns + x/(24*zoom);
     }
 

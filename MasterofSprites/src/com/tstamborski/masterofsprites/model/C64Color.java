@@ -32,4 +32,6 @@ public enum C64Color implements Serializable {
     public static C64Color fromInteger(int i) {
         return values()[i & 0x0f];
     }
+    
+    private static final long serialVersionUID = 77145L;
 }
