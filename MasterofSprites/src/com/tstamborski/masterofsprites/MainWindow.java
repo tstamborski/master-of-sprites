@@ -25,6 +25,7 @@ import javax.swing.filechooser.*;
 public class MainWindow extends JFrame {
 
     private SpriteProject project;
+    private File file;
     
     private final Timer timer;
 
@@ -37,10 +38,11 @@ public class MainWindow extends JFrame {
     private AboutDialog aboutDialog;
     private ExportPRGDialog addressDialog;
 
-    private JFileChooser prgDialog, rawDialog, bitmapDialog;
-    private FileNameExtensionFilter prg_filter, png_filter, jpg_filter, bmp_filter;
+    private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog;
+    private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter;
     
     private JMenuItem newMenuItem;
+    private JMenuItem openMenuItem, saveMenuItem, saveAsMenuItem;
     private JMenuItem exportBitmapMenuItem;
     private JMenu fileMenu;
     private JMenuItem exitMenuItem;
@@ -58,7 +60,6 @@ public class MainWindow extends JFrame {
     private JMenuItem copyMenuItem;
 
     public MainWindow() {
-        setTitle(MasterofSprites.PROGRAM_NAME);
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -106,11 +107,123 @@ public class MainWindow extends JFrame {
         editorPanel.setProject(project);
     }
     
+    private void updateTitlebar() {
+        if (file != null)
+            setTitle(MasterofSprites.PROGRAM_NAME + " -- " + file.getName());
+        else
+            setTitle(MasterofSprites.PROGRAM_NAME + " -- New File");
+    }
+    
     public final void newFile() {
         project = SpriteProject.getNewProject(64, false);
+        file = null;
+        
         reloadProject();
+        updateTitlebar();
     }
 
+    public void openFile() {
+        InputStream istream;
+        ObjectInputStream oistream;
+        
+        if (projectDialog.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            try {
+                istream = new FileInputStream(projectDialog.getSelectedFile());
+            } catch (FileNotFoundException e) {
+                Util.showError(this, e.getMessage());
+                return;
+            }
+            
+            try {
+                oistream = new ObjectInputStream(istream);
+                project = (SpriteProject)oistream.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                Util.showError(this, e.getMessage());
+                return;
+            }
+            
+            file = projectDialog.getSelectedFile();
+            reloadProject();
+            updateTitlebar();
+            
+            try {
+                oistream.close();
+                istream.close();
+            } catch (IOException e) {
+                Util.showError(this, e.getMessage());
+            }
+        }
+    }
+    
+    public void saveFile() {
+        if (file == null) {
+            saveAsFile();
+            return;
+        }
+        
+        OutputStream ostream;
+        ObjectOutputStream oostream;
+        
+        try {
+            ostream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            Util.showError(this, e.getMessage());
+            return;
+        }
+            
+        try {
+            oostream = new ObjectOutputStream(ostream);
+            oostream.writeObject(project);
+        } catch (IOException e) {
+            Util.showError(this, e.getMessage());
+            return;
+        }
+        
+        try {
+            oostream.close();
+            ostream.close();
+        } catch (IOException e) {
+            Util.showError(this, e.getMessage());
+        }
+    }
+    
+    public void saveAsFile() {
+        OutputStream ostream;
+        ObjectOutputStream oostream;
+        File myProjectFile;
+        
+        if (projectDialog.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            myProjectFile = Util.addExtension(
+                    projectDialog.getSelectedFile(),
+                    ((FileNameExtensionFilter)projectDialog.getFileFilter()).getExtensions());
+            
+            try {
+                ostream = new FileOutputStream(myProjectFile);
+            } catch (FileNotFoundException e) {
+                Util.showError(this, e.getMessage());
+                return;
+            }
+            
+            try {
+                oostream = new ObjectOutputStream(ostream);
+                oostream.writeObject(project);
+            } catch (IOException e) {
+                Util.showError(this, e.getMessage());
+                return;
+            }
+            
+            file = myProjectFile;
+            updateTitlebar();
+            
+            try {
+                oostream.close();
+                ostream.close();
+            } catch (IOException e) {
+                Util.showError(this, e.getMessage());
+            }
+        }
+    }
+    
     public void importPRGFile() {
         InputStream istream;
 
@@ -127,7 +240,16 @@ public class MainWindow extends JFrame {
                 Util.showError(this, e.getMessage());
                 return;
             }
+            
+            file = null;
             reloadProject();
+            updateTitlebar();
+            
+            try {
+                istream.close();
+            } catch (IOException e) {
+                Util.showError(this, e.getMessage());
+            }
         }
     }
 
@@ -147,7 +269,16 @@ public class MainWindow extends JFrame {
                 Util.showError(this, e.getMessage());
                 return;
             }
+            
+            file = null;
             reloadProject();
+            updateTitlebar();
+            
+            try {
+                istream.close();
+            } catch (IOException e) {
+                Util.showError(this, e.getMessage());
+            }
         }
     }
     
@@ -157,21 +288,34 @@ public class MainWindow extends JFrame {
         if (addressDialog.showDialog()) {
             short addr = (short)addressDialog.getAddress();
             OutputStream ostream;
+            File myPRGFile;
             
             project.setDefaultAddress(addr);
 
             if (prgDialog.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-                if (showOverwriteDialog(prgDialog.getSelectedFile()) == false)
+                myPRGFile = Util.addExtension(
+                        prgDialog.getSelectedFile(),
+                        ((FileNameExtensionFilter)prgDialog.getFileFilter()).getExtensions());
+                
+                if (showOverwriteDialog(myPRGFile) == false)
                     return;
                 
                 try {
-                    ostream = new FileOutputStream(prgDialog.getSelectedFile());
+                    ostream = new FileOutputStream(myPRGFile);
                     project.exportToPRGData(ostream, addr);
                 }
                 catch (FileNotFoundException e) {
                     Util.showError(this, e.getMessage());
+                    return;
                 }
                 catch (IOException e) {
+                    Util.showError(this, e.getMessage());
+                    return;
+                }
+                
+                try {
+                    ostream.close();
+                } catch (IOException e) {
                     Util.showError(this, e.getMessage());
                 }
             }
@@ -191,15 +335,23 @@ public class MainWindow extends JFrame {
             }
             catch (FileNotFoundException e) {
                 Util.showError(this, e.getMessage());
+                return;
             }
             catch (IOException e) {
+                Util.showError(this, e.getMessage());
+                return;
+            }
+            
+            try {
+                ostream.close();
+            } catch (IOException e) {
                 Util.showError(this, e.getMessage());
             }
         }
     }
 
     public void exportBitmap() {
-        File file;
+        File bitmapFile;
         FileNameExtensionFilter filter;
         String extensions[];
 
@@ -207,23 +359,21 @@ public class MainWindow extends JFrame {
             if (showOverwriteDialog(bitmapDialog.getSelectedFile()) == false)
                 return;
             
-            file = bitmapDialog.getSelectedFile();
+            bitmapFile = bitmapDialog.getSelectedFile();
             filter = (FileNameExtensionFilter) bitmapDialog.getFileFilter();
             extensions = filter.getExtensions();
 
-            if (!Util.hasExtension(file, extensions)) {
-                file = new File(file.getAbsolutePath() + "." + extensions[0]);
-            }
+            bitmapFile = Util.addExtension(bitmapFile, extensions);
 
             try {
                 if (extensions[0].equals(png_filter.getExtensions()[0])) {
-                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_ARGB), extensions[0], file);
+                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_ARGB), extensions[0], bitmapFile);
                 } else if (extensions[0].equals(jpg_filter.getExtensions()[0])) {
-                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_RGB), extensions[0], file);
+                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_RGB), extensions[0], bitmapFile);
                 } else if (extensions[0].equals(bmp_filter.getExtensions()[0])) {
-                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_BGR), extensions[0], file);
+                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_BGR), extensions[0], bitmapFile);
                 } else {
-                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_ARGB), "png", file);
+                    ImageIO.write(memoryPanel.getMemoryView().toBufferedImage(BufferedImage.TYPE_INT_ARGB), "png", bitmapFile);
                 }
             } catch (IOException e) {
                 Util.showError(this, e.getMessage());
@@ -251,6 +401,8 @@ public class MainWindow extends JFrame {
     }
 
     private void createFileDialogs() {
+        spr_filter
+                = new FileNameExtensionFilter("Master of Sprites Project", "spr");
         prg_filter
                 = new FileNameExtensionFilter("PRG Files", "prg");
         png_filter
@@ -260,14 +412,22 @@ public class MainWindow extends JFrame {
         bmp_filter
                 = new FileNameExtensionFilter("BMP Image", "bmp");
 
+        projectDialog = new JFileChooser();
+        projectDialog.setDialogTitle("Choose file...");
+        projectDialog.setFileFilter(spr_filter);
+        projectDialog.setMultiSelectionEnabled(false);
+        
         prgDialog = new JFileChooser();
+        prgDialog.setDialogTitle("Choose file...");
         prgDialog.setFileFilter(prg_filter);
         prgDialog.setMultiSelectionEnabled(false);
 
         rawDialog = new JFileChooser();
+        rawDialog.setDialogTitle("Choose file...");
         rawDialog.setMultiSelectionEnabled(false);
 
         bitmapDialog = new JFileChooser();
+        bitmapDialog.setDialogTitle("Choose file...");
         bitmapDialog.addChoosableFileFilter(png_filter);
         bitmapDialog.addChoosableFileFilter(jpg_filter);
         bitmapDialog.addChoosableFileFilter(bmp_filter);
@@ -282,6 +442,22 @@ public class MainWindow extends JFrame {
         }
         else {
             return true;
+        }
+    }
+    
+    protected boolean showUnsavedDialog() {
+        int answer = JOptionPane.showConfirmDialog(this, 
+                "You have unsaved work!\nDo you want to save before proceeding?", 
+                "Unsaved work!", JOptionPane.YES_NO_CANCEL_OPTION);
+        
+        switch (answer) {
+            case JOptionPane.YES_OPTION:
+                saveFile();
+                return true;
+            case JOptionPane.NO_OPTION:
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -299,6 +475,29 @@ public class MainWindow extends JFrame {
             newFile();
         });
 
+        openMenuItem = new JMenuItem("Open...");
+        openMenuItem.setMnemonic(KeyEvent.VK_O);
+        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
+        openMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/openfile16.png")));
+        openMenuItem.addActionListener((ae) -> {
+            openFile();
+        });
+        
+        saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.setMnemonic(KeyEvent.VK_S);
+        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
+        saveMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/savefile16.png")));
+        saveMenuItem.addActionListener((ae) -> {
+            saveFile();
+        });
+        
+        saveAsMenuItem = new JMenuItem("Save As...");
+        saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
+        saveAsMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/savefile16.png")));
+        saveAsMenuItem.addActionListener((ae) -> {
+            saveAsFile();
+        });
+        
         importPRGMenuItem = new JMenuItem("Import PRG file...");
         importPRGMenuItem.setMnemonic(KeyEvent.VK_I);
         importPRGMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK));
@@ -349,6 +548,9 @@ public class MainWindow extends JFrame {
         fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.add(newMenuItem);
+        fileMenu.add(openMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(saveAsMenuItem);
         fileMenu.addSeparator();
         fileMenu.add(importPRGMenuItem);
         fileMenu.add(importRawMenuItem);
@@ -380,7 +582,7 @@ public class MainWindow extends JFrame {
         deleteMenuItem = new JMenuItem("Delete");
         deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
         deleteMenuItem.setMnemonic(KeyEvent.VK_D);
-        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.CTRL_DOWN_MASK));
         deleteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().delete();
         });

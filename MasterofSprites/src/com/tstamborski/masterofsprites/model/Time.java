@@ -4,11 +4,13 @@
  */
 package com.tstamborski.masterofsprites.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class Time {
+public class Time implements Serializable {
     private long seconds;
 
     public Time() {

@@ -7,12 +7,13 @@ package com.tstamborski.masterofsprites.model;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class SpriteProject {
+public class SpriteProject implements Serializable {
     MemoryData memoryData;
     C64Color multi0Color, multi1Color, bgColor;
     Time workTime;

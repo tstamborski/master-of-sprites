@@ -26,6 +26,14 @@ public class Util {
         return f.getAbsolutePath().endsWith("." + ext);
     }
     
+    public static File addExtension(File f, String[] extensions) {
+        if (Util.hasExtension(f, extensions)) {
+            return f;
+        } else {
+            return new File(f.getAbsolutePath() + "." + extensions[0]);
+        }
+    }
+    
     public static String removeExtension(String filename){
         return filename.substring(0, filename.lastIndexOf('.'));
     }

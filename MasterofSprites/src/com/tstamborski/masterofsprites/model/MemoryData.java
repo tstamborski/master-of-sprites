@@ -27,13 +27,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class MemoryData extends ArrayList<SpriteData> {
+public class MemoryData extends ArrayList<SpriteData> implements Serializable {
     public static final int MAX_SIZE = 1024;
     
     private MemoryData() {

@@ -5,11 +5,13 @@
  */
 package com.tstamborski.masterofsprites.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Tobiasz
  */
-public enum C64Color {
+public enum C64Color implements Serializable {
     Black,
     White,
     Red,
