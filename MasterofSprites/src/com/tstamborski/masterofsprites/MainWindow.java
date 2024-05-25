@@ -434,15 +434,15 @@ public class MainWindow extends JFrame {
 
     private void createFileDialogs() {
         spr_filter
-                = new FileNameExtensionFilter("Master of Sprites Project", "spr");
+                = new FileNameExtensionFilter("Master of Sprites Project [.spr]", "spr");
         prg_filter
-                = new FileNameExtensionFilter("PRG Files", "prg");
+                = new FileNameExtensionFilter("PRG Files [.prg, .PRG]", "prg", "PRG");
         png_filter
-                = new FileNameExtensionFilter("PNG Image", "png");
+                = new FileNameExtensionFilter("PNG Image [.png]", "png");
         jpg_filter
-                = new FileNameExtensionFilter("JPG Image", "jpg", "jpeg");
+                = new FileNameExtensionFilter("JPG Image [.jpg, .jpeg]", "jpg", "jpeg");
         bmp_filter
-                = new FileNameExtensionFilter("BMP Image", "bmp");
+                = new FileNameExtensionFilter("BMP Image [.bmp]", "bmp");
 
         projectDialog = new JFileChooser();
         projectDialog.setDialogTitle("Choose file...");

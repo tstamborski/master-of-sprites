@@ -129,15 +129,15 @@ public class SpriteData implements Serializable {
             
             for (int i = 0; i < 63; i += 3) {
                 temp[2] = data[i+2] << 1;
-                data[i+2] = (byte)(temp[2] & 0xff);
+                data[i+2] = (byte)(temp[2] & 0xfe);
                 temp[1] = data[i+1] << 1;
-                data[i+1] = (byte)(temp[1] & 0xff);
+                data[i+1] = (byte)(temp[1] & 0xfe);
                 temp[0] = data[i] << 1;
-                data[i] = (byte)(temp[0] & 0xff);
+                data[i] = (byte)(temp[0] & 0xfe);
                 
-                data[i+2] |= (temp[0] >> 8);
-                data[i+1] |= (temp[2] >> 8);
-                data[i] |= (temp[1] >> 8);
+                data[i+2] |= (byte)((temp[0] >> 8) & 0x01);
+                data[i+1] |= (byte)((temp[2] >> 8) & 0x01);
+                data[i] |= (byte)((temp[1] >> 8) & 0x01);
             }
             
             times--;
@@ -149,16 +149,16 @@ public class SpriteData implements Serializable {
             int temp[] = new int[3];
             
             for (int i = 0; i < 63; i += 3) {
-                temp[2] = data[i+2] >> 1;
-                data[i+2] = (byte)(temp[2] & 0xff);
-                temp[1] = data[i+1] >> 1;
-                data[i+1] = (byte)(temp[1] & 0xff);
-                temp[0] = data[i] >> 1;
-                data[i] = (byte)(temp[0] & 0xff);
+                temp[2] = Integer.rotateRight(data[i+2], 1);
+                data[i+2] = (byte)(temp[2] & 0x7f);
+                temp[1] = Integer.rotateRight(data[i+1], 1);
+                data[i+1] = (byte)(temp[1] & 0x7f);
+                temp[0] = Integer.rotateRight(data[i], 1);
+                data[i] = (byte)(temp[0] & 0x7f);
                 
-                data[i+2] |= (temp[1] << 8);
-                data[i+1] |= (temp[0] << 8);
-                data[i] |= (temp[2] << 8);
+                data[i+2] |= (byte)(Integer.rotateLeft(temp[1], 8) & 0x80);
+                data[i+1] |= (byte)(Integer.rotateLeft(temp[0], 8) & 0x80);
+                data[i] |= (byte)(Integer.rotateLeft(temp[2], 8) & 0x80);
             }
             
             times--;
