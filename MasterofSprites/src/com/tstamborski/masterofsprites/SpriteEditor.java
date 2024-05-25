@@ -146,6 +146,18 @@ public class SpriteEditor extends JComponent {
         fireActionEvent();
     }
     
+    public void flipHorizontally() {
+        spriteData.flipHorizontally();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void flipVertically() {
+        spriteData.flipVertically();
+        refresh();
+        fireActionEvent();
+    }
+    
     public void setSpriteData(SpriteData data) {
         spriteData = data;
         spriteImg = new SpriteImage(data, palette);
@@ -184,6 +196,7 @@ public class SpriteEditor extends JComponent {
         
         spriteData.setSpriteC64Color(color);
         refresh();
+        fireActionEvent();
     }
     
     public void setMulti0C64Color(C64Color color) {

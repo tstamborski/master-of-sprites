@@ -123,6 +123,42 @@ public class SpriteData implements Serializable {
             multiSlideRight(1);
     }
     
+    public void flipHorizontally() {
+        byte temp;
+        
+        for (int i = 0; i < 63; i += 3) {
+            if (isMulticolor()) {
+                data[i+1] = flipBitsMultiColor(data[i+1]);
+                temp = flipBitsMultiColor(data[i]);
+                data[i] = flipBitsMultiColor(data[i+2]);
+                data[i+2] = temp;
+            } else {
+                data[i+1] = flipBitsSingleColor(data[i+1]);
+                temp = flipBitsSingleColor(data[i]);
+                data[i] = flipBitsSingleColor(data[i+2]);
+                data[i+2] = temp;
+            }
+        }
+    }
+    
+    public void flipVertically() {
+        byte[] temp = new byte[3];
+        
+        for (int i = 0; i < 10; i++) {
+            temp[0] = data[i*3];
+            temp[1] = data[i*3+1];
+            temp[2] = data[i*3+2];
+            
+            data[i*3] = data[60-i*3];
+            data[i*3+1] = data[60-i*3+1];
+            data[i*3+2] = data[60-i*3+2];
+            
+            data[60-i*3] = temp[0];
+            data[60-i*3+1] = temp[1];
+            data[60-i*3+2] = temp[2];
+        }
+    }
+    
     private void multiSlideLeft(int times) {
         while (times > 0) {
             int temp[] = new int[3];
@@ -163,6 +199,28 @@ public class SpriteData implements Serializable {
             
             times--;
         }
+    }
+    
+    private byte flipBitsSingleColor(byte b) {
+        byte temp = 0x00;
+        
+        for (int i = 0; i < 4; i++) {
+            temp |= (b & (0x08 >> i)) << (2*i+1);
+            temp |= (b & (0x10 << i)) >> (2*i+1);
+        }
+        
+        return temp;
+    }
+    
+    private byte flipBitsMultiColor(byte b) {
+        byte temp = 0x00;
+        
+        for (int i = 0; i < 2; i++) {
+            temp |= (b & (0x0c >> 2*i)) << (4*i+2);
+            temp |= (b & (0x30 << 2*i)) >> (4*i+2);
+        }
+        
+        return temp;
     }
     
     public SpriteColor getPixel(int x, int y) {

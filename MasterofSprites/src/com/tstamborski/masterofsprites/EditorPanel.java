@@ -88,7 +88,9 @@ public class EditorPanel extends JPanel {
         slideRightButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
         slideRightButton.addActionListener(ae -> editor.slideRight());
         flipHorzButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
+        flipHorzButton.addActionListener(ae -> editor.flipHorizontally());
         flipVertButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
+        flipVertButton.addActionListener(ae -> editor.flipVertically());
         
         sprColorButton = new JRadioButton("Sprite Color");
         sprColorButton.setSelected(true);
@@ -283,8 +285,6 @@ public class EditorPanel extends JPanel {
             setMulti1C64Color(color);
         else
             setBgC64Color(color);
-        
-        fireActionEvent();
     }
     
     private void setSpriteC64Color(C64Color color) {
@@ -300,6 +300,8 @@ public class EditorPanel extends JPanel {
         multi0ColorLabel.setC64Color(color);
         if (multi0ColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
+        
+        fireActionEvent();
     }
     
     private void setMulti1C64Color(C64Color color) {
@@ -308,6 +310,8 @@ public class EditorPanel extends JPanel {
         multi1ColorLabel.setC64Color(color);
         if (multi1ColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
+        
+        fireActionEvent();
     }
     
     private void setBgC64Color(C64Color color) {
@@ -316,6 +320,8 @@ public class EditorPanel extends JPanel {
         bgColorLabel.setC64Color(color);
         if (bgColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
+        
+        fireActionEvent();
     }
     
     public final void setSelection(ArrayList<Integer> sel) {
