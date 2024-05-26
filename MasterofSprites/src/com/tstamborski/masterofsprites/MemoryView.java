@@ -149,6 +149,9 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     public void setQuantity(int quantity) {
+        if (quantity == project.getMemoryData().size())
+            return;
+        
         if (quantity < project.getMemoryData().size()) {
             for (int i = project.getMemoryData().size()-1; i >= quantity; i--) {
                 project.getMemoryData().remove(i);
@@ -185,7 +188,12 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         for (int i = 0; i < project.getMemoryData().size(); i++) {
             sprites.add(new SpriteImage(project.getMemoryData().get(i), palette));
         }
+        setPreferredSize();
         repaint();
+    }
+
+    public SpriteProject getProject() {
+        return project;
     }
     
     public void setProject(SpriteProject project) {

@@ -5,6 +5,7 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.MemoryData;
+import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -70,6 +71,16 @@ public class MemoryPanel extends JPanel {
         gridCheckBox.addActionListener(e->memoryView.setGrid(gridCheckBox.isSelected()));
     }
 
+    public void reload() {
+        memoryView.reload();
+        quantitySpinner.setValue(memoryView.getProject().getMemoryData().size());
+    }
+    
+    public void setProject(SpriteProject project) {
+        memoryView.setProject(project);
+        quantitySpinner.setValue(project.getMemoryData().size());
+    }
+    
     public MemoryView getMemoryView() {
         return memoryView;
     }

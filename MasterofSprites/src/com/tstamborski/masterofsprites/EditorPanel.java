@@ -431,7 +431,11 @@ public class EditorPanel extends JPanel {
     }
     
     public void reload() {
-        setSprite(selectionIndex);
+        if (selection != null && !selection.isEmpty()) {
+            if (selectionIndex < 0 || selectionIndex > selection.size()-1)
+                selectionIndex = 0;
+            setSprite(selectionIndex);
+        }
     }
     
     private void setSprite(int index) {

@@ -181,7 +181,7 @@ public class MainWindow extends JFrame {
     }
 
     private void reloadProject() {
-        memoryPanel.getMemoryView().setProject(project);
+        memoryPanel.setProject(project);
         editorPanel.setProject(project);
     }
     
@@ -579,7 +579,7 @@ public class MainWindow extends JFrame {
     public void undo() {
         history.undo(project);
         editorPanel.reload();
-        memoryPanel.getMemoryView().reload();
+        memoryPanel.reload();
         
         enableHistoryMenuItems();
         updateTitlebar();
@@ -588,7 +588,7 @@ public class MainWindow extends JFrame {
     public void redo() {
         history.redo(project);
         editorPanel.reload();
-        memoryPanel.getMemoryView().reload();
+        memoryPanel.reload();
         
         enableHistoryMenuItems();
         updateTitlebar();
