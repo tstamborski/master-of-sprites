@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -99,7 +100,10 @@ public class MainWindow extends JFrame {
         });
         timer.start();
         
-        memoryPanel.getMemoryView().addSelectionListener((se)->editorPanel.setSelection(se.getSelection()));
+        memoryPanel.getMemoryView().addSelectionListener((se)->{
+            editorPanel.setSelection(se.getSelection());
+            enableClipboardMenuItems(se.getSelection());
+        });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.getSpriteEditor().refresh();
             pushHistory();
@@ -183,6 +187,7 @@ public class MainWindow extends JFrame {
     private void reloadProject() {
         memoryPanel.setProject(project);
         editorPanel.setProject(project);
+        enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
     }
     
     private void updateTitlebar() {
@@ -552,6 +557,15 @@ public class MainWindow extends JFrame {
     @Override
     protected void processWindowEvent(WindowEvent e) {
         super.processWindowEvent(e); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void enableClipboardMenuItems(ArrayList<Integer> selection) {
+        deleteMenuItem.setEnabled(!selection.isEmpty());
+        cutMenuItem.setEnabled(!selection.isEmpty());
+        copyMenuItem.setEnabled(!selection.isEmpty());
+        
+        pasteMenuItem.setEnabled(!memoryPanel.getMemoryView().getSelection().isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
     }
     
     private void enableHistoryMenuItems() {

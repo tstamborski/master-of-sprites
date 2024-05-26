@@ -211,6 +211,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         });
         
         selection.clear();
+        enablePopupMenuItems();
         createBackgroundImage();
         setPreferredSize();
         repaint();
@@ -399,6 +400,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private void fireSelectionEvent() {
         SelectionEvent event = new SelectionEvent(this, getSelection());
         selectionListeners.forEach((sl)->sl.selectionPerformed(event));
+        enablePopupMenuItems();
     }
     
     public void addActionListener(ActionListener al) {
@@ -431,6 +433,15 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     public void refreshSelection() {
         selection.forEach(i->sprites.get(i).redraw());
         repaint();
+    }
+    
+    private void enablePopupMenuItems() {
+        deleteMenuItem.setEnabled(!selection.isEmpty());
+        cutMenuItem.setEnabled(!selection.isEmpty());
+        copyMenuItem.setEnabled(!selection.isEmpty());
+        
+        pasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
     }
     
     @Override
