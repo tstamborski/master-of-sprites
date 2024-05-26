@@ -14,6 +14,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -71,6 +73,15 @@ public class EditorPanel extends JPanel {
     private void createControls() {
         editor = new SpriteEditor(8);
         editor.setBorder(BorderFactory.createLoweredBevelBorder());
+        editor.addMouseWheelListener((MouseWheelEvent e) -> {
+            if (!editor.isEnabled())
+                return;
+            
+            if (e.getWheelRotation() > 0)
+                nextSpriteColor();
+            else if (e.getWheelRotation() < 0)
+                prevSpriteColor();
+        });
         
         spriteChooserLabel = new JLabel("none");
         spriteChooserLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
@@ -251,6 +262,50 @@ public class EditorPanel extends JPanel {
         }
         
         setSelection(null);
+    }
+    
+    private void nextSpriteColor() {
+        switch (editor.getCurrentSpriteColor()) {
+            case SpriteColor:
+                if (multi0ColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.Multi0Color);
+                    break;
+                }
+            case Multi0Color:
+                if (multi1ColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.Multi1Color);
+                    break;
+                }
+            case Multi1Color:
+                if (bgColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.BackgroundColor);
+                    break;
+                }
+            default: //BackgroundColor
+                break;
+        }
+    }
+    
+    private void prevSpriteColor() {
+        switch (editor.getCurrentSpriteColor()) {
+            case BackgroundColor:
+                if (multi1ColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.Multi1Color);
+                    break;
+                }
+            case Multi1Color:
+                if (multi0ColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.Multi0Color);
+                    break;
+                }
+            case Multi0Color:
+                if (sprColorButton.isEnabled()) {
+                    setCurrentSpriteColor(SpriteColor.SpriteColor);
+                    break;
+                }
+            default: //SpriteColor
+                break;
+        }
     }
     
     private void setCurrentSpriteColor(SpriteColor color) {

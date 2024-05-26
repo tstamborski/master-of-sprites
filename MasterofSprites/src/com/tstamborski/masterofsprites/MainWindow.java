@@ -11,7 +11,9 @@ import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -99,6 +101,26 @@ public class MainWindow extends JFrame {
             editorPanel.getSpriteEditor().refresh();
             editorPanel.setSelection(memoryPanel.getMemoryView().getSelection());
         });
+        memoryPanel.getMemoryView().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                
+                statusBar.showContextInfo("");
+                statusBar.showHint("");
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                
+                if (!memoryPanel.getMemoryView().isEnabled())
+                    return;
+                
+                statusBar.showHint("Hold CTRL or SHIFT to make multiple selection;");
+            }
+            
+        });
         memoryPanel.getMemoryView().addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {}
@@ -110,12 +132,31 @@ public class MainWindow extends JFrame {
                 
                 statusBar.showContextInfo(String.format("Sprite #%d",
                         memoryPanel.getMemoryView().getIndexAt(e.getX(), e.getY())));
-                statusBar.showHint("Hold CTRL or SHIFT to make multiple selection;");
             }
         });
         
         editorPanel.addActionListener(ae -> memoryPanel.getMemoryView().refresh());
         editorPanel.getSpriteEditor().addActionListener(ae -> memoryPanel.getMemoryView().refreshSelection());
+        editorPanel.getSpriteEditor().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                super.mouseExited(e);
+                
+                statusBar.showContextInfo("");
+                statusBar.showHint("");
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                super.mouseEntered(e);
+                
+                if (!editorPanel.getSpriteEditor().isEnabled())
+                    return;
+                
+                statusBar.showHint("CTRL+LCLICK to fill the shape; RCLICK to erase; MWHEEL to change color;");
+            }
+            
+        });
         editorPanel.getSpriteEditor().addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {}
@@ -129,7 +170,6 @@ public class MainWindow extends JFrame {
                 
                 statusBar.showContextInfo(String.format("x: %d y: %d",
                         editor.getSpriteX(e.getX()), editor.getSpriteY(e.getY())));
-                statusBar.showHint("CTRL+LCLICK to fill the shape; RCLICK to erase;");
             }
         });
     }
@@ -614,7 +654,7 @@ public class MainWindow extends JFrame {
         deleteMenuItem = new JMenuItem("Delete");
         deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
         deleteMenuItem.setMnemonic(KeyEvent.VK_D);
-        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.CTRL_DOWN_MASK));
+        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         deleteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().delete();
         });

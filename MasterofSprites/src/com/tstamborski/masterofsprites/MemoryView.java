@@ -3,7 +3,6 @@ package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteData;
-import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.AlphaComposite;
@@ -18,6 +17,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -47,6 +47,9 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<ActionListener> actionListeners;
     private final ArrayList<SelectionListener> selectionListeners;
     
+    private final JPopupMenu popup;
+    private final JMenuItem cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem;
+    
     public MemoryView(int zoom, int columns) {
         this.palette = DefaultPalette.getInstance();
         this.zoom = zoom;
@@ -61,6 +64,41 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
         selectionListeners = new ArrayList<>();
+        
+        popup = new JPopupMenu();
+        cutMenuItem = new JMenuItem("Cut");
+        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
+        cutMenuItem.setMnemonic(KeyEvent.VK_T);
+        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
+        cutMenuItem.addActionListener((ae) -> {
+            cut();
+        });
+        copyMenuItem = new JMenuItem("Copy");
+        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/copy16.png")));
+        copyMenuItem.setMnemonic(KeyEvent.VK_Y);
+        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
+        copyMenuItem.addActionListener((ae) -> {
+            copy();
+        });
+        pasteMenuItem = new JMenuItem("Paste");
+        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
+        pasteMenuItem.setMnemonic(KeyEvent.VK_P);
+        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
+        pasteMenuItem.addActionListener((ae) -> {
+            paste();
+        });
+        deleteMenuItem = new JMenuItem("Delete");
+        deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
+        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
+        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+        deleteMenuItem.addActionListener((ae) -> {
+            delete();
+        });
+        popup.add(cutMenuItem);
+        popup.add(copyMenuItem);
+        popup.add(pasteMenuItem);
+        popup.addSeparator();
+        popup.add(deleteMenuItem);
     }
     
     public void cut() {
@@ -244,10 +282,13 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         Integer new_selection, old_selection;
         
-        if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1)
+        if (project == null)
             return;
-        if (project.getMemoryData() == null)
+        if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1) {
+            if (e.getID() == MouseEvent.MOUSE_PRESSED && e.getButton() == MouseEvent.BUTTON3)
+                popup.show(this, e.getX(), e.getY());
             return;
+        }
         
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
             if (!e.isShiftDown()) { //bez klawisza shift
