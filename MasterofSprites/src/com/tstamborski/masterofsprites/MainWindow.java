@@ -100,6 +100,8 @@ public class MainWindow extends JFrame {
         });
         timer.start();
         
+        getToolkit().getSystemClipboard().addFlavorListener(fe -> 
+                enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection()));
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
             enableClipboardMenuItems(se.getSelection());

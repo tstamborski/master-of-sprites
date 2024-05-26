@@ -99,6 +99,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         popup.add(pasteMenuItem);
         popup.addSeparator();
         popup.add(deleteMenuItem);
+        
+        getToolkit().getSystemClipboard().addFlavorListener(fe -> enablePopupMenuItems());
     }
     
     public void cut() {
