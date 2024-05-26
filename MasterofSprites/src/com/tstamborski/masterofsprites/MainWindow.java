@@ -7,13 +7,13 @@ package com.tstamborski.masterofsprites;
 
 import com.tstamborski.AboutDialog;
 import com.tstamborski.Util;
+import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -27,8 +27,10 @@ import javax.swing.filechooser.*;
  * @author Tobiasz
  */
 public class MainWindow extends JFrame {
+    private static final int HISTORY_SIZE = 10;
 
     private SpriteProject project;
+    private History history;
     private File file;
     
     private final Timer timer;
@@ -52,6 +54,7 @@ public class MainWindow extends JFrame {
     private JMenuItem exitMenuItem;
     private JMenuItem exportPRGMenuItem;
     private JMenu editMenu;
+    private JMenuItem undoMenuItem, redoMenuItem;
     private JMenuItem deleteMenuItem;
     private JMenuItem aboutMenuItem;
     private JMenuItem pasteMenuItem;
@@ -99,7 +102,7 @@ public class MainWindow extends JFrame {
         memoryPanel.getMemoryView().addSelectionListener((se)->editorPanel.setSelection(se.getSelection()));
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.getSpriteEditor().refresh();
-            editorPanel.setSelection(memoryPanel.getMemoryView().getSelection());
+            pushHistory();
         });
         memoryPanel.getMemoryView().addMouseListener(new MouseAdapter() {
             @Override
@@ -136,7 +139,10 @@ public class MainWindow extends JFrame {
         });
         
         editorPanel.addActionListener(ae -> memoryPanel.getMemoryView().refresh());
-        editorPanel.getSpriteEditor().addActionListener(ae -> memoryPanel.getMemoryView().refreshSelection());
+        editorPanel.getSpriteEditor().addActionListener(ae -> {
+            memoryPanel.getMemoryView().refreshSelection();
+            pushHistory();
+        });
         editorPanel.getSpriteEditor().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseExited(MouseEvent e) {
@@ -180,16 +186,19 @@ public class MainWindow extends JFrame {
     }
     
     private void updateTitlebar() {
+        String savedStr = history.isSaved() ? "" : " ~ ";
+        
         if (file != null)
-            setTitle(MasterofSprites.PROGRAM_NAME + " -- " + file.getName());
+            setTitle(MasterofSprites.PROGRAM_NAME + " -- " + file.getName() + savedStr);
         else
-            setTitle(MasterofSprites.PROGRAM_NAME + " -- New File");
+            setTitle(MasterofSprites.PROGRAM_NAME + " -- New File" + savedStr);
     }
     
     public final void newFile() {
         project = SpriteProject.getNewProject(64, false);
-        file = null;
         
+        newHistory();
+        file = null;
         reloadProject();
         updateTitlebar();
     }
@@ -214,6 +223,8 @@ public class MainWindow extends JFrame {
                 return;
             }
             
+            newHistory();
+            setSaved(true);
             file = projectDialog.getSelectedFile();
             reloadProject();
             updateTitlebar();
@@ -251,6 +262,8 @@ public class MainWindow extends JFrame {
             return;
         }
         
+        setSaved(true);
+        
         try {
             oostream.close();
             ostream.close();
@@ -284,6 +297,7 @@ public class MainWindow extends JFrame {
                 return;
             }
             
+            setSaved(true);
             file = myProjectFile;
             updateTitlebar();
             
@@ -313,6 +327,7 @@ public class MainWindow extends JFrame {
                 return;
             }
             
+            newHistory();
             file = null;
             reloadProject();
             updateTitlebar();
@@ -342,6 +357,7 @@ public class MainWindow extends JFrame {
                 return;
             }
             
+            newHistory();
             file = null;
             reloadProject();
             updateTitlebar();
@@ -519,7 +535,7 @@ public class MainWindow extends JFrame {
     
     protected boolean showUnsavedDialog() {
         int answer = JOptionPane.showConfirmDialog(this, 
-                "You have unsaved work!\nDo you want to save before proceeding?", 
+                "Do you want to save before proceeding?", 
                 "Unsaved work!", JOptionPane.YES_NO_CANCEL_OPTION);
         
         switch (answer) {
@@ -537,7 +553,47 @@ public class MainWindow extends JFrame {
     protected void processWindowEvent(WindowEvent e) {
         super.processWindowEvent(e); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    private void enableHistoryMenuItems() {
+        undoMenuItem.setEnabled(history.hasUndo());
+        redoMenuItem.setEnabled(history.hasRedo());
+    }
+    
+    private void setSaved(boolean b) {
+        history.setSaved(b);
+        updateTitlebar();
+    }
 
+    private void newHistory() {
+        history = new History(project, HISTORY_SIZE);
+        enableHistoryMenuItems();
+        updateTitlebar();
+    }
+    
+    private void pushHistory() {
+        history.push(project);
+        enableHistoryMenuItems();
+        updateTitlebar();
+    }
+    
+    public void undo() {
+        history.undo(project);
+        editorPanel.reload();
+        memoryPanel.getMemoryView().reload();
+        
+        enableHistoryMenuItems();
+        updateTitlebar();
+    }
+    
+    public void redo() {
+        history.redo(project);
+        editorPanel.reload();
+        memoryPanel.getMemoryView().reload();
+        
+        enableHistoryMenuItems();
+        updateTitlebar();
+    }
+    
     private void createMenu() {
         newMenuItem = new JMenuItem("New");
         newMenuItem.setMnemonic(KeyEvent.VK_N);
@@ -630,6 +686,21 @@ public class MainWindow extends JFrame {
         fileMenu.addSeparator();
         fileMenu.add(exitMenuItem);
 
+        undoMenuItem = new JMenuItem("Undo");
+        undoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/undo16.png")));
+        undoMenuItem.setMnemonic(KeyEvent.VK_U);
+        undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
+        undoMenuItem.addActionListener((ae) -> {
+            undo();
+        });
+        redoMenuItem = new JMenuItem("Redo");
+        redoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/redo16.png")));
+        redoMenuItem.setMnemonic(KeyEvent.VK_R);
+        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
+        redoMenuItem.addActionListener((ae) -> {
+            redo();
+        });
+        
         cutMenuItem = new JMenuItem("Cut");
         cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
         cutMenuItem.setMnemonic(KeyEvent.VK_T);
@@ -661,6 +732,9 @@ public class MainWindow extends JFrame {
 
         editMenu = new JMenu("Edit");
         editMenu.setMnemonic(KeyEvent.VK_E);
+        editMenu.add(undoMenuItem);
+        editMenu.add(redoMenuItem);
+        editMenu.addSeparator();
         editMenu.add(cutMenuItem);
         editMenu.add(copyMenuItem);
         editMenu.add(pasteMenuItem);

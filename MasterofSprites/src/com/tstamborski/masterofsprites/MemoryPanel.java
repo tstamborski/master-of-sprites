@@ -38,7 +38,7 @@ public class MemoryPanel extends JPanel {
         quantitySpinner = new JSpinner(new SpinnerNumberModel(0,
                 0, MemoryData.MAX_SIZE, 1));
         gridCheckBox = new JCheckBox("Grid: ");
-        gridCheckBox.setDisplayedMnemonicIndex(0);
+        gridCheckBox.setMnemonic('G');
         gridCheckBox.setHorizontalTextPosition(JCheckBox.LEFT);
         quantityLabel = new JLabel("Quantity: ");
         quantityLabel.setLabelFor(quantitySpinner);

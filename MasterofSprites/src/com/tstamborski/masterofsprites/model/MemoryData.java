@@ -74,6 +74,12 @@ public class MemoryData extends ArrayList<SpriteData> implements Serializable {
         return md;
     }
     
+    public MemoryData deepCopy() {
+        MemoryData tmp = new MemoryData();
+        forEach(sd -> tmp.add(sd.deepCopy()));
+        return tmp;
+    }
+    
     public void toOutputStream(OutputStream ostream, int offset) throws IOException {
         get(0).toOutputStream(ostream, offset);
         for (int i = 1; i < size(); i++)

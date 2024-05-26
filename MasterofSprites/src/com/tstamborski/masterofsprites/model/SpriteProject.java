@@ -97,6 +97,10 @@ public class SpriteProject implements Serializable {
         this.bgColor = bgColor;
     }
 
+    public void setMemoryData(MemoryData data) {
+        this.memoryData = data;
+    }
+    
     public MemoryData getMemoryData() {
         return memoryData;
     }

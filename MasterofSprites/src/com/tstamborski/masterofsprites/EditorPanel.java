@@ -430,11 +430,17 @@ public class EditorPanel extends JPanel {
         }
     }
     
+    public void reload() {
+        setSprite(selectionIndex);
+    }
+    
     private void setSprite(int index) {
         if (project != null) {
             SpriteData sd = project.getMemoryData().get(selection.get(index));
             editor.setSpriteData(sd);
-            setSpriteC64Color(sd.getSpriteC64Color());
+            sprColorLabel.setC64Color(sd.getSpriteC64Color());
+            if (sprColorButton.isSelected())
+                colorPicker.setCurrentC64Color(sd.getSpriteC64Color());
             
             if (!sd.isMulticolor()) {
                 multi0ColorButton.setEnabled(false);

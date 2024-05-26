@@ -165,6 +165,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         }
         
         setPreferredSize();
+        fireSelectionEvent();
+        fireActionEvent();
         repaint();
     }
     
@@ -175,6 +177,14 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         }
         
         fireActionEvent();
+        repaint();
+    }
+    
+    public void reload() {
+        sprites.clear();
+        for (int i = 0; i < project.getMemoryData().size(); i++) {
+            sprites.add(new SpriteImage(project.getMemoryData().get(i), palette));
+        }
         repaint();
     }
     
@@ -282,7 +292,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         Integer new_selection, old_selection;
         
-        if (project == null)
+        if (project == null || project.getMemoryData() == null)
             return;
         if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1) {
             if (e.getID() == MouseEvent.MOUSE_PRESSED && e.getButton() == MouseEvent.BUTTON3)
@@ -335,9 +345,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
                 setPreferredSize(new Dimension(columns*24*zoom, (project.getMemoryData().size()/columns+1)*21*zoom));
             else
                 setPreferredSize(new Dimension(project.getMemoryData().size()*24*zoom, 21*zoom));
-        
-        fireSelectionEvent();
-        fireActionEvent();
     }
     
     private void createSelectionImage() {
