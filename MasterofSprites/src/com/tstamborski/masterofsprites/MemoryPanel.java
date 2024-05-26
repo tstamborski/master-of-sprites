@@ -74,11 +74,13 @@ public class MemoryPanel extends JPanel {
     public void reload() {
         memoryView.reload();
         quantitySpinner.setValue(memoryView.getProject().getMemoryData().size());
+        innerPanel.revalidate();
     }
     
     public void setProject(SpriteProject project) {
         memoryView.setProject(project);
         quantitySpinner.setValue(project.getMemoryData().size());
+        innerPanel.revalidate();
     }
     
     public MemoryView getMemoryView() {

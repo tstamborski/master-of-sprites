@@ -107,7 +107,7 @@ public class MainWindow extends JFrame {
             enableClipboardMenuItems(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
-            editorPanel.getSpriteEditor().refresh();
+            editorPanel.reload();
             pushHistory();
         });
         memoryPanel.getMemoryView().addMouseListener(new MouseAdapter() {
@@ -144,7 +144,13 @@ public class MainWindow extends JFrame {
             }
         });
         
-        editorPanel.addActionListener(ae -> memoryPanel.getMemoryView().refresh());
+        editorPanel.addActionListener(ae -> {
+            memoryPanel.getMemoryView().refresh();
+            setSaved(false);
+        });
+        editorPanel.addPreviewListener(pe -> {
+            setSaved(false);
+        });
         editorPanel.getSpriteEditor().addActionListener(ae -> {
             memoryPanel.getMemoryView().refreshSelection();
             pushHistory();

@@ -15,7 +15,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -256,9 +255,9 @@ public class EditorPanel extends JPanel {
         this.project = proj;
         
         if (proj != null) {
-            setMulti0C64Color(proj.getMulti0Color());
-            setMulti1C64Color(proj.getMulti1Color());
-            setBgC64Color(proj.getBgColor());
+            setMulti0C64Color(proj.getMulti0Color(), false);
+            setMulti1C64Color(proj.getMulti1Color(), false);
+            setBgC64Color(proj.getBgColor(), false);
         }
         
         setSelection(null);
@@ -335,11 +334,11 @@ public class EditorPanel extends JPanel {
         if (sprColorButton.isSelected())
             setSpriteC64Color(color);
         else if (multi0ColorButton.isSelected())
-            setMulti0C64Color(color);
+            setMulti0C64Color(color, true);
         else if (multi1ColorButton.isSelected())
-            setMulti1C64Color(color);
+            setMulti1C64Color(color, true);
         else
-            setBgC64Color(color);
+            setBgC64Color(color, true);
     }
     
     private void setSpriteC64Color(C64Color color) {
@@ -349,34 +348,37 @@ public class EditorPanel extends JPanel {
             colorPicker.setCurrentC64Color(color);
     }
     
-    private void setMulti0C64Color(C64Color color) {
+    private void setMulti0C64Color(C64Color color, boolean action) {
         project.setMulti0Color(color);
         editor.setMulti0C64Color(color);
         multi0ColorLabel.setC64Color(color);
         if (multi0ColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
         
-        fireActionEvent();
+        if (action)
+            fireActionEvent();
     }
     
-    private void setMulti1C64Color(C64Color color) {
+    private void setMulti1C64Color(C64Color color, boolean action) {
         project.setMulti1Color(color);
         editor.setMulti1C64Color(color);
         multi1ColorLabel.setC64Color(color);
         if (multi1ColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
         
-        fireActionEvent();
+        if (action)
+            fireActionEvent();
     }
     
-    private void setBgC64Color(C64Color color) {
+    private void setBgC64Color(C64Color color, boolean action) {
         project.setBgColor(color);
         editor.setBgC64Color(color);
         bgColorLabel.setC64Color(color);
         if (bgColorButton.isSelected())
             colorPicker.setCurrentC64Color(color);
         
-        fireActionEvent();
+        if (action)
+            fireActionEvent();
     }
     
     public final void setSelection(ArrayList<Integer> sel) {
