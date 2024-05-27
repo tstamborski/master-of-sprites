@@ -48,7 +48,10 @@ public class History {
             index--;
         }
         
-        list[++index] = project.getMemoryData().deepCopy();
+        index++;
+        list[index] = project.getMemoryData().deepCopy();
+        saved[index] = false;
+        
         for (int i = index + 1; i < list.length; i++) {
             list[i] = null;
             saved[i] = false;

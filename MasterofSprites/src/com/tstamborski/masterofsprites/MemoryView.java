@@ -30,9 +30,6 @@ import javax.swing.*;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class MemoryView extends JComponent implements ClipboardOwner {
-    private final Color SELECT_COLOR = Color.WHITE;
-    private final Color GRID_COLOR = Color.GREEN;
-    
     private int zoom;
     private int columns;
     private boolean grid;
@@ -41,7 +38,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private SpriteProject project;
     private final ArrayList<SpriteImage> sprites;
     
-    private BufferedImage selection_img, grid_img, background_img;
+    private AbstractUtilImage selection_img, grid_img, background_img;
     private final ArrayList<Integer> selection;
     
     private final ArrayList<ActionListener> actionListeners;
@@ -58,8 +55,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         selection = new ArrayList<>();
         sprites = new ArrayList<>();
-        createSelectionImage();
-        createGridImage();
+        //createSelectionImage();
+        //createGridImage();
         
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
@@ -214,7 +211,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         selection.clear();
         enablePopupMenuItems();
-        createBackgroundImage();
+        createUtilImages();
         setPreferredSize();
         repaint();
     }
@@ -262,9 +259,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     
     public void setZoom(int z) {
         zoom = z;
-        createSelectionImage();
-        createGridImage();
-        createBackgroundImage();
+        createUtilImages();
         setPreferredSize();
         repaint();
     }
@@ -278,7 +273,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D)g;
         
-        if (project.getMemoryData() == null || palette == null)
+        if (project == null)
             return;
         
         for (int i = 0; i < sprites.size(); i++) {
@@ -359,35 +354,39 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     private void createSelectionImage() {
-        Graphics2D g2d;
+        Color c;
+        C64Color bg = project.getBgColor();
         
-        selection_img = new BufferedImage(24*zoom, 21*zoom, BufferedImage.TYPE_INT_ARGB);
+        if (bg == C64Color.White || bg == C64Color.Yellow || bg == C64Color.LightGreen)
+            c = Color.BLACK;
+        else
+            c = Color.WHITE;
         
-        g2d = selection_img.createGraphics();
-        g2d.setColor(new Color(SELECT_COLOR.getRed(),SELECT_COLOR.getGreen(),SELECT_COLOR.getBlue(),0x30));
-        g2d.fillRect(0, 0, 24*zoom, 21*zoom);
-        g2d.setColor(SELECT_COLOR);
-        g2d.drawRect(0, 0, 24*zoom-1, 21*zoom-1);
+        selection_img = new SelectionImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, c);
     }
     
     private void createGridImage() {
-        Graphics2D g2d;
+        Color c;
+        C64Color bg = project.getBgColor();
         
-        grid_img = new BufferedImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
+        if (bg == C64Color.Blue || bg == C64Color.LightBlue)
+            c = Color.RED;
+        else
+            c = Color.BLUE;
         
-        g2d = grid_img.createGraphics();
-        g2d.setColor(new Color(0x00,0x00,0x00,0x00));
-        g2d.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
-        g2d.setColor(GRID_COLOR);
-        g2d.drawRect(0, 0, SpriteImage.WIDTH*zoom-1, SpriteImage.HEIGHT*zoom-1);
+        grid_img = new GridImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, c);
     }
     
     private void createBackgroundImage() {
-        background_img = new BufferedImage(SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = background_img.createGraphics();
-        
-        g.setColor(palette.getColor(project.getBgColor()));
-        g.fillRect(0, 0, SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom);
+        background_img = new BackgroundImage(
+                SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, palette.getColor(project.getBgColor())
+        );
+    }
+    
+    private void createUtilImages() {
+        createBackgroundImage();
+        createGridImage();
+        createSelectionImage();
     }
     
     public int getIndexAt(int x, int y) {
@@ -423,7 +422,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
 
     public void refresh() {
-        createBackgroundImage();
+        createUtilImages();
         sprites.forEach((si)->{
             si.setMulti0Color(project.getMulti0Color());
             si.setMulti1Color(project.getMulti1Color());
@@ -448,5 +447,71 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    }
+}
+
+abstract class AbstractUtilImage extends BufferedImage {
+    private final Color primaryColor;
+    
+    public AbstractUtilImage(int width, int height, Color color) {
+        super(width, height, BufferedImage.TYPE_INT_ARGB);
+        
+        primaryColor = color;
+        redraw();
+    }
+    
+    public Color getPrimaryColor() {
+        return primaryColor;
+    }
+    
+    protected abstract void redraw();
+}
+
+class SelectionImage extends AbstractUtilImage {
+    public SelectionImage(int w, int h, Color c) {
+        super(w, h, c);
+    }
+    
+    @Override
+    protected void redraw() {
+        Graphics2D g2d;
+        
+        g2d = createGraphics();
+        g2d.setColor(new Color(
+                getPrimaryColor().getRed(),getPrimaryColor().getGreen(),getPrimaryColor().getBlue(),0x30
+        ));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.setColor(getPrimaryColor());
+        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+    }
+}
+
+class GridImage extends AbstractUtilImage {
+    public GridImage(int width, int height, Color color) {
+        super(width, height, color);
+    }
+    
+    @Override
+    protected void redraw() {
+        Graphics2D g2d;
+        
+        g2d = createGraphics();
+        g2d.setColor(getPrimaryColor());
+        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
+    }
+}
+
+class BackgroundImage extends AbstractUtilImage {
+    public BackgroundImage(int width, int height, Color color) {
+        super(width, height, color);
+    }
+    
+    @Override
+    protected void redraw() {
+        Graphics2D g2d;
+        
+        g2d = createGraphics();
+        g2d.setColor(getPrimaryColor());
+        g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 }

@@ -389,7 +389,6 @@ public class EditorPanel extends JPanel {
             
             editor.setEnabled(false);
             prevButton.setEnabled(false);
-            spriteChooserLabel.setEnabled(false);
             nextButton.setEnabled(false);
             
             slideUpButton.setEnabled(false);
@@ -412,7 +411,6 @@ public class EditorPanel extends JPanel {
             overlayCheckBox.setEnabled(false);
         } else {
             editor.setEnabled(true);
-            spriteChooserLabel.setEnabled(true);
             sprColorLabel.setEnabled(true);
             sprColorButton.setEnabled(true);
             
