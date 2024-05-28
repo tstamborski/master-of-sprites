@@ -17,7 +17,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -44,12 +43,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<ActionListener> actionListeners;
     private final ArrayList<SelectionListener> selectionListeners;
     
-    private JPopupMenu popup;
-    private JMenuItem cutMenuItem;
-    private JMenuItem copyMenuItem;
-    private JMenuItem pasteMenuItem;
-    private JMenuItem deleteMenuItem;
-    private JMenuItem orPasteMenuItem, andPasteMenuItem, xorPasteMenuItem;
+    private ClipboardPopupMenu popup;
     
     public MemoryView(int zoom, int columns) {
         this.palette = DefaultPalette.getInstance();
@@ -68,7 +62,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
 
         createPopupMenu();
         
-        getToolkit().getSystemClipboard().addFlavorListener(fe -> enablePopupMenuItems());
+        getToolkit().getSystemClipboard().addFlavorListener(fe -> popup.enable(selection));
     }
     
     public void cut() {
@@ -207,7 +201,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         });
         
         selection.clear();
-        enablePopupMenuItems();
+        popup.enable(selection);
         createUtilImages();
         setPreferredSize();
         repaint();
@@ -274,10 +268,12 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             return;
         
         for (int i = 0; i < sprites.size(); i++) {
-            g2d.drawImage(background_img, (i%columns)*24*zoom, (i/columns)*21*zoom, this);
+            g2d.drawImage(background_img, 
+                    (i%columns)*SpriteImage.WIDTH*zoom, (i/columns)*SpriteImage.HEIGHT*zoom, 
+                    this);
             g2d.drawImage(sprites.get(i).getImage(), 
-                    (i%columns)*24*zoom, (i/columns)*21*zoom, 
-                    24*zoom, 21*zoom, this);
+                    (i%columns)*SpriteImage.WIDTH*zoom, (i/columns)*SpriteImage.HEIGHT*zoom, 
+                    SpriteImage.WIDTH*zoom*zoom, SpriteImage.HEIGHT*zoom, this);
         }
         
         if (grid)
@@ -351,63 +347,31 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     private void createPopupMenu() {
-        popup = new JPopupMenu();
+        popup = new ClipboardPopupMenu();
         
-        cutMenuItem = new JMenuItem("Cut");
-        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
-        cutMenuItem.setMnemonic(KeyEvent.VK_T);
-        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
-        cutMenuItem.addActionListener((ae) -> {
+        popup.cutMenuItem.addActionListener((ae) -> {
             cut();
         });
-        copyMenuItem = new JMenuItem("Copy");
-        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/copy16.png")));
-        copyMenuItem.setMnemonic(KeyEvent.VK_Y);
-        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
-        copyMenuItem.addActionListener((ae) -> {
+        popup.copyMenuItem.addActionListener((ae) -> {
             copy();
         });
-        pasteMenuItem = new JMenuItem("Paste");
-        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
-        pasteMenuItem.setMnemonic(KeyEvent.VK_P);
-        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
-        pasteMenuItem.addActionListener((ae) -> {
+        popup.pasteMenuItem.addActionListener((ae) -> {
             paste();
         });
         
-        orPasteMenuItem = new JMenuItem("OR Paste");
-        orPasteMenuItem.setMnemonic(KeyEvent.VK_O);
-        orPasteMenuItem.addActionListener((ae) -> {
+        popup.orPasteMenuItem.addActionListener((ae) -> {
             specialPaste((a,b) -> (byte)(a | b));
         });
-        andPasteMenuItem = new JMenuItem("AND Paste");
-        andPasteMenuItem.setMnemonic(KeyEvent.VK_A);
-        andPasteMenuItem.addActionListener((ae) -> {
+        popup.andPasteMenuItem.addActionListener((ae) -> {
             specialPaste((a,b) -> (byte)(a & b));
         });
-        xorPasteMenuItem = new JMenuItem("XOR Paste");
-        xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
-        xorPasteMenuItem.addActionListener((ae) -> {
+        popup.xorPasteMenuItem.addActionListener((ae) -> {
             specialPaste((a,b) -> (byte)(a ^ b));
         });
         
-        deleteMenuItem = new JMenuItem("Delete");
-        deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
-        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
-        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        deleteMenuItem.addActionListener((ae) -> {
+        popup.deleteMenuItem.addActionListener((ae) -> {
             delete();
         });
-        
-        popup.add(cutMenuItem);
-        popup.add(copyMenuItem);
-        popup.add(pasteMenuItem);
-        popup.addSeparator();
-        popup.add(orPasteMenuItem);
-        popup.add(andPasteMenuItem);
-        popup.add(xorPasteMenuItem);
-        popup.addSeparator();
-        popup.add(deleteMenuItem);
     }
     
     private void createSelectionImage() {
@@ -458,7 +422,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private void fireSelectionEvent() {
         SelectionEvent event = new SelectionEvent(this, getSelection());
         selectionListeners.forEach((sl)->sl.selectionPerformed(event));
-        enablePopupMenuItems();
+        popup.enable(selection);
     }
     
     public void addActionListener(ActionListener al) {
@@ -491,21 +455,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     public void refreshSelection() {
         selection.forEach(i->sprites.get(i).redraw());
         repaint();
-    }
-    
-    private void enablePopupMenuItems() {
-        deleteMenuItem.setEnabled(!selection.isEmpty());
-        cutMenuItem.setEnabled(!selection.isEmpty());
-        copyMenuItem.setEnabled(!selection.isEmpty());
-        
-        pasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        orPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        andPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        xorPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
     }
     
     @Override

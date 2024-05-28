@@ -11,14 +11,12 @@ import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -40,33 +38,13 @@ public class MainWindow extends JFrame {
     private final MemoryPanel memoryPanel;
     private final EditorPanel editorPanel;
     private final StatusBar statusBar;
-    private JMenuBar menu;
+    private MainMenu menu;
 
     private AboutDialog aboutDialog;
     private ExportPRGDialog addressDialog;
 
     private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog;
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter;
-    
-    private JMenuItem newMenuItem;
-    private JMenuItem openMenuItem, saveMenuItem, saveAsMenuItem;
-    private JMenuItem exportBitmapMenuItem;
-    private JMenu fileMenu;
-    private JMenuItem exitMenuItem;
-    private JMenuItem exportPRGMenuItem;
-    private JMenu editMenu;
-    private JMenuItem undoMenuItem, redoMenuItem;
-    private JMenuItem deleteMenuItem;
-    private JMenuItem aboutMenuItem;
-    private JMenuItem pasteMenuItem;
-    private JMenuItem orPasteMenuItem, andPasteMenuItem, xorPasteMenuItem;
-    private JMenuItem importPRGMenuItem;
-    private JMenuItem cutMenuItem;
-    private JMenu exportMenu;
-    private JMenuItem exportRawMenuItem;
-    private JMenu helpMenu;
-    private JMenuItem importRawMenuItem;
-    private JMenuItem copyMenuItem;
 
     public MainWindow() {
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
@@ -81,8 +59,7 @@ public class MainWindow extends JFrame {
         statusBar = new StatusBar();
         
         createMenu();
-
-        setJMenuBar(menu);
+        //setJMenuBar(menu);
         add(centralPane, BorderLayout.CENTER);
         add(editorPanel, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
@@ -102,10 +79,10 @@ public class MainWindow extends JFrame {
         timer.start();
         
         getToolkit().getSystemClipboard().addFlavorListener(fe -> 
-                enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection()));
+                menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection()));
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
-            enableClipboardMenuItems(se.getSelection());
+            menu.editMenu.enableClipboardMenuItems(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.reload();
@@ -196,7 +173,7 @@ public class MainWindow extends JFrame {
     private void reloadProject() {
         memoryPanel.setProject(project);
         editorPanel.setProject(project);
-        enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
+        menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
     }
     
     private void updateTitlebar() {
@@ -568,26 +545,6 @@ public class MainWindow extends JFrame {
         super.processWindowEvent(e); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private void enableClipboardMenuItems(ArrayList<Integer> selection) {
-        deleteMenuItem.setEnabled(!selection.isEmpty());
-        cutMenuItem.setEnabled(!selection.isEmpty());
-        copyMenuItem.setEnabled(!selection.isEmpty());
-        
-        pasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        orPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        andPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-        xorPasteMenuItem.setEnabled(!selection.isEmpty() && 
-                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
-    }
-    
-    private void enableHistoryMenuItems() {
-        undoMenuItem.setEnabled(history.hasUndo());
-        redoMenuItem.setEnabled(history.hasRedo());
-    }
-    
     private void setSaved(boolean b) {
         history.setSaved(b);
         updateTitlebar();
@@ -595,13 +552,13 @@ public class MainWindow extends JFrame {
 
     private void newHistory() {
         history = new History(project, HISTORY_SIZE);
-        enableHistoryMenuItems();
+        menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
     }
     
     private void pushHistory() {
         history.push(project);
-        enableHistoryMenuItems();
+        menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
     }
     
@@ -610,7 +567,7 @@ public class MainWindow extends JFrame {
         editorPanel.reload();
         memoryPanel.reload();
         
-        enableHistoryMenuItems();
+        menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
     }
     
@@ -619,190 +576,79 @@ public class MainWindow extends JFrame {
         editorPanel.reload();
         memoryPanel.reload();
         
-        enableHistoryMenuItems();
+        menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
     }
     
     private void createMenu() {
-        newMenuItem = new JMenuItem("New");
-        newMenuItem.setMnemonic(KeyEvent.VK_N);
-        newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK));
-        newMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/newfile16.png")));
-        newMenuItem.addActionListener((ae) -> {
+        menu = new MainMenu();
+        
+        menu.fileMenu.newMenuItem.addActionListener((ae) -> {
             newFile();
         });
-
-        openMenuItem = new JMenuItem("Open...");
-        openMenuItem.setMnemonic(KeyEvent.VK_O);
-        openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
-        openMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/openfile16.png")));
-        openMenuItem.addActionListener((ae) -> {
+        menu.fileMenu.openMenuItem.addActionListener((ae) -> {
             openFile();
         });
-        
-        saveMenuItem = new JMenuItem("Save");
-        saveMenuItem.setMnemonic(KeyEvent.VK_S);
-        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-        saveMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/savefile16.png")));
-        saveMenuItem.addActionListener((ae) -> {
+        menu.fileMenu.saveMenuItem.addActionListener((ae) -> {
             saveFile();
         });
-        
-        saveAsMenuItem = new JMenuItem("Save As...");
-        saveAsMenuItem.setMnemonic(KeyEvent.VK_A);
-        saveAsMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/savefile16.png")));
-        saveAsMenuItem.addActionListener((ae) -> {
+        menu.fileMenu.saveAsMenuItem.addActionListener((ae) -> {
             saveAsFile();
         });
-        
-        importPRGMenuItem = new JMenuItem("Import PRG file...");
-        importPRGMenuItem.setMnemonic(KeyEvent.VK_I);
-        importPRGMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK));
-        importPRGMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/commodore16.png")));
-        importPRGMenuItem.addActionListener((ae) -> {
+        menu.fileMenu.importPRGMenuItem.addActionListener((ae) -> {
             importPRGFile();
         });
-
-        importRawMenuItem = new JMenuItem("Import raw data...");
-        importRawMenuItem.setMnemonic(KeyEvent.VK_R);
-        importRawMenuItem.addActionListener((ae) -> {
+        menu.fileMenu.importRawMenuItem.addActionListener((ae) -> {
             importRawData();
         });
-
-        exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.setMnemonic(KeyEvent.VK_X);
-        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, KeyEvent.ALT_DOWN_MASK));
-        exitMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/exit16.png")));
-        exitMenuItem.addActionListener(
+        menu.fileMenu.exitMenuItem.addActionListener(
                 (ae) -> {
                     dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
                 }
         );
-
-        exportPRGMenuItem = new JMenuItem("As PRG file...");
-        exportPRGMenuItem.setMnemonic(KeyEvent.VK_P);
-        exportPRGMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
-        exportPRGMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/commodore16.png")));
-        exportPRGMenuItem.addActionListener((ae)->{exportPRGFile();});
-
-        exportRawMenuItem = new JMenuItem("As raw data...");
-        exportRawMenuItem.setMnemonic(KeyEvent.VK_R);
-        exportRawMenuItem.addActionListener((ae)->{exportRawData();});
-
-        exportBitmapMenuItem = new JMenuItem("As bitmap...");
-        exportBitmapMenuItem.setMnemonic(KeyEvent.VK_B);
-        exportBitmapMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/picture16.png")));
-        exportBitmapMenuItem.addActionListener((ae) -> {
+         
+        menu.fileMenu.exportPRGMenuItem.addActionListener((ae)->{exportPRGFile();});
+        menu.fileMenu.exportRawMenuItem.addActionListener((ae)->{exportRawData();});
+        menu.fileMenu.exportBitmapMenuItem.addActionListener((ae) -> {
             exportBitmap();
         });
 
-        exportMenu = new JMenu("Export");
-        exportMenu.setMnemonic(KeyEvent.VK_E);
-        exportMenu.add(exportPRGMenuItem);
-        exportMenu.add(exportBitmapMenuItem);
-        exportMenu.add(exportRawMenuItem);
-
-        fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-        fileMenu.add(newMenuItem);
-        fileMenu.add(openMenuItem);
-        fileMenu.add(saveMenuItem);
-        fileMenu.add(saveAsMenuItem);
-        fileMenu.addSeparator();
-        fileMenu.add(importPRGMenuItem);
-        fileMenu.add(importRawMenuItem);
-        fileMenu.add(exportMenu);
-        fileMenu.addSeparator();
-        fileMenu.add(exitMenuItem);
-
-        undoMenuItem = new JMenuItem("Undo");
-        undoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/undo16.png")));
-        undoMenuItem.setMnemonic(KeyEvent.VK_U);
-        undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK));
-        undoMenuItem.addActionListener((ae) -> {
+        menu.editMenu.undoMenuItem.addActionListener((ae) -> {
             undo();
         });
-        redoMenuItem = new JMenuItem("Redo");
-        redoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/redo16.png")));
-        redoMenuItem.setMnemonic(KeyEvent.VK_R);
-        redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
-        redoMenuItem.addActionListener((ae) -> {
+        menu.editMenu.redoMenuItem.addActionListener((ae) -> {
             redo();
         });
         
-        cutMenuItem = new JMenuItem("Cut");
-        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
-        cutMenuItem.setMnemonic(KeyEvent.VK_T);
-        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
-        cutMenuItem.addActionListener((ae) -> {
+        
+        menu.editMenu.cutMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().cut();
         });
-        copyMenuItem = new JMenuItem("Copy");
-        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/copy16.png")));
-        copyMenuItem.setMnemonic(KeyEvent.VK_Y);
-        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
-        copyMenuItem.addActionListener((ae) -> {
+        menu.editMenu.copyMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().copy();
         });
-        pasteMenuItem = new JMenuItem("Paste");
-        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
-        pasteMenuItem.setMnemonic(KeyEvent.VK_P);
-        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
-        pasteMenuItem.addActionListener((ae) -> {
+        menu.editMenu.pasteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().paste();
         });
-        orPasteMenuItem = new JMenuItem("OR Paste");
-        orPasteMenuItem.setMnemonic(KeyEvent.VK_O);
-        orPasteMenuItem.addActionListener((ae) -> {
+        
+        menu.editMenu.orPasteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a | b));
         });
-        andPasteMenuItem = new JMenuItem("AND Paste");
-        andPasteMenuItem.setMnemonic(KeyEvent.VK_A);
-        andPasteMenuItem.addActionListener((ae) -> {
+        menu.editMenu.andPasteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a & b));
         });
-        xorPasteMenuItem = new JMenuItem("XOR Paste");
-        xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
-        xorPasteMenuItem.addActionListener((ae) -> {
+        menu.editMenu.xorPasteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a ^ b));
         });
-        deleteMenuItem = new JMenuItem("Delete");
-        deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
-        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
-        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        deleteMenuItem.addActionListener((ae) -> {
+        
+        menu.editMenu.deleteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().delete();
         });
 
-        editMenu = new JMenu("Edit");
-        editMenu.setMnemonic(KeyEvent.VK_E);
-        editMenu.add(undoMenuItem);
-        editMenu.add(redoMenuItem);
-        editMenu.addSeparator();
-        editMenu.add(cutMenuItem);
-        editMenu.add(copyMenuItem);
-        editMenu.add(pasteMenuItem);
-        editMenu.addSeparator();
-        editMenu.add(orPasteMenuItem);
-        editMenu.add(andPasteMenuItem);
-        editMenu.add(xorPasteMenuItem);
-        editMenu.addSeparator();
-        editMenu.add(deleteMenuItem);
-
-        aboutMenuItem = new JMenuItem("About... ");
-        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
-        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
-        aboutMenuItem.addActionListener((ae) -> {
+        menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {
             aboutDialog.setVisible(true);
         });
-
-        helpMenu = new JMenu("Help");
-        helpMenu.setMnemonic(KeyEvent.VK_H);
-        helpMenu.add(this.aboutMenuItem);
-
-        menu = new JMenuBar();
-        menu.add(fileMenu);
-        menu.add(editMenu);
-        menu.add(helpMenu);
+        
+        setJMenuBar(menu);
     }
 }
