@@ -44,8 +44,12 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<ActionListener> actionListeners;
     private final ArrayList<SelectionListener> selectionListeners;
     
-    private final JPopupMenu popup;
-    private final JMenuItem cutMenuItem, copyMenuItem, pasteMenuItem, deleteMenuItem;
+    private JPopupMenu popup;
+    private JMenuItem cutMenuItem;
+    private JMenuItem copyMenuItem;
+    private JMenuItem pasteMenuItem;
+    private JMenuItem deleteMenuItem;
+    private JMenuItem orPasteMenuItem, andPasteMenuItem, xorPasteMenuItem;
     
     public MemoryView(int zoom, int columns) {
         this.palette = DefaultPalette.getInstance();
@@ -61,41 +65,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
         selectionListeners = new ArrayList<>();
-        
-        popup = new JPopupMenu();
-        cutMenuItem = new JMenuItem("Cut");
-        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
-        cutMenuItem.setMnemonic(KeyEvent.VK_T);
-        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
-        cutMenuItem.addActionListener((ae) -> {
-            cut();
-        });
-        copyMenuItem = new JMenuItem("Copy");
-        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/copy16.png")));
-        copyMenuItem.setMnemonic(KeyEvent.VK_Y);
-        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
-        copyMenuItem.addActionListener((ae) -> {
-            copy();
-        });
-        pasteMenuItem = new JMenuItem("Paste");
-        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
-        pasteMenuItem.setMnemonic(KeyEvent.VK_P);
-        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
-        pasteMenuItem.addActionListener((ae) -> {
-            paste();
-        });
-        deleteMenuItem = new JMenuItem("Delete");
-        deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
-        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
-        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
-        deleteMenuItem.addActionListener((ae) -> {
-            delete();
-        });
-        popup.add(cutMenuItem);
-        popup.add(copyMenuItem);
-        popup.add(pasteMenuItem);
-        popup.addSeparator();
-        popup.add(deleteMenuItem);
+
+        createPopupMenu();
         
         getToolkit().getSystemClipboard().addFlavorListener(fe -> enablePopupMenuItems());
     }
@@ -116,7 +87,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         clip.setContents(transfer, this);
     }
     
-    public void paste() { //TODO
+    public void paste() {
         Clipboard clip = getToolkit().getSystemClipboard();
         Transferable transfer = clip.getContents(this);
         SpriteDataTransferable transferData;
@@ -124,7 +95,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         try {
             transferData = (SpriteDataTransferable)transfer.getTransferData(
                     SpriteDataTransferable.C64_SPRITEDATA_FLAVOR);
-            //TODO
         } catch (UnsupportedFlavorException | IOException ex) {
             return;
         }
@@ -135,6 +105,33 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             System.arraycopy(element.toByteArray(), 0, 
                     project.getMemoryData().get(selection.get(i)).toByteArray(), 0,
                     SpriteData.SIZE);
+            
+            sprites.get(selection.get(i)).redraw();
+        }
+        
+        fireActionEvent();
+        repaint();
+    }
+    
+    public void specialPaste(ByteOperation op) {
+        Clipboard clip = getToolkit().getSystemClipboard();
+        Transferable transfer = clip.getContents(this);
+        SpriteDataTransferable transferData;
+        
+        try {
+            transferData = (SpriteDataTransferable)transfer.getTransferData(
+                    SpriteDataTransferable.C64_SPRITEDATA_FLAVOR);
+        } catch (UnsupportedFlavorException | IOException ex) {
+            return;
+        }
+        
+        getSelection();
+        for (int i = 0; i < selection.size(); i++) {
+            byte[] src = transferData.get(i % transferData.size()).toByteArray();
+            byte[] dst = project.getMemoryData().get(selection.get(i)).toByteArray();
+            
+            for (int j = 0; j < src.length - 1; j++) //pomijamy bajt atrybutow
+                dst[j] = op.performOperation(dst[j], src[j]);
             
             sprites.get(selection.get(i)).redraw();
         }
@@ -353,6 +350,66 @@ public class MemoryView extends JComponent implements ClipboardOwner {
                 setPreferredSize(new Dimension(project.getMemoryData().size()*24*zoom, 21*zoom));
     }
     
+    private void createPopupMenu() {
+        popup = new JPopupMenu();
+        
+        cutMenuItem = new JMenuItem("Cut");
+        cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
+        cutMenuItem.setMnemonic(KeyEvent.VK_T);
+        cutMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_DOWN_MASK));
+        cutMenuItem.addActionListener((ae) -> {
+            cut();
+        });
+        copyMenuItem = new JMenuItem("Copy");
+        copyMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/copy16.png")));
+        copyMenuItem.setMnemonic(KeyEvent.VK_Y);
+        copyMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
+        copyMenuItem.addActionListener((ae) -> {
+            copy();
+        });
+        pasteMenuItem = new JMenuItem("Paste");
+        pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
+        pasteMenuItem.setMnemonic(KeyEvent.VK_P);
+        pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
+        pasteMenuItem.addActionListener((ae) -> {
+            paste();
+        });
+        
+        orPasteMenuItem = new JMenuItem("OR Paste");
+        orPasteMenuItem.setMnemonic(KeyEvent.VK_O);
+        orPasteMenuItem.addActionListener((ae) -> {
+            specialPaste((a,b) -> (byte)(a | b));
+        });
+        andPasteMenuItem = new JMenuItem("AND Paste");
+        andPasteMenuItem.setMnemonic(KeyEvent.VK_A);
+        andPasteMenuItem.addActionListener((ae) -> {
+            specialPaste((a,b) -> (byte)(a & b));
+        });
+        xorPasteMenuItem = new JMenuItem("XOR Paste");
+        xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
+        xorPasteMenuItem.addActionListener((ae) -> {
+            specialPaste((a,b) -> (byte)(a ^ b));
+        });
+        
+        deleteMenuItem = new JMenuItem("Delete");
+        deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
+        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
+        deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+        deleteMenuItem.addActionListener((ae) -> {
+            delete();
+        });
+        
+        popup.add(cutMenuItem);
+        popup.add(copyMenuItem);
+        popup.add(pasteMenuItem);
+        popup.addSeparator();
+        popup.add(orPasteMenuItem);
+        popup.add(andPasteMenuItem);
+        popup.add(xorPasteMenuItem);
+        popup.addSeparator();
+        popup.add(deleteMenuItem);
+    }
+    
     private void createSelectionImage() {
         Color c;
         C64Color bg = project.getBgColor();
@@ -443,75 +500,15 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         pasteMenuItem.setEnabled(!selection.isEmpty() && 
                 getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        orPasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        andPasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        xorPasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
     }
     
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
-    }
-}
-
-abstract class AbstractUtilImage extends BufferedImage {
-    private final Color primaryColor;
-    
-    public AbstractUtilImage(int width, int height, Color color) {
-        super(width, height, BufferedImage.TYPE_INT_ARGB);
-        
-        primaryColor = color;
-        redraw();
-    }
-    
-    public Color getPrimaryColor() {
-        return primaryColor;
-    }
-    
-    protected abstract void redraw();
-}
-
-class SelectionImage extends AbstractUtilImage {
-    public SelectionImage(int w, int h, Color c) {
-        super(w, h, c);
-    }
-    
-    @Override
-    protected void redraw() {
-        Graphics2D g2d;
-        
-        g2d = createGraphics();
-        g2d.setColor(new Color(
-                getPrimaryColor().getRed(),getPrimaryColor().getGreen(),getPrimaryColor().getBlue(),0x30
-        ));
-        g2d.fillRect(0, 0, getWidth(), getHeight());
-        g2d.setColor(getPrimaryColor());
-        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
-    }
-}
-
-class GridImage extends AbstractUtilImage {
-    public GridImage(int width, int height, Color color) {
-        super(width, height, color);
-    }
-    
-    @Override
-    protected void redraw() {
-        Graphics2D g2d;
-        
-        g2d = createGraphics();
-        g2d.setColor(getPrimaryColor());
-        g2d.drawRect(0, 0, getWidth()-1, getHeight()-1);
-    }
-}
-
-class BackgroundImage extends AbstractUtilImage {
-    public BackgroundImage(int width, int height, Color color) {
-        super(width, height, color);
-    }
-    
-    @Override
-    protected void redraw() {
-        Graphics2D g2d;
-        
-        g2d = createGraphics();
-        g2d.setColor(getPrimaryColor());
-        g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 }

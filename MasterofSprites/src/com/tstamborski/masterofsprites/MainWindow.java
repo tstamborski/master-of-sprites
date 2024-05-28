@@ -59,6 +59,7 @@ public class MainWindow extends JFrame {
     private JMenuItem deleteMenuItem;
     private JMenuItem aboutMenuItem;
     private JMenuItem pasteMenuItem;
+    private JMenuItem orPasteMenuItem, andPasteMenuItem, xorPasteMenuItem;
     private JMenuItem importPRGMenuItem;
     private JMenuItem cutMenuItem;
     private JMenu exportMenu;
@@ -572,7 +573,13 @@ public class MainWindow extends JFrame {
         cutMenuItem.setEnabled(!selection.isEmpty());
         copyMenuItem.setEnabled(!selection.isEmpty());
         
-        pasteMenuItem.setEnabled(!memoryPanel.getMemoryView().getSelection().isEmpty() && 
+        pasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        orPasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        andPasteMenuItem.setEnabled(!selection.isEmpty() && 
+                getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
+        xorPasteMenuItem.setEnabled(!selection.isEmpty() && 
                 getToolkit().getSystemClipboard().isDataFlavorAvailable(SpriteDataTransferable.C64_SPRITEDATA_FLAVOR));
     }
     
@@ -744,6 +751,21 @@ public class MainWindow extends JFrame {
         pasteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().paste();
         });
+        orPasteMenuItem = new JMenuItem("OR Paste");
+        orPasteMenuItem.setMnemonic(KeyEvent.VK_O);
+        orPasteMenuItem.addActionListener((ae) -> {
+            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a | b));
+        });
+        andPasteMenuItem = new JMenuItem("AND Paste");
+        andPasteMenuItem.setMnemonic(KeyEvent.VK_A);
+        andPasteMenuItem.addActionListener((ae) -> {
+            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a & b));
+        });
+        xorPasteMenuItem = new JMenuItem("XOR Paste");
+        xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
+        xorPasteMenuItem.addActionListener((ae) -> {
+            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a ^ b));
+        });
         deleteMenuItem = new JMenuItem("Delete");
         deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
         deleteMenuItem.setMnemonic(KeyEvent.VK_D);
@@ -760,6 +782,10 @@ public class MainWindow extends JFrame {
         editMenu.add(cutMenuItem);
         editMenu.add(copyMenuItem);
         editMenu.add(pasteMenuItem);
+        editMenu.addSeparator();
+        editMenu.add(orPasteMenuItem);
+        editMenu.add(andPasteMenuItem);
+        editMenu.add(xorPasteMenuItem);
         editMenu.addSeparator();
         editMenu.add(deleteMenuItem);
 
