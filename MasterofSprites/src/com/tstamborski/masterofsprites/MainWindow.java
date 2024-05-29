@@ -44,6 +44,7 @@ public class MainWindow extends JFrame {
     private AboutDialog aboutDialog;
     private ExportPRGDialog addressDialog;
     private AsmSyntaxDialog asmSyntaxDialog;
+    private RotationDialog rotateDialog;
 
     private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog, asmDialog;
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
@@ -520,6 +521,8 @@ public class MainWindow extends JFrame {
         asmSyntaxDialog = new AsmSyntaxDialog(this);
         asmSyntaxDialog.setIconImage(
                 new ImageIcon(getClass().getResource("icons/asm-file16.png")).getImage());
+        
+        rotateDialog = new RotationDialog(this);
     }
 
     private void createFileDialogs() {
@@ -716,6 +719,10 @@ public class MainWindow extends JFrame {
             editorPanel.getSpriteEditor().flipVertically();
         });
         
+        menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
+            if (rotateDialog.showDialog())
+                editorPanel.getSpriteEditor().rotate(rotateDialog.getRadians());
+        });
         menu.spriteMenu.rotate90CWMenuItem.addActionListener(ae -> {
             editorPanel.getSpriteEditor().rotate(Math.toRadians(90.0));
         });

@@ -233,7 +233,7 @@ class EditMenu extends JMenu {
 class SpriteMenu extends JMenu {
     public JMenuItem slideUpMenuItem, slideDownMenuItem, slideLeftMenuItem, slideRightMenuItem;
     public JMenuItem flipHorzMenuItem, flipVertMenuItem;
-    public JMenuItem rotate90CWMenuItem, rotate90CCWMenuItem;
+    public JMenuItem rotateMenuItem, rotate90CWMenuItem, rotate90CCWMenuItem;
     
     public SpriteMenu() {
         super("Sprite");
@@ -280,14 +280,19 @@ class SpriteMenu extends JMenu {
         flipVertMenuItem.setMnemonic(KeyEvent.VK_V);
         flipVertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
         
-        rotate90CWMenuItem = new JMenuItem("Rotate 90 CW");
+        rotateMenuItem = new JMenuItem("Rotate...");
+        rotateMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        rotateMenuItem.setMnemonic(KeyEvent.VK_R);
+        
+        rotate90CWMenuItem = new JMenuItem("Rotate 90° CW");
         rotate90CWMenuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.CTRL_DOWN_MASK)
         );
         rotate90CWMenuItem.setMnemonic(KeyEvent.VK_W);
         rotate90CWMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/clockwise16.png")));
         
-        rotate90CCWMenuItem = new JMenuItem("Rotate 90 CCW");
+        rotate90CCWMenuItem = new JMenuItem("Rotate 90° CCW");
         rotate90CCWMenuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK)
         );
@@ -302,6 +307,7 @@ class SpriteMenu extends JMenu {
         add(flipHorzMenuItem);
         add(flipVertMenuItem);
         addSeparator();
+        add(rotateMenuItem);
         add(rotate90CWMenuItem);
         add(rotate90CCWMenuItem);
     }
