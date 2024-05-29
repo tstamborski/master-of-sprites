@@ -14,6 +14,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
@@ -85,8 +86,10 @@ public class EditorPanel extends JPanel {
         spriteChooserLabel = new JLabel("none");
         spriteChooserLabel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         prevButton = new JButton(new ImageIcon(getClass().getResource("icons/rewind-backward16.png")));
+        prevButton.setMnemonic(KeyEvent.VK_LEFT);
         prevButton.addActionListener((ae)->setSprite(--selectionIndex));
         nextButton = new JButton(new ImageIcon(getClass().getResource("icons/rewind-forward16.png")));
+        nextButton.setMnemonic(KeyEvent.VK_RIGHT);
         nextButton.addActionListener((ae)->setSprite(++selectionIndex));
         
         slideUpButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
@@ -133,18 +136,13 @@ public class EditorPanel extends JPanel {
         multicolorCheckBox = new JCheckBox("Multicolor Mode");
         multicolorCheckBox.setMnemonic('M');
         multicolorCheckBox.addActionListener(ae -> {
-                editor.getSpriteData().setMulticolor(multicolorCheckBox.isSelected());
-                editor.refresh();
+                editor.setMulticolor(multicolorCheckBox.isSelected());
                 setSprite(selectionIndex);
-                
-                fireActionEvent();
-                firePreviewEvent();
             });
         overlayCheckBox = new JCheckBox("Overlay Next Sprite");
         overlayCheckBox.setMnemonic('O');
         overlayCheckBox.addActionListener(ae -> {
-                editor.getSpriteData().setOverlay(overlayCheckBox.isSelected());
-                firePreviewEvent();
+                editor.setOverlay(overlayCheckBox.isSelected());
             });
         overlayDistLabel = new JLabel("Overlay Distance:    ");
         overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 255, 1));

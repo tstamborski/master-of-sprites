@@ -23,15 +23,11 @@
  */
 package com.tstamborski.masterofsprites;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import com.tstamborski.AbstractInputDialog;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
@@ -40,59 +36,29 @@ import javax.swing.border.BevelBorder;
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class RotationDialog extends JDialog {
-    private final JPanel mainPanel;
-    private final JPanel centralPanel;
-    private final JPanel southPanel;
-    
+public class RotationDialog extends AbstractInputDialog {
     private final JLabel rotationLabel, degreesLabel;
     private final JSpinner spinner;
     
-    private final JButton okButton;
-    private final JButton cancelButton;
-    
-    private boolean acceptedFlag;
-    
     public RotationDialog(JFrame parent) {
-        acceptedFlag = false;
+        super(parent);
         
         rotationLabel = new JLabel("Rotation:    ");
         degreesLabel = new JLabel(" ° ");
         spinner = new JSpinner(new SpinnerNumberModel(90, -360, 360, 1));
-                
-        centralPanel = new JPanel();
-        centralPanel.setBorder(
+        
+        getCentralPanel().setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createBevelBorder(BevelBorder.RAISED), 
                         BorderFactory.createEmptyBorder(16, 16, 16, 16))
         );
-        centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.X_AXIS));
-        centralPanel.add(rotationLabel);
-        centralPanel.add(spinner);
-        centralPanel.add(degreesLabel);
-        
-        southPanel = new JPanel();
-        okButton = new JButton("OK");
-        okButton.addActionListener((ae)->{acceptedFlag = true; setVisible(false);});
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener((ae)->{acceptedFlag = false; setVisible(false);});
-        southPanel.setLayout(new FlowLayout());
-        southPanel.add(okButton);
-        southPanel.add(cancelButton);
-        
-        mainPanel = new JPanel();
-        mainPanel.add(centralPanel, BorderLayout.CENTER);
-        mainPanel.add(southPanel, BorderLayout.SOUTH);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-        
-        add(mainPanel);
+        getCentralPanel().setLayout(new BoxLayout(getCentralPanel(), BoxLayout.X_AXIS));
+        getCentralPanel().add(rotationLabel);
+        getCentralPanel().add(spinner);
+        getCentralPanel().add(degreesLabel);
         
         setTitle("Rotate...");
-        getRootPane().setDefaultButton(okButton);
-        setModal(true);
         pack();
-        setLocationRelativeTo(parent);
-        setResizable(false);
     }
     
     public double getDegrees() {
@@ -101,11 +67,5 @@ public class RotationDialog extends JDialog {
     
     public double getRadians() {
         return Math.toRadians((Integer)spinner.getValue());
-    }
-    
-    public boolean showDialog() {
-        acceptedFlag = false;
-        setVisible(true);
-        return acceptedFlag;
     }
 }

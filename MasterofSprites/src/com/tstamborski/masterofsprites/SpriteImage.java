@@ -9,13 +9,12 @@ import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import java.awt.image.*;
-import java.awt.Image;
 
 /**
  *
  * @author Tobiasz
  */
-public class SpriteImage {
+public class SpriteImage extends BufferedImage {
     public static final int WIDTH = 24;
     public static final int HEIGHT = 21;
     
@@ -23,16 +22,16 @@ public class SpriteImage {
     private Palette palette;
     
     private C64Color multi0_color, multi1_color;
-    private final BufferedImage img;
     
     public SpriteImage(SpriteData data, Palette palette) {
+        super(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        
         sprite_data = data;
         this.palette = palette;
         
         multi0_color = C64Color.LightGray;
         multi1_color = C64Color.White;
         
-        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
         redraw();
     }
     
@@ -43,13 +42,9 @@ public class SpriteImage {
     
     public final void redraw() {
         if (sprite_data.isMulticolor())
-            SpriteRender.renderMulticolor(img, sprite_data, palette, multi0_color, multi1_color);
+            SpriteRender.renderMulticolor(this, sprite_data, palette, multi0_color, multi1_color);
         else
-            SpriteRender.renderSinglecolor(img, sprite_data, palette);
-    }
-    
-    public BufferedImage getBufferedImage() {
-        return img;
+            SpriteRender.renderSinglecolor(this, sprite_data, palette);
     }
     
     public SpriteColor getPixel(int x, int y) {

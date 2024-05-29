@@ -23,39 +23,26 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.AbstractInputDialog;
 import com.tstamborski.masterofsprites.model.AsmCodeStream;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class AsmSyntaxDialog extends JDialog {
-    private final JPanel mainPanel;
-    private final JPanel centralPanel;
-    private final JPanel southPanel;
-    
+public class AsmSyntaxDialog extends AbstractInputDialog {
     private final ButtonGroup btnGroup;
     private final JRadioButton kickassRadioButton;
     private final JRadioButton acmeRadioButton;
     private final JRadioButton tmpxRadioButton;
     
-    private final JButton okButton;
-    private final JButton cancelButton;
-    
-    private boolean acceptedFlag;
-    
     public AsmSyntaxDialog(JFrame parent) {
-        acceptedFlag = false;
+        super(parent);
         
         kickassRadioButton = new JRadioButton("KickAss ");
         acmeRadioButton = new JRadioButton("ACME ");
@@ -66,35 +53,14 @@ public class AsmSyntaxDialog extends JDialog {
         btnGroup.add(tmpxRadioButton);
         kickassRadioButton.setSelected(true);
                 
-        centralPanel = new JPanel();
-        centralPanel.setBorder(BorderFactory.createTitledBorder("Syntax: "));
-        centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
-        centralPanel.add(kickassRadioButton);
-        centralPanel.add(acmeRadioButton);
-        centralPanel.add(tmpxRadioButton);
-        
-        southPanel = new JPanel();
-        okButton = new JButton("OK");
-        okButton.addActionListener((ae)->{acceptedFlag = true; setVisible(false);});
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener((ae)->{acceptedFlag = false; setVisible(false);});
-        southPanel.setLayout(new FlowLayout());
-        southPanel.add(okButton);
-        southPanel.add(cancelButton);
-        
-        mainPanel = new JPanel();
-        mainPanel.add(centralPanel, BorderLayout.CENTER);
-        mainPanel.add(southPanel, BorderLayout.SOUTH);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-        
-        add(mainPanel);
+        getCentralPanel().setBorder(BorderFactory.createTitledBorder("Syntax: "));
+        getCentralPanel().setLayout(new BoxLayout(getCentralPanel(), BoxLayout.Y_AXIS));
+        getCentralPanel().add(kickassRadioButton);
+        getCentralPanel().add(acmeRadioButton);
+        getCentralPanel().add(tmpxRadioButton);
         
         setTitle("Export to Assembly Code...");
-        getRootPane().setDefaultButton(okButton);
-        setModal(true);
         pack();
-        setLocationRelativeTo(parent);
-        setResizable(false);
     }
     
     public int getAsmSyntax() {
@@ -104,11 +70,5 @@ public class AsmSyntaxDialog extends JDialog {
             return AsmCodeStream.ACME_SYNTAX;
         else
             return AsmCodeStream.KICKASS_SYNTAX;
-    }
-    
-    public boolean showDialog() {
-        acceptedFlag = false;
-        setVisible(true);
-        return acceptedFlag;
     }
 }

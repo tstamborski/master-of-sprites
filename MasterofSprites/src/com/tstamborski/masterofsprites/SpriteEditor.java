@@ -113,7 +113,7 @@ public class SpriteEditor extends JComponent {
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
         if (spriteImg != null)
-            g2d.drawImage(spriteImg.getBufferedImage(), 0, 0, getWidth(), getHeight(), this);
+            g2d.drawImage(spriteImg, 0, 0, getWidth(), getHeight(), this);
     }
     
     public void refresh() {
@@ -160,10 +160,10 @@ public class SpriteEditor extends JComponent {
     
     public void rotate(double angle) {
         if (spriteData.isMulticolor())
-            SpriteRender.rotateMulticolor(spriteData, spriteImg.getBufferedImage(), 
+            SpriteRender.rotateMulticolor(spriteData, spriteImg, 
                     angle, palette, multi0Color, multi1Color);
         else
-            SpriteRender.rotateSinglecolor(spriteData, spriteImg.getBufferedImage(), 
+            SpriteRender.rotateSinglecolor(spriteData, spriteImg, 
                     angle, palette);
         
         refresh();
@@ -229,6 +229,22 @@ public class SpriteEditor extends JComponent {
         
         spriteImg.setMulti1Color(color);
         repaint();
+    }
+    
+    public void setMulticolor(boolean b) {
+        if (spriteData != null) {
+            spriteData.setMulticolor(b);
+            refresh();
+            
+            fireActionEvent();
+        }
+    }
+    
+    public void setOverlay(boolean b) {
+        if (spriteData != null) {
+            spriteData.setOverlay(b);
+            fireActionEvent();
+        }
     }
     
     public SpriteColor getCurrentSpriteColor() {

@@ -23,70 +23,39 @@
  */
 package com.tstamborski.masterofsprites;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import com.tstamborski.AbstractInputDialog;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class ExportPRGDialog extends JDialog {
-    private final JPanel mainPanel;
-    private final JPanel centralPanel;
-    private final JPanel southPanel;
+public class ExportPRGDialog extends AbstractInputDialog {
     private final JLabel startAddressLabel;
     private final AddressSpinner startAddressSpinner;
-    private final JButton okButton;
-    private final JButton cancelButton;
-    
-    private boolean acceptedFlag;
     
     public ExportPRGDialog(JFrame parent) {
-        acceptedFlag = false;
-                
-        centralPanel = new JPanel();
+        super(parent);
+        
         startAddressSpinner = new AddressSpinner();
         startAddressLabel = new JLabel("Start Address:  ");
         startAddressLabel.setDisplayedMnemonic(KeyEvent.VK_A);
         startAddressLabel.setDisplayedMnemonicIndex(6);
         startAddressLabel.setLabelFor(startAddressSpinner);
-        centralPanel.setBorder(BorderFactory.createCompoundBorder(
+        
+        getCentralPanel().setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createRaisedBevelBorder(), BorderFactory.createEmptyBorder(4,4,4,4)
         ));
-        centralPanel.setLayout(new GridBagLayout());
-        centralPanel.add(startAddressLabel);
-        centralPanel.add(startAddressSpinner);
-        
-        southPanel = new JPanel();
-        okButton = new JButton("OK");
-        okButton.addActionListener((ae)->{acceptedFlag = true; setVisible(false);});
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener((ae)->{acceptedFlag = false; setVisible(false);});
-        southPanel.setLayout(new FlowLayout());
-        southPanel.add(okButton);
-        southPanel.add(cancelButton);
-        
-        mainPanel = new JPanel();
-        mainPanel.add(centralPanel, BorderLayout.CENTER);
-        mainPanel.add(southPanel, BorderLayout.SOUTH);
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-        
-        add(mainPanel);
+        getCentralPanel().setLayout(new GridBagLayout());
+        getCentralPanel().add(startAddressLabel);
+        getCentralPanel().add(startAddressSpinner);
         
         setTitle("Export to PRG File...");
-        getRootPane().setDefaultButton(okButton);
-        setModal(true);
         pack();
-        setLocationRelativeTo(parent);
-        setResizable(false);
     }
     
     public void setAddress(int address) {
@@ -95,11 +64,5 @@ public class ExportPRGDialog extends JDialog {
     
     public int getAddress() {
         return (Integer)startAddressSpinner.getValue();
-    }
-    
-    public boolean showDialog() {
-        acceptedFlag = false;
-        setVisible(true);
-        return acceptedFlag;
     }
 }
