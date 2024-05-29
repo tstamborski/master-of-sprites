@@ -273,7 +273,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
                     this);
             g2d.drawImage(sprites.get(i).getImage(), 
                     (i%columns)*SpriteImage.WIDTH*zoom, (i/columns)*SpriteImage.HEIGHT*zoom, 
-                    SpriteImage.WIDTH*zoom*zoom, SpriteImage.HEIGHT*zoom, this);
+                    SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, this);
         }
         
         if (grid)

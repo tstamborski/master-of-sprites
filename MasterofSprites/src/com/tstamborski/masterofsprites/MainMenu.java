@@ -58,6 +58,7 @@ class FileMenu extends JMenu {
     public JMenuItem exportBitmapMenuItem;
     public JMenuItem exitMenuItem;
     public JMenuItem exportPRGMenuItem;
+    public JMenuItem exportAsmMenuItem;
     public JMenuItem importPRGMenuItem;
     public JMenuItem exportRawMenuItem;
     public JMenuItem importRawMenuItem;
@@ -91,7 +92,7 @@ class FileMenu extends JMenu {
         importPRGMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK));
         importPRGMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/commodore16.png")));
         
-        importRawMenuItem = new JMenuItem("Import raw data...");
+        importRawMenuItem = new JMenuItem("Import Raw Data...");
         importRawMenuItem.setMnemonic(KeyEvent.VK_R);
         
         exitMenuItem = new JMenuItem("Exit");
@@ -100,21 +101,26 @@ class FileMenu extends JMenu {
         exitMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/exit16.png")));
         
         
-        exportPRGMenuItem = new JMenuItem("As PRG file...");
+        exportPRGMenuItem = new JMenuItem("As PRG File...");
         exportPRGMenuItem.setMnemonic(KeyEvent.VK_P);
         exportPRGMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK));
         exportPRGMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/commodore16.png")));
-                
-        exportRawMenuItem = new JMenuItem("As raw data...");
+        
+        exportAsmMenuItem = new JMenuItem("As Assembly Code...");
+        exportAsmMenuItem.setMnemonic(KeyEvent.VK_A);
+        exportAsmMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/asm-file16.png")));
+        
+        exportRawMenuItem = new JMenuItem("As Raw Data...");
         exportRawMenuItem.setMnemonic(KeyEvent.VK_R);
 
-        exportBitmapMenuItem = new JMenuItem("As bitmap...");
+        exportBitmapMenuItem = new JMenuItem("As Bitmap...");
         exportBitmapMenuItem.setMnemonic(KeyEvent.VK_B);
         exportBitmapMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/picture16.png")));
         
         exportMenu = new JMenu("Export");
         exportMenu.setMnemonic(KeyEvent.VK_E);
         exportMenu.add(exportPRGMenuItem);
+        exportMenu.add(exportAsmMenuItem);
         exportMenu.add(exportBitmapMenuItem);
         exportMenu.add(exportRawMenuItem);
 

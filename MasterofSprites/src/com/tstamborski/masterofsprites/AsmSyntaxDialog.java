@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Tobiasz Stamborski <tstamborski@outlook.com>.
+ * Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,47 +23,55 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
-import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class ExportPRGDialog extends JDialog {
+public class AsmSyntaxDialog extends JDialog {
     private final JPanel mainPanel;
     private final JPanel centralPanel;
     private final JPanel southPanel;
-    private final JLabel startAddressLabel;
-    private final AddressSpinner startAddressSpinner;
+    
+    private final ButtonGroup btnGroup;
+    private final JRadioButton kickassRadioButton;
+    private final JRadioButton acmeRadioButton;
+    private final JRadioButton tmpxRadioButton;
+    
     private final JButton okButton;
     private final JButton cancelButton;
     
     private boolean acceptedFlag;
     
-    public ExportPRGDialog(JFrame parent) {
+    public AsmSyntaxDialog(JFrame parent) {
         acceptedFlag = false;
+        
+        kickassRadioButton = new JRadioButton("KickAss ");
+        acmeRadioButton = new JRadioButton("ACME ");
+        tmpxRadioButton = new JRadioButton("TMPx ");
+        btnGroup = new ButtonGroup();
+        btnGroup.add(kickassRadioButton);
+        btnGroup.add(acmeRadioButton);
+        btnGroup.add(tmpxRadioButton);
+        kickassRadioButton.setSelected(true);
                 
         centralPanel = new JPanel();
-        startAddressSpinner = new AddressSpinner();
-        startAddressLabel = new JLabel("Start Address:  ");
-        startAddressLabel.setDisplayedMnemonic(KeyEvent.VK_A);
-        startAddressLabel.setDisplayedMnemonicIndex(6);
-        startAddressLabel.setLabelFor(startAddressSpinner);
-        centralPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createRaisedBevelBorder(), BorderFactory.createEmptyBorder(4,4,4,4)
-        ));
-        centralPanel.setLayout(new GridBagLayout());
-        centralPanel.add(startAddressLabel);
-        centralPanel.add(startAddressSpinner);
+        centralPanel.setBorder(BorderFactory.createTitledBorder("Syntax: "));
+        centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
+        centralPanel.add(kickassRadioButton);
+        centralPanel.add(acmeRadioButton);
+        centralPanel.add(tmpxRadioButton);
         
         southPanel = new JPanel();
         okButton = new JButton("OK");
@@ -81,7 +89,7 @@ public class ExportPRGDialog extends JDialog {
         
         add(mainPanel);
         
-        setTitle("Export to PRG File...");
+        setTitle("Export to Assembly Code...");
         getRootPane().setDefaultButton(okButton);
         setModal(true);
         pack();
@@ -89,12 +97,13 @@ public class ExportPRGDialog extends JDialog {
         setResizable(false);
     }
     
-    public void setAddress(int address) {
-        startAddressSpinner.setValue(address);
-    }
-    
-    public int getAddress() {
-        return (Integer)startAddressSpinner.getValue();
+    public int getAsmSyntax() {
+        if (tmpxRadioButton.isSelected())
+            return AsmCodeStream.TMPX_SYNTAX;
+        else if (acmeRadioButton.isSelected())
+            return AsmCodeStream.ACME_SYNTAX;
+        else
+            return AsmCodeStream.KICKASS_SYNTAX;
     }
     
     public boolean showDialog() {

@@ -7,6 +7,7 @@ package com.tstamborski.masterofsprites;
 
 import com.tstamborski.AboutDialog;
 import com.tstamborski.Util;
+import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
@@ -42,9 +43,10 @@ public class MainWindow extends JFrame {
 
     private AboutDialog aboutDialog;
     private ExportPRGDialog addressDialog;
+    private AsmSyntaxDialog asmSyntaxDialog;
 
-    private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog;
-    private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter;
+    private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog, asmDialog;
+    private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
 
     public MainWindow() {
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
@@ -401,6 +403,40 @@ public class MainWindow extends JFrame {
         }
     }
     
+    public void exportAsmCode() {
+        if (asmSyntaxDialog.showDialog()) {
+            OutputStream ostream;
+            File myAsmFile;
+
+            if (asmDialog.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                myAsmFile = Util.addExtension(
+                        asmDialog.getSelectedFile(),
+                        ((FileNameExtensionFilter)asmDialog.getFileFilter()).getExtensions());
+                
+                if (showOverwriteDialog(myAsmFile) == false)
+                    return;
+                
+                try {
+                    ostream = new FileOutputStream(myAsmFile);
+                    try (AsmCodeStream asm = new AsmCodeStream(ostream, asmSyntaxDialog.getAsmSyntax())) {
+                        asm.printSpriteProject(project);
+                        asm.close();
+                    }
+                }
+                catch (FileNotFoundException e) {
+                    Util.showError(this, e.getMessage());
+                    return;
+                }
+                
+                try {
+                    ostream.close();
+                } catch (IOException e) {
+                    Util.showError(this, e.getMessage());
+                }
+            }
+        }
+    }
+    
     public void exportRawData() {
         OutputStream ostream;
 
@@ -476,7 +512,12 @@ public class MainWindow extends JFrame {
         }
         
         addressDialog = new ExportPRGDialog(this);
-        addressDialog.setIconImage(new ImageIcon(getClass().getResource("icons/commodore16.png")).getImage());
+        addressDialog.setIconImage(
+                new ImageIcon(getClass().getResource("icons/commodore16.png")).getImage());
+        
+        asmSyntaxDialog = new AsmSyntaxDialog(this);
+        asmSyntaxDialog.setIconImage(
+                new ImageIcon(getClass().getResource("icons/asm-file16.png")).getImage());
     }
 
     private void createFileDialogs() {
@@ -490,6 +531,8 @@ public class MainWindow extends JFrame {
                 = new FileNameExtensionFilter("JPG Image [.jpg, .jpeg]", "jpg", "jpeg");
         bmp_filter
                 = new FileNameExtensionFilter("BMP Image [.bmp]", "bmp");
+        asm_filter
+                = new FileNameExtensionFilter("Assembly Code [.asm, .s]", "asm", "s");
 
         projectDialog = new JFileChooser();
         projectDialog.setDialogTitle("Choose file...");
@@ -500,6 +543,11 @@ public class MainWindow extends JFrame {
         prgDialog.setDialogTitle("Choose file...");
         prgDialog.setFileFilter(prg_filter);
         prgDialog.setMultiSelectionEnabled(false);
+        
+        asmDialog = new JFileChooser();
+        asmDialog.setDialogTitle("Choose file...");
+        asmDialog.setFileFilter(asm_filter);
+        asmDialog.setMultiSelectionEnabled(false);
 
         rawDialog = new JFileChooser();
         rawDialog.setDialogTitle("Choose file...");
@@ -608,6 +656,7 @@ public class MainWindow extends JFrame {
         );
          
         menu.fileMenu.exportPRGMenuItem.addActionListener((ae)->{exportPRGFile();});
+        menu.fileMenu.exportAsmMenuItem.addActionListener((ae)->{exportAsmCode();});
         menu.fileMenu.exportRawMenuItem.addActionListener((ae)->{exportRawData();});
         menu.fileMenu.exportBitmapMenuItem.addActionListener((ae) -> {
             exportBitmap();
