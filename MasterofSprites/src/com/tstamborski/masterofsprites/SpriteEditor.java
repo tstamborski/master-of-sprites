@@ -113,7 +113,7 @@ public class SpriteEditor extends JComponent {
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
         if (spriteImg != null)
-            g2d.drawImage(spriteImg.getImage(), 0, 0, getWidth(), getHeight(), this);
+            g2d.drawImage(spriteImg.getBufferedImage(), 0, 0, getWidth(), getHeight(), this);
     }
     
     public void refresh() {
@@ -154,6 +154,18 @@ public class SpriteEditor extends JComponent {
     
     public void flipVertically() {
         spriteData.flipVertically();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void rotate(double angle) {
+        if (spriteData.isMulticolor())
+            SpriteRender.rotateMulticolor(spriteData, spriteImg.getBufferedImage(), 
+                    angle, palette, multi0Color, multi1Color);
+        else
+            SpriteRender.rotateSinglecolor(spriteData, spriteImg.getBufferedImage(), 
+                    angle, palette);
+        
         refresh();
         fireActionEvent();
     }

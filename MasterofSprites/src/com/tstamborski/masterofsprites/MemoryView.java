@@ -236,7 +236,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             g2d.setComposite(AlphaComposite.Src);
         }
         for (int i = 0; i < sprites.size(); i++)
-            g2d.drawImage(sprites.get(i).getImage(), 
+            g2d.drawImage(sprites.get(i).getBufferedImage(), 
                     (i%columns)*24, (i/columns)*21, this);
         
         return img;
@@ -271,7 +271,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             g2d.drawImage(background_img, 
                     (i%columns)*SpriteImage.WIDTH*zoom, (i/columns)*SpriteImage.HEIGHT*zoom, 
                     this);
-            g2d.drawImage(sprites.get(i).getImage(), 
+            g2d.drawImage(sprites.get(i).getBufferedImage(), 
                     (i%columns)*SpriteImage.WIDTH*zoom, (i/columns)*SpriteImage.HEIGHT*zoom, 
                     SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, this);
         }

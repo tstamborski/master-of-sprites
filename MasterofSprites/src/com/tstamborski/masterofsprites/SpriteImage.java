@@ -8,8 +8,6 @@ package com.tstamborski.masterofsprites;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
 import java.awt.image.*;
 import java.awt.Image;
 
@@ -45,12 +43,12 @@ public class SpriteImage {
     
     public final void redraw() {
         if (sprite_data.isMulticolor())
-            redrawMultiColor();
+            SpriteRender.renderMulticolor(img, sprite_data, palette, multi0_color, multi1_color);
         else
-            redrawSingleColor();
+            SpriteRender.renderSinglecolor(img, sprite_data, palette);
     }
     
-    public Image getImage() {
+    public BufferedImage getBufferedImage() {
         return img;
     }
     
@@ -87,43 +85,5 @@ public class SpriteImage {
     public void setMulti1Color(C64Color c) {
         multi1_color = c;
         redraw();
-    }
-    
-    private void redrawSingleColor() {
-        clearImage();
-        
-        for (int y = 0; y < 21; y++)
-            for (int x = 0; x < 24; x++)
-                if (sprite_data.getPixel(x, y) == SpriteColor.SpriteColor)
-                    img.setRGB(x, y, palette.getColor(sprite_data.getSpriteC64Color()).getRGB());
-    }
-    
-    private void redrawMultiColor() {
-        clearImage();
-        
-        for (int y = 0; y < 21; y++)
-            for (int x = 0; x < 12; x++) {
-                switch (sprite_data.getPixel(x, y)) {
-                    case SpriteColor:
-                        img.setRGB(x*2, y, palette.getColor(sprite_data.getSpriteC64Color()).getRGB());
-                        img.setRGB(x*2+1, y, palette.getColor(sprite_data.getSpriteC64Color()).getRGB());
-                        break;
-                    case Multi0Color:
-                        img.setRGB(x*2, y, palette.getColor(multi0_color).getRGB());
-                        img.setRGB(x*2+1, y, palette.getColor(multi0_color).getRGB());
-                        break;
-                    case Multi1Color:
-                        img.setRGB(x*2, y, palette.getColor(multi1_color).getRGB());
-                        img.setRGB(x*2+1, y, palette.getColor(multi1_color).getRGB());
-                        break;
-                }
-            }
-    }
-    
-    private void clearImage() {
-        Graphics2D g = img.createGraphics();
-        
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(0, 0, WIDTH, HEIGHT);
     }
 }

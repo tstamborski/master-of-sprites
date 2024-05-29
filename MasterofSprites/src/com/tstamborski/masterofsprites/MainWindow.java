@@ -61,7 +61,6 @@ public class MainWindow extends JFrame {
         statusBar = new StatusBar();
         
         createMenu();
-        //setJMenuBar(menu);
         add(centralPane, BorderLayout.CENTER);
         add(editorPanel, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
@@ -85,6 +84,7 @@ public class MainWindow extends JFrame {
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
             menu.editMenu.enableClipboardMenuItems(se.getSelection());
+            menu.spriteMenu.enable(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.reload();
@@ -175,7 +175,9 @@ public class MainWindow extends JFrame {
     private void reloadProject() {
         memoryPanel.setProject(project);
         editorPanel.setProject(project);
+        
         menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
+        menu.spriteMenu.enable(memoryPanel.getMemoryView().getSelection());
     }
     
     private void updateTitlebar() {
@@ -692,6 +694,33 @@ public class MainWindow extends JFrame {
         
         menu.editMenu.deleteMenuItem.addActionListener((ae) -> {
             memoryPanel.getMemoryView().delete();
+        });
+        
+        menu.spriteMenu.slideUpMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().slideUp();
+        });
+        menu.spriteMenu.slideDownMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().slideDown();
+        });
+        menu.spriteMenu.slideLeftMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().slideLeft();
+        });
+        menu.spriteMenu.slideRightMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().slideRight();
+        });
+        
+        menu.spriteMenu.flipHorzMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().flipHorizontally();
+        });
+        menu.spriteMenu.flipVertMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().flipVertically();
+        });
+        
+        menu.spriteMenu.rotate90CWMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().rotate(Math.toRadians(90.0));
+        });
+        menu.spriteMenu.rotate90CCWMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().rotate(Math.toRadians(-90.0));
         });
 
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {

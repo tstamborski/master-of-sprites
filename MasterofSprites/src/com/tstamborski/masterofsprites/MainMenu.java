@@ -39,15 +39,22 @@ import javax.swing.KeyStroke;
 class MainMenu extends JMenuBar {
     public FileMenu fileMenu;
     public EditMenu editMenu;
+    public SpriteMenu spriteMenu;
     public HelpMenu helpMenu;
     
     public MainMenu() {
         fileMenu = new FileMenu();
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         editMenu = new EditMenu();
+        editMenu.setMnemonic(KeyEvent.VK_E);
+        spriteMenu = new SpriteMenu();
+        spriteMenu.setMnemonic(KeyEvent.VK_S);
         helpMenu = new HelpMenu();
+        helpMenu.setMnemonic(KeyEvent.VK_H);
         
         add(fileMenu);
         add(editMenu);
+        add(spriteMenu);
         add(helpMenu);
     }
 }
@@ -124,7 +131,6 @@ class FileMenu extends JMenu {
         exportMenu.add(exportBitmapMenuItem);
         exportMenu.add(exportRawMenuItem);
 
-        setMnemonic(KeyEvent.VK_F);
         add(newMenuItem);
         add(openMenuItem);
         add(saveMenuItem);
@@ -189,7 +195,6 @@ class EditMenu extends JMenu {
         deleteMenuItem.setMnemonic(KeyEvent.VK_D);
         deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         
-        setMnemonic(KeyEvent.VK_E);
         add(undoMenuItem);
         add(redoMenuItem);
         addSeparator();
@@ -225,6 +230,96 @@ class EditMenu extends JMenu {
     }
 }
 
+class SpriteMenu extends JMenu {
+    public JMenuItem slideUpMenuItem, slideDownMenuItem, slideLeftMenuItem, slideRightMenuItem;
+    public JMenuItem flipHorzMenuItem, flipVertMenuItem;
+    public JMenuItem rotate90CWMenuItem, rotate90CCWMenuItem;
+    
+    public SpriteMenu() {
+        super("Sprite");
+        
+        slideUpMenuItem = new JMenuItem("Slide Up");
+        slideUpMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK)
+        );
+        slideUpMenuItem.setMnemonic(KeyEvent.VK_U);
+        slideUpMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
+        
+        slideDownMenuItem = new JMenuItem("Slide Down");
+        slideDownMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK)
+        );
+        slideDownMenuItem.setMnemonic(KeyEvent.VK_D);
+        slideDownMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-down16.png")));
+        
+        slideLeftMenuItem = new JMenuItem("Slide Left");
+        slideLeftMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK)
+        );
+        slideLeftMenuItem.setMnemonic(KeyEvent.VK_L);
+        slideLeftMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-left16.png")));
+        
+        slideRightMenuItem = new JMenuItem("Slide Right");
+        slideRightMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK)
+        );
+        slideRightMenuItem.setMnemonic(KeyEvent.VK_R);
+        slideRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
+        
+        flipHorzMenuItem = new JMenuItem("Flip Horizontally");
+        flipHorzMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0)
+        );
+        flipHorzMenuItem.setMnemonic(KeyEvent.VK_H);
+        flipHorzMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
+        
+        flipVertMenuItem = new JMenuItem("Flip Vertically");
+        flipVertMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0)
+        );
+        flipVertMenuItem.setMnemonic(KeyEvent.VK_V);
+        flipVertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
+        
+        rotate90CWMenuItem = new JMenuItem("Rotate 90 CW");
+        rotate90CWMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.CTRL_DOWN_MASK)
+        );
+        rotate90CWMenuItem.setMnemonic(KeyEvent.VK_W);
+        rotate90CWMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/clockwise16.png")));
+        
+        rotate90CCWMenuItem = new JMenuItem("Rotate 90 CCW");
+        rotate90CCWMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK)
+        );
+        rotate90CCWMenuItem.setMnemonic(KeyEvent.VK_C);
+        rotate90CCWMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/counter-clockwise16.png")));
+        
+        add(slideUpMenuItem);
+        add(slideDownMenuItem);
+        add(slideLeftMenuItem);
+        add(slideRightMenuItem);
+        addSeparator();
+        add(flipHorzMenuItem);
+        add(flipVertMenuItem);
+        addSeparator();
+        add(rotate90CWMenuItem);
+        add(rotate90CCWMenuItem);
+    }
+    
+    public void enable(ArrayList<Integer> selection) {
+        enable(!selection.isEmpty());
+    }
+    
+    @Override
+    public void enable(boolean b) {
+        for (int i = 0; i < getItemCount(); i++) {
+            JMenuItem item = getItem(i);
+            if (item != null)
+                item.setEnabled(b);
+        }
+    }
+}
+
 class HelpMenu extends JMenu {
     public JMenuItem aboutMenuItem;
     
@@ -235,7 +330,6 @@ class HelpMenu extends JMenu {
         aboutMenuItem.setMnemonic(KeyEvent.VK_A);
         aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
         
-        setMnemonic(KeyEvent.VK_H);
         add(aboutMenuItem);
     }
 }

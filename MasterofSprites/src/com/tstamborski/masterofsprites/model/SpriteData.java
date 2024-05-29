@@ -227,6 +227,11 @@ public class SpriteData implements Serializable {
         int byte_index;
         byte data_byte;
         
+        if (x < 0 || x >= getWidth())
+            return null;
+        if (y < 0 || y >= getHeight())
+            return null;
+        
         byte_index = isMulticolor() ? 3*y + x/4 : 3*y + x/8;
         data_byte = data[byte_index];
         if (isMulticolor())
@@ -240,6 +245,11 @@ public class SpriteData implements Serializable {
     
     public void setPixel(int x, int y, SpriteColor c) {
         int byte_index;
+        
+        if (x < 0 || x >= getWidth())
+            return;
+        if (y < 0 || y >= getHeight())
+            return;
         
         byte_index = isMulticolor() ? 3*y + x/4 : 3*y + x/8;
         
