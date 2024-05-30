@@ -25,7 +25,6 @@ package com.tstamborski.masterofsprites.model;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 
 /**
  *
@@ -40,7 +39,7 @@ public class AsmCodeStream extends PrintStream {
     private String asmName;
     
     public AsmCodeStream(OutputStream ostream, int syntax) {
-        super(ostream, false, Charset.defaultCharset());
+        super(ostream, false);
         
         switch (syntax) {
             case TMPX_SYNTAX:
