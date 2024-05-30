@@ -47,11 +47,11 @@ public class SpriteRender {
     }
     
     protected static void renderReverseSinglecolor(SpriteData dst, BufferedImage src, Palette pal) {
-        C64Color c = dst.getSpriteC64Color();
+        final int scRGB = pal.getColor(dst.getSpriteC64Color()).getRGB();
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++)
-                if (src.getRGB(x, y) == pal.getColor(c).getRGB())
+                if (src.getRGB(x, y) == scRGB)
                     dst.setPixel(x, y, SpriteColor.SpriteColor);
                 else
                     dst.setPixel(x, y, SpriteColor.BackgroundColor);
@@ -83,19 +83,25 @@ public class SpriteRender {
     
     protected static void renderReverseMulticolor(SpriteData dst, BufferedImage src, 
             Palette pal, C64Color multi0, C64Color multi1) {
-        C64Color color = dst.getSpriteC64Color();
+        final int spriteRGB = pal.getColor(dst.getSpriteC64Color()).getRGB();
+        final int multi0RGB = pal.getColor(multi0).getRGB();
+        final int multi1RGB = pal.getColor(multi1).getRGB();
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++) {
-                if (src.getRGB(x, y) == pal.getColor(color).getRGB()) {
+                if (x % 2 != 0)
+                    continue;
+                
+                int srcRGB = src.getRGB(x, y);
+                
+                if (srcRGB == spriteRGB)
                     dst.setPixel(x / 2, y, SpriteColor.SpriteColor);
-                } else if (src.getRGB(x, y) == pal.getColor(multi0).getRGB()) {
+                else if (srcRGB == multi0RGB)
                     dst.setPixel(x / 2, y, SpriteColor.Multi0Color);
-                } else if (src.getRGB(x, y) == pal.getColor(multi1).getRGB()) {
+                else if (srcRGB == multi1RGB)
                     dst.setPixel(x / 2, y, SpriteColor.Multi1Color);
-                } else {
+                else
                     dst.setPixel(x / 2, y, SpriteColor.BackgroundColor);
-                }
             }
     }
     

@@ -719,6 +719,13 @@ public class MainWindow extends JFrame {
             editorPanel.getSpriteEditor().flipVertically();
         });
         
+        menu.spriteMenu.reflectLeftMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().reflectLeft2Right();
+        });
+        menu.spriteMenu.reflectTopMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().reflectTop2Bottom();
+        });
+        
         menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
             if (rotateDialog.showDialog())
                 editorPanel.getSpriteEditor().rotate(rotateDialog.getRadians());
@@ -728,6 +735,10 @@ public class MainWindow extends JFrame {
         });
         menu.spriteMenu.rotate90CCWMenuItem.addActionListener(ae -> {
             editorPanel.getSpriteEditor().rotate(Math.toRadians(-90.0));
+        });
+        
+        menu.spriteMenu.negateMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().negate();
         });
 
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {

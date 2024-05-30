@@ -158,6 +158,24 @@ public class SpriteEditor extends JComponent {
         fireActionEvent();
     }
     
+    public void reflectLeft2Right() {
+        spriteData.reflectLeft2Right();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void reflectTop2Bottom() {
+        spriteData.reflectTop2Bottom();
+        refresh();
+        fireActionEvent();
+    }
+    
+    public void negate() {
+        spriteData.negate();
+        refresh();
+        fireActionEvent();
+    }
+    
     public void rotate(double angle) {
         if (spriteData.isMulticolor())
             SpriteRender.rotateMulticolor(spriteData, spriteImg, 

@@ -159,6 +159,31 @@ public class SpriteData implements Serializable {
         }
     }
     
+    public void reflectLeft2Right() {
+        for (int i = 0; i < 63; i += 3) {
+            if (isMulticolor()) {
+                data[i+2] = flipBitsMultiColor(data[i]);
+                data[i+1] = (byte)((data[i+1] & 0xf0) | (flipBitsMultiColor(data[i+1]) & 0x0f));
+            } else {
+                data[i+2] = flipBitsSingleColor(data[i]);
+                data[i+1] = (byte)((data[i+1] & 0xf0) | (flipBitsSingleColor(data[i+1]) & 0x0f));
+            }
+        }
+    }
+    
+    public void reflectTop2Bottom() {
+        for (int i = 0; i < 10; i++) {
+            data[60-i*3] = data[i*3];
+            data[60-i*3+1] = data[i*3+1];
+            data[60-i*3+2] = data[i*3+2];
+        }
+    }
+    
+    public void negate() {
+        for (int i = 0; i < 63; i++)
+            data[i] = (byte)(data[i] ^ 0xff);
+    }
+    
     private void multiSlideLeft(int times) {
         while (times > 0) {
             int temp[] = new int[3];
