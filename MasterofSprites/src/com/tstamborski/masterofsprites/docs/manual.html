@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--
+The MIT License
+
+Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<html>
+    <head>
+        <title>Master of Sprites Manual</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="Tobiasz Stamborski">
+    </head>
+    <body style="color: #55ff55; background: black; font: menu;">
+        <a name="top"></a>
+        <header>
+            <pre style="color: white;">
+ _   _    ___    ____   _____   _____   ____                                    
+| \_/ |  / _ \  |  __| |_   _| |  ___| | __ \                                   
+|  _  | | |_| | \ |__    | |   | |__   | ____|                                  
+| | | | |  _  |  \_  |   | |   | |___  | \ \_                                   
+|_| |_| |_| |_| |____|   |_|   |_____| |_| \_|                                  
+  ___    _____     ____   ____    ____    _   _____   _____   ____                                          
+ / _ \  |  ___|   |  __| | __ \  | __ \  | | |_   _| |  ___| |  __|                                     
+| | | | | |__     \ |__  | ____| | ____| | |   | |   | |__   \ |__                                    
+| |_| | |  __|     \_  | | |     | \ \_  | |   | |   | |___   \__ |                                     
+ \__ /  |_|       |____| |_|     |_| \_| |_|   |_|   |_____| |____|                                                                                                                       
+ _   _    ___    __    _   _    _    ___    _             
+| \_/ |  / _ \  |  \  | | | |  | |  / _ \  | |               
+|  _  | | |_| | | | \ | | | |  | | | |_| | | |             
+| | | | |  _  | | | \ | | | |__| | |  _  | | |___               
+|_| |_| |_| |_| |_|  \__|  \____/  |_| |_| |_____|
+            </pre>
+        </header>
+        
+        <nav>
+            <h2><a name="tableofcontents">1. Table of Contents</a></h2>
+            <ol>
+                <li><a href="#tableofcontents">Table of Contents</a></li>
+                <li><a href="#foreword">Foreword</a></li>
+                <li><a href="#commandlineparameters">Command Line Parameters</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ol>
+        </nav>
+        
+        <article>
+            <h2><a name="foreword">2. Foreword</a></h2>
+            <p style="color: white;">
+                <b>
+                    CAUTION! THIS MANUAL IS A DUMMY. IT DESCRIBES NOT EXISTING BY NOW
+                    FEATURES. IT IS ALSO NOT FINISHED AND INCOMPLETE. IT IS HERE ONLY
+                    FOR DEBUGGING PURPOSES. SORRY FOR INCONVENIENCE.
+                </b>
+            </p>
+            <p>
+                Welcome to Master of Sprites manual! Here you will find all info
+                about this program which you need. I describe here, mostly the more advanced
+                features of this program, but also the more obvious ones are described
+                at least shortly.
+            </p>
+            <p>
+                First I describe the menu of the application and its features. Next I
+                give you a few wise advices and tips & tricks about using Master
+                of Sprites. Last but not least, I describe command line parameters
+                of this program.
+            </p>
+            <p>
+                I hope I explain everything clearly but it is almost imposible to
+                do not assume some knowledge from the user of this program. So 
+                remember you can always ask the uncle Google if something is not clear
+                for you.
+            </p>
+            <p>
+                Besides that, In 'Conclusion' section of this manual, You can find
+                contact to the author. So if you have some more particular matter
+                or question - feel free to write on this address.
+            </p>
+            <p><a href="#top">Back to top.</a></p>
+        </article>
+        
+        <article>
+            <h2><a name="commandlineparameters">3. Command Line Parameters</a></h2>
+            <h3>Opening project from command line.</h3>
+            <p>
+                You can automatically open project if you specify its name/path
+                from command line:
+            </p>
+            <blockquote>
+            <span style="color: white;">java -jar MasterofSprites.jar <i>project_file</i></span>
+            </blockquote>
+            <p>
+                It is sometimes useful because on most modern operating systems,
+                then you can drag & drop project file into MasterofSprites.jar
+                file, and Master of Sprites will automatically open your project.
+            </p>
+            
+            <h3>Export from command line.</h3>
+            <p>
+                Master of Sprites offers option to export its projects from
+                command line. Syntax is following:
+            </p>
+            <blockquote>
+                <span style="color: white;">java -jar MasterofSprites.jar -e [format] <i>project_file</i> [-o <i>output_file</i>]</span>
+            </blockquote>
+            <p>
+                Avaible export formats are:
+            </p>
+            <ul>
+                <li>
+                    <strong>Raw format</strong> - leave <i>format</i> argument
+                    <b>empty</b> and Master of Sprites will export just same raw
+                    binary data of your sprites, without any additional informations.
+                </li>
+                <li>
+                    <strong>PRG file</strong> - specify <b>load address</b> of prg
+                    file as the <i>format</i> argument. Load address should be a
+                    <b>hexadecimal number</b> prefixed by <b>'$'</b> or <b>'0x'</b>.
+                </li>
+                <li>
+                    <strong>Assembler source code</strong> - specify <b>name of
+                    assembler</b> and Master of Sprites will write code compatible
+                    with syntax of specified assembler. Possible Choices are:
+                    <b>kickass</b>, <b>acme</b> or <b>tmpx</b>.
+                </li>
+            </ul>
+            <p>
+                If you do not specify output file then Master of Sprites will just
+                change extension of your project file to raw, prg or asm.
+            </p>
+            <p><a href="#top">Back to top.</a></p>
+        </article>
+        
+        <article>
+            <h2><a name="conclusion">4. Conclusion</a></h2>
+            <p>
+                Master of Sprites is a very cool sprite editor. I think you will
+                like it. If you want to share this program with others you are
+                very welcome. Just, <b>if it does not make a difference for you</b>,
+                please share a link to download from GitHub, instead of copy and
+                upload it somewhere else. This helps me to see how many people
+                are interested by my program. Thanks.
+            </p>
+            <p>
+                If you have any particular question or matter to me - feel free
+                to write on my e-mail address:
+                <a href="mailto:operatorteleksu@gmail.com">operatorteleksu@gmail.com</a>
+            </p>
+            <p><a href="#top">Back to top.</a></p>
+        </article>
+        
+        <br><br>
+    </body>
+</html>

@@ -355,15 +355,22 @@ class SpriteMenu extends JMenu {
 }
 
 class HelpMenu extends JMenu {
-    public JMenuItem aboutMenuItem;
+    public JMenuItem aboutMenuItem, manualMenuItem;
     
     public HelpMenu() {
         super("Help");
         
-        aboutMenuItem = new JMenuItem("About... ");
+        manualMenuItem = new JMenuItem("Manual...");
+        manualMenuItem.setMnemonic(KeyEvent.VK_M);
+        manualMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        manualMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/handbook16.png")));
+        
+        aboutMenuItem = new JMenuItem("About...");
         aboutMenuItem.setMnemonic(KeyEvent.VK_A);
         aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
         
+        add(manualMenuItem);
+        addSeparator();
         add(aboutMenuItem);
     }
 }

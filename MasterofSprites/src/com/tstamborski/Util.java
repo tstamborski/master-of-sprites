@@ -67,6 +67,7 @@ public class Util {
     
     public static void casualError(Exception ex, String description) {
         Logger.getLogger(Util.class.getName()).log(Level.WARNING, ex.getMessage(), ex);
+        
         if (description == null)
             showError(null, ex.getMessage());
         else

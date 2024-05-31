@@ -6,12 +6,14 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.AboutDialog;
+import com.tstamborski.ManualDialog;
 import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -42,6 +44,8 @@ public class MainWindow extends JFrame {
     private MainMenu menu;
 
     private AboutDialog aboutDialog;
+    private ManualDialog manDialog;
+    
     private ExportPRGDialog addressDialog;
     private AsmSyntaxDialog asmSyntaxDialog;
     private RotationDialog rotateDialog;
@@ -509,7 +513,15 @@ public class MainWindow extends JFrame {
                 "<html><i>Master of sprites, I'm pulling your strings<br>Twisting your mind and smashing your dreams<br></i><html>"
         );
         try {
-            aboutDialog.setApplicationLicense(getClass().getResourceAsStream("LICENSE"));
+            aboutDialog.setApplicationLicense(getClass().getResourceAsStream("docs/license.txt"));
+        } catch (IOException e) {
+            Util.showError(this, e.getMessage());
+        }
+        
+        try {
+            manDialog = new ManualDialog(this, getClass().getResourceAsStream("docs/manual.html"));
+            manDialog.setIconImage(
+                    new ImageIcon(getClass().getResource("icons/handbook16.png")).getImage());
         } catch (IOException e) {
             Util.showError(this, e.getMessage());
         }
@@ -741,6 +753,7 @@ public class MainWindow extends JFrame {
             editorPanel.getSpriteEditor().negate();
         });
 
+        menu.helpMenu.manualMenuItem.addActionListener((ae) -> manDialog.setVisible(true));
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {
             aboutDialog.setVisible(true);
         });
