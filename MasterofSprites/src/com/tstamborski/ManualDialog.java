@@ -60,7 +60,7 @@ public class ManualDialog extends JDialog {
     private final JTextPane textPane;
     private final JScrollPane scrollPane;
     private final JButton closeButton, back2TopButton;
-    private final JPanel centralPanel, southPanel;
+    private final JPanel southPanel;
     
     public ManualDialog(JFrame parent, InputStream istream) throws IOException {
         super(parent);
@@ -86,10 +86,7 @@ public class ManualDialog extends JDialog {
         scrollPane = new JScrollPane(textPane, 
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        
-        centralPanel = new JPanel();
-        centralPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-        centralPanel.add(scrollPane);
+        scrollPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
         
         southPanel = new JPanel();
         southPanel.setLayout(new FlowLayout());
@@ -97,7 +94,7 @@ public class ManualDialog extends JDialog {
         southPanel.add(closeButton);
         
         setLayout(new BorderLayout());
-        add(centralPanel, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
         add(southPanel, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(closeButton);
         setResizable(false);
@@ -120,7 +117,7 @@ public class ManualDialog extends JDialog {
                 int offset = e.getStartOffset();
                 try {
                     Rectangle rect = textPane.modelToView(offset);
-                    scrollPane.getViewport().setViewPosition(new Point(rect.x, rect.y));
+                    scrollPane.getViewport().setViewPosition(new Point(0, rect.y));
                 } catch (BadLocationException ex) {
                     Util.showError(this, ex.getMessage());
                 }
@@ -136,5 +133,13 @@ public class ManualDialog extends JDialog {
         });
         
         setLocationRelativeTo(parent);
+    }
+    
+    protected JTextPane getTextPane() {
+        return textPane;
+    }
+    
+    protected JScrollPane getScrollPane() {
+        return scrollPane;
     }
 }
