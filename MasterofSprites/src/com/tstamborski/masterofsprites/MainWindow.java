@@ -13,7 +13,6 @@ import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -39,6 +38,7 @@ public class MainWindow extends JFrame {
 
     private final JTabbedPane centralPane;
     private final MemoryPanel memoryPanel;
+    private final PreviewPanel previewPanel;
     private final EditorPanel editorPanel;
     private final StatusBar statusBar;
     private MainMenu menu;
@@ -60,7 +60,9 @@ public class MainWindow extends JFrame {
 
         centralPane = new JTabbedPane();
         memoryPanel = new MemoryPanel();
+        previewPanel = new PreviewPanel();
         centralPane.add("Memory", memoryPanel);
+        centralPane.add("Preview", previewPanel);
         editorPanel = new EditorPanel();
 
         statusBar = new StatusBar();
@@ -88,6 +90,8 @@ public class MainWindow extends JFrame {
                 menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection()));
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
+            previewPanel.setSelection(se.getSelection());
+            
             menu.editMenu.enableClipboardMenuItems(se.getSelection());
             menu.spriteMenu.enable(se.getSelection());
         });
@@ -180,6 +184,7 @@ public class MainWindow extends JFrame {
     private void reloadProject() {
         memoryPanel.setProject(project);
         editorPanel.setProject(project);
+        previewPanel.setProject(project);
         
         menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
         menu.spriteMenu.enable(memoryPanel.getMemoryView().getSelection());
