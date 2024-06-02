@@ -16,7 +16,7 @@ import javax.swing.SwingUtilities;
  */
 public class MasterofSprites {
     public static final String PROGRAM_NAME = "Master of Sprites";
-    public static final String PROGRAM_VERSION = "version 0.6";
+    public static final String PROGRAM_VERSION = "version 0.7";
     public static final String PROGRAM_COPYRIGHT = "Copyright (c) 2024 Tobiasz Stamborski";
     
     /**

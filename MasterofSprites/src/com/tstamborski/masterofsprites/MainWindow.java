@@ -13,16 +13,12 @@ import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
-import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -101,6 +97,7 @@ public class MainWindow extends JFrame {
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.reload();
+            previewPanel.reload();
             pushHistory();
         });
         memoryPanel.getMemoryView().addMouseListener(new MouseAdapter() {
@@ -139,13 +136,16 @@ public class MainWindow extends JFrame {
         
         editorPanel.addActionListener(ae -> {
             memoryPanel.getMemoryView().refresh();
+            previewPanel.reload();
             setSaved(false);
         });
         editorPanel.addPreviewListener(pe -> {
+            previewPanel.reload();
             setSaved(false);
         });
         editorPanel.getSpriteEditor().addActionListener(ae -> {
             memoryPanel.getMemoryView().refreshSelection();
+            previewPanel.reload(); //dobrzy by to bylo zoptymalizowac jakos
             pushHistory();
         });
         editorPanel.getSpriteEditor().addMouseListener(new MouseAdapter() {

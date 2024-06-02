@@ -145,7 +145,7 @@ public class EditorPanel extends JPanel {
                 editor.setOverlay(overlayCheckBox.isSelected());
             });
         overlayDistLabel = new JLabel("Overlay Distance:    ");
-        overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 255, 1));
+        overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 0, 256, 1));
         overlayDistSpinner.addChangeListener(che -> {
                 project.setOverlayDistance((Integer)overlayDistSpinner.getValue());
                 firePreviewEvent();
@@ -249,6 +249,10 @@ public class EditorPanel extends JPanel {
         return editor;
     }
     
+    public int getSpriteIndex() {
+        return selection.get(selectionIndex);
+    }
+    
     public final void setProject(SpriteProject proj) {
         this.project = proj;
         
@@ -256,6 +260,7 @@ public class EditorPanel extends JPanel {
             setMulti0C64Color(proj.getMulti0Color(), false);
             setMulti1C64Color(proj.getMulti1Color(), false);
             setBgC64Color(proj.getBgColor(), false);
+            overlayDistSpinner.setValue(proj.getOverlayDistance());
         }
         
         setSelection(null);

@@ -29,6 +29,7 @@ public class SpriteProject implements Serializable {
         
         workTime = new Time();
         defaultAddress = 0x3000;
+        overlayDistance = 8;
     }
     
     public static SpriteProject getNewProject(int quantity, boolean isMulticolor) {

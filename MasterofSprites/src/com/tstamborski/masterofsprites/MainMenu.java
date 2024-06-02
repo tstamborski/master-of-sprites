@@ -368,7 +368,7 @@ class ViewMenu extends JMenu {
         switchTabMenuItem.setMnemonic(KeyEvent.VK_S);
         switchTabMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         
-        runNewInstanceMenuItem = new JMenuItem("Run a New Instance");
+        runNewInstanceMenuItem = new JMenuItem("Run New Instance");
         runNewInstanceMenuItem.setMnemonic(KeyEvent.VK_R);
         runNewInstanceMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));

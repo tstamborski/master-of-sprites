@@ -31,15 +31,16 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.Timer;
 import javax.swing.border.BevelBorder;
 
 /**
@@ -48,7 +49,9 @@ import javax.swing.border.BevelBorder;
  */
 public class PreviewPanel extends JPanel {
     private final JPanel centralPanel, northPanel, southPanel;
+    private final JScrollPane scrollPane;
     
+    private final SpritePreview preview;
     private final JLabel arrangementLabel, zoomLabel;
     private final JComboBox arrangementBox;
     private final ArrangementComboBoxModel arrangementModel;
@@ -57,12 +60,12 @@ public class PreviewPanel extends JPanel {
     
     private final JButton nextButton, prevButton, stopButton;
     private final JToggleButton playButton, pauseButton;
-    //private final ButtonGroup playGroup;
     private final JSpinner frameCountSpinner, frameDelaySpinner;
     private final JLabel frameCountLabel, frameDelayLabel;
     
     private SpriteProject project;
     private ArrayList<Integer> requestedSelection, currentSelection;
+    private Timer timer;
     
     public PreviewPanel() {
         arrangementBox = new JComboBox(arrangementModel = new ArrangementComboBoxModel());
@@ -70,7 +73,7 @@ public class PreviewPanel extends JPanel {
         arrangementBox.setMaximumSize(arrangementBox.getMinimumSize());
         zoomSpinner = new JSpinner(new SpinnerNumberModel(4, 1, 16, 1));
         zoomSpinner.setMaximumSize(zoomSpinner.getMinimumSize());
-        arrangementLabel = new JLabel(" Arrengement: ");
+        arrangementLabel = new JLabel(" Arrangement: ");
         arrangementLabel.setDisplayedMnemonic(KeyEvent.VK_A);
         arrangementLabel.setLabelFor(arrangementBox);
         zoomLabel = new JLabel(" Zoom: ");
@@ -81,15 +84,13 @@ public class PreviewPanel extends JPanel {
                 false
         );
         lockButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/lock16.png")));
+        lockButton.setMnemonic(KeyEvent.VK_BACK_QUOTE);
         
         prevButton = new JButton(new ImageIcon(getClass().getResource("icons/prev16.png")));
         playButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/play16.png")));
         pauseButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/pause16.png")));
         stopButton = new JButton(new ImageIcon(getClass().getResource("icons/stop16.png")));
         nextButton = new JButton(new ImageIcon(getClass().getResource("icons/next16.png")));
-        //playGroup = new ButtonGroup();
-        //playGroup.add(playButton);
-        //playGroup.add(pauseButton);
         frameCountSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 16, 1));
         frameCountSpinner.setMaximumSize(frameCountSpinner.getMinimumSize());
         frameDelaySpinner = new JSpinner(new SpinnerNumberModel(100, 20, 2000, 20));
@@ -101,9 +102,18 @@ public class PreviewPanel extends JPanel {
         frameDelayLabel.setDisplayedMnemonic(KeyEvent.VK_D);
         frameDelayLabel.setLabelFor(frameDelaySpinner);
         
+        preview = new SpritePreview();
+        
         centralPanel = new JPanel();
         centralPanel.setLayout(new GridBagLayout());
         centralPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        centralPanel.add(preview);
+        
+        scrollPane = new JScrollPane(
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
+            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
+        );
+        scrollPane.setViewportView(centralPanel);
         
         northPanel = new JPanel();
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.X_AXIS));
@@ -128,19 +138,41 @@ public class PreviewPanel extends JPanel {
         southPanel.add(frameDelaySpinner);
         
         setLayout(new BorderLayout());
-        add(centralPanel, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
         add(northPanel, BorderLayout.NORTH);
         add(southPanel, BorderLayout.SOUTH);
         
-        lockButton.addActionListener(ae->setSelection(requestedSelection));
+        timer = new Timer(100, ae->preview.nextFrame());
+        frameDelaySpinner.addChangeListener(che->timer.setDelay((Integer)frameDelaySpinner.getValue()));
+        frameCountSpinner.addChangeListener(che->{
+            preview.setFrameCount((Integer)frameCountSpinner.getValue());
+            preview.reload();
+        });
+        arrangementBox.addActionListener(ae->{
+            Arrangement a = (Arrangement)arrangementBox.getSelectedItem();
+            if (a != null && a.size() <= currentSelection.size()) {
+                preview.setArrangement(a);
+                preview.reload();
+            }
+        });
+        zoomSpinner.addChangeListener(che->{
+            preview.setZoom((Integer)zoomSpinner.getValue());
+            preview.reload();
+        });
         
+        lockButton.addActionListener(ae->setSelection(requestedSelection));
         playButton.addActionListener(ae->play());
         pauseButton.addActionListener(ae->pause());
         stopButton.addActionListener(ae->stop());
+        nextButton.addActionListener(ae->nextFrame());
+        prevButton.addActionListener(ae->prevFrame());
     }
     
     public void setProject(SpriteProject p) {
         this.project = p;
+        
+        preview.setProject(p);
+        preview.reload();
     }
     
     public void setSelection(ArrayList<Integer> s) {
@@ -153,29 +185,45 @@ public class PreviewPanel extends JPanel {
                 arrangementModel.setSelectionSize(0);
             else
                 arrangementModel.setSelectionSize(currentSelection.size());
+            
+            preview.setSelection(currentSelection);
+            preview.reload();
         }
+    }
+    
+    public void reload() {
+        preview.reload();
     }
     
     public void play() {
         pauseButton.setSelected(false);
         playButton.setSelected(true);
+        
+        timer.start();
     }
     
     public void pause() {
         playButton.setSelected(false);
         pauseButton.setSelected(true);
+        
+        timer.stop();
     }
     
     public void stop() {
         playButton.setSelected(false);
         pauseButton.setSelected(false);
+        
+        timer.stop();
+        preview.setFrameIndex(0);
     }
     
     public void nextFrame() {
-        
+        if (preview.getFrameIndex() < preview.getFrameCount())
+            preview.nextFrame();
     }
     
     public void prevFrame() {
-        
+        if (preview.getFrameIndex() > 0)
+            preview.prevFrame();
     }
 }

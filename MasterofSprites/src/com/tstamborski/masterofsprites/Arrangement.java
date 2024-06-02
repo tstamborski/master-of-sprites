@@ -38,6 +38,10 @@ public class Arrangement extends Dimension {
         return (width == 0 || height == 0);
     }
 
+    public int size() {
+        return width*height;
+    }
+    
     @Override
     public String toString() {
         if (isNone())
