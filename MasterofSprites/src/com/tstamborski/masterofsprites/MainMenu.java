@@ -40,6 +40,7 @@ class MainMenu extends JMenuBar {
     public FileMenu fileMenu;
     public EditMenu editMenu;
     public SpriteMenu spriteMenu;
+    public ViewMenu viewMenu;
     public HelpMenu helpMenu;
     
     public MainMenu() {
@@ -49,12 +50,15 @@ class MainMenu extends JMenuBar {
         editMenu.setMnemonic(KeyEvent.VK_E);
         spriteMenu = new SpriteMenu();
         spriteMenu.setMnemonic(KeyEvent.VK_S);
+        viewMenu = new ViewMenu();
+        viewMenu.setMnemonic(KeyEvent.VK_V);
         helpMenu = new HelpMenu();
         helpMenu.setMnemonic(KeyEvent.VK_H);
         
         add(fileMenu);
         add(editMenu);
         add(spriteMenu);
+        add(viewMenu);
         add(helpMenu);
     }
 }
@@ -351,6 +355,28 @@ class SpriteMenu extends JMenu {
             if (item != null)
                 item.setEnabled(b);
         }
+    }
+}
+
+class ViewMenu extends JMenu {
+    public JMenuItem switchTabMenuItem, runNewInstanceMenuItem;
+    
+    public ViewMenu() {
+        super("View");
+        
+        switchTabMenuItem = new JMenuItem("Switch Memory / Preview");
+        switchTabMenuItem.setMnemonic(KeyEvent.VK_S);
+        switchTabMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+        
+        runNewInstanceMenuItem = new JMenuItem("Run a New Instance");
+        runNewInstanceMenuItem.setMnemonic(KeyEvent.VK_R);
+        runNewInstanceMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 
+                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        runNewInstanceMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
+        
+        add(runNewInstanceMenuItem);
+        addSeparator();
+        add(switchTabMenuItem);
     }
 }
 

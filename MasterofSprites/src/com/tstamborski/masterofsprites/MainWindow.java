@@ -13,12 +13,16 @@ import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -757,6 +761,10 @@ public class MainWindow extends JFrame {
         menu.spriteMenu.negateMenuItem.addActionListener(ae -> {
             editorPanel.getSpriteEditor().negate();
         });
+        
+        menu.viewMenu.switchTabMenuItem.addActionListener(ae -> 
+                centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2));
+        menu.viewMenu.runNewInstanceMenuItem.addActionListener(ae -> MasterofSprites.runNewInstance());
 
         menu.helpMenu.manualMenuItem.addActionListener((ae) -> manDialog.setVisible(true));
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {
