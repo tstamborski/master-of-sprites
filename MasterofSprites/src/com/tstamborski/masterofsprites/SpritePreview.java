@@ -111,11 +111,11 @@ public class SpritePreview extends JComponent {
     }
     
     public int getFrameIndex() {
-        return frameIndex;
+        return this.frameIndex;
     }
     
     public int getFrameCount() {
-        return frameCount;
+        return this.frameCount;
     }
     
     public void nextFrame() {

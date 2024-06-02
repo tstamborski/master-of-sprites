@@ -171,7 +171,7 @@ public class PreviewPanel extends JPanel {
     public void setProject(SpriteProject p) {
         this.project = p;
         
-        preview.setProject(p);
+        preview.setProject(this.project);
         preview.reload();
     }
     
@@ -218,7 +218,7 @@ public class PreviewPanel extends JPanel {
     }
     
     public void nextFrame() {
-        if (preview.getFrameIndex() < preview.getFrameCount())
+        if (preview.getFrameIndex() < preview.getFrameCount() - 1)
             preview.nextFrame();
     }
     

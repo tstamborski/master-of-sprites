@@ -19,6 +19,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
@@ -204,7 +208,17 @@ public class MainWindow extends JFrame {
     }
     
     public final void newFile() {
-        project = SpriteProject.getNewProject(64, false);
+        Calendar calendar = Calendar.getInstance();
+        
+        if (calendar.get(Calendar.MONTH) == Calendar.FEBRUARY && 
+                calendar.get(Calendar.DAY_OF_MONTH) == 14)
+            try {
+                project = SpriteProject.importPRGData(getClass().getResourceAsStream("easteregg/valentine.prg"));
+            } catch (IOException ex) {
+                project = SpriteProject.getNewProject(64, false);
+            }
+        else
+            project = SpriteProject.getNewProject(64, false);
         
         newHistory();
         file = null;
