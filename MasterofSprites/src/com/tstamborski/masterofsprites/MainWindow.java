@@ -246,9 +246,9 @@ public class MainWindow extends JFrame {
                 return;
             }
             
+            file = projectDialog.getSelectedFile();
             newHistory();
             setSaved(true);
-            file = projectDialog.getSelectedFile();
             reloadProject();
             updateTitlebar();
             
@@ -654,6 +654,7 @@ public class MainWindow extends JFrame {
         history.undo(project);
         editorPanel.reload();
         memoryPanel.reload();
+        previewPanel.reload();
         
         menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
@@ -663,6 +664,7 @@ public class MainWindow extends JFrame {
         history.redo(project);
         editorPanel.reload();
         memoryPanel.reload();
+        previewPanel.reload();
         
         menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
