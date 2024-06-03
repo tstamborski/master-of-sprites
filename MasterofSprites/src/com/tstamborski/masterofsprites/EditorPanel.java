@@ -67,7 +67,6 @@ public class EditorPanel extends JPanel {
         layoutControls();
         
         setProject(null);
-        setSelection(null);
     }
     
     private void createControls() {

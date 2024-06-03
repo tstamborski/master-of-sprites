@@ -142,6 +142,8 @@ public class PreviewPanel extends JPanel {
         add(northPanel, BorderLayout.NORTH);
         add(southPanel, BorderLayout.SOUTH);
         
+        currentSelection = new ArrayList<>();
+        
         timer = new Timer(100, ae->preview.nextFrame());
         frameDelaySpinner.addChangeListener(che->timer.setDelay((Integer)frameDelaySpinner.getValue()));
         frameCountSpinner.addChangeListener(che->{
@@ -172,6 +174,7 @@ public class PreviewPanel extends JPanel {
         this.project = p;
         
         preview.setProject(this.project);
+        setSelection(null);
         preview.reload();
     }
     
@@ -179,7 +182,9 @@ public class PreviewPanel extends JPanel {
         requestedSelection = s;
         
         if (!lockButton.isSelected()) {
-            currentSelection = requestedSelection;
+            currentSelection.clear();
+            if (requestedSelection != null)
+                requestedSelection.forEach(i->currentSelection.add(i));
             
             if (currentSelection == null)
                 arrangementModel.setSelectionSize(0);
