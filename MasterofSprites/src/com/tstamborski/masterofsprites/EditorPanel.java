@@ -143,12 +143,14 @@ public class EditorPanel extends JPanel {
         overlayCheckBox.addActionListener(ae -> {
                 editor.setOverlay(overlayCheckBox.isSelected());
             });
-        overlayDistLabel = new JLabel("Overlay Distance:    ");
         overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 128, 1));
         overlayDistSpinner.addChangeListener(che -> {
                 project.setOverlayDistance((Integer)overlayDistSpinner.getValue());
                 firePreviewEvent();
             });
+        overlayDistLabel = new JLabel("Overlay Distance:    ");
+        overlayDistLabel.setDisplayedMnemonic('D');
+        overlayDistLabel.setLabelFor(overlayDistSpinner);
     }
     
     private void layoutControls() {

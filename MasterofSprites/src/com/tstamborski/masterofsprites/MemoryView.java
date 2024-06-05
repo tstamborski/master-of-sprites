@@ -53,8 +53,6 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         selection = new ArrayList<>();
         sprites = new ArrayList<>();
-        //createSelectionImage();
-        //createGridImage();
         
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
         actionListeners = new ArrayList<>();
@@ -287,29 +285,26 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     
     @Override
     protected void processMouseEvent(MouseEvent e) {
-        super.processMouseEvent(e); //To change body of generated methods, choose Tools | Templates.
+        super.processMouseEvent(e);
         
         Integer new_selection, old_selection;
         
         if (project == null || project.getMemoryData() == null)
             return;
-        if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1) {
-            if (e.getID() == MouseEvent.MOUSE_PRESSED && e.getButton() == MouseEvent.BUTTON3)
-                popup.show(this, e.getX(), e.getY());
+        if (e.getID() != MouseEvent.MOUSE_PRESSED || e.getButton() != MouseEvent.BUTTON1)
             return;
-        }
         
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
             if (!e.isShiftDown()) { //bez klawisza shift
                 new_selection = getIndexAt(e.getX(),e.getY());
                 
-                if (e.isControlDown()) {
+                if (e.isControlDown()) { //control wcisniety
                     if (!selection.contains(new_selection))
                         selection.add(new_selection);
                     else
                         selection.remove(new_selection);
                 }
-                else {
+                else { //bez klawisza control
                     selection.clear();
                     selection.add(new_selection);
                 }
@@ -372,6 +367,8 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         popup.deleteMenuItem.addActionListener((ae) -> {
             delete();
         });
+        
+        setComponentPopupMenu(popup);
     }
     
     private void createSelectionImage() {
