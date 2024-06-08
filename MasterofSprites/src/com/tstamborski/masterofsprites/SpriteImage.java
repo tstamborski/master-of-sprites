@@ -6,7 +6,6 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.C64Color;
-import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import java.awt.image.*;
 
@@ -31,13 +30,10 @@ public class SpriteImage extends BufferedImage {
         
         multi0_color = C64Color.LightGray;
         multi1_color = C64Color.White;
-        
-        redraw();
     }
     
     public void setPalette(Palette palette) {
         this.palette = palette;
-        redraw();
     }
     
     public final void redraw() {
@@ -47,21 +43,12 @@ public class SpriteImage extends BufferedImage {
             SpriteRender.renderSinglecolor(this, sprite_data, palette);
     }
     
-    public SpriteColor getPixel(int x, int y) {
-        return sprite_data.getPixel(x, y);
-    }
-    
-    public void setPixel(int x, int y, SpriteColor color) {
-        sprite_data.setPixel(x, y, color);
-    }
-    
     public C64Color getSpriteColor() {
         return sprite_data.getSpriteC64Color();
     }
     
     public void setSpriteColor(C64Color c) {
         sprite_data.setSpriteC64Color(c);
-        redraw();
     }
     
     public C64Color getMulti0Color() {
@@ -70,7 +57,6 @@ public class SpriteImage extends BufferedImage {
     
     public void setMulti0Color(C64Color c) {
         multi0_color = c;
-        redraw();
     }
     
     public C64Color getMulti1Color() {
@@ -79,6 +65,5 @@ public class SpriteImage extends BufferedImage {
     
     public void setMulti1Color(C64Color c) {
         multi1_color = c;
-        redraw();
     }
 }

@@ -33,6 +33,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private int columns;
     private boolean grid;
     private Palette palette;
+    private boolean refreshRequest, reloadRequest;
     
     private SpriteProject project;
     private final ArrayList<SpriteImage> sprites;
@@ -151,7 +152,10 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             while (project.getMemoryData().size() != quantity) {
                 SpriteData new_sdata = SpriteData.getEmpty(C64Color.Green, false, false);
                 project.getMemoryData().add(new_sdata);
-                sprites.add(new SpriteImage(new_sdata, palette));
+                
+                SpriteImage si = new SpriteImage(new_sdata, palette);
+                si.redraw();
+                sprites.add(si);
             }
         }
         
@@ -172,12 +176,23 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
     
     public void reload() {
+        reloadRequest = true;
+        
+        if (!isVisible())
+            return;
+        
         sprites.clear();
         for (int i = 0; i < project.getMemoryData().size(); i++) {
-            sprites.add(new SpriteImage(project.getMemoryData().get(i), palette));
+            SpriteImage si = new SpriteImage(project.getMemoryData().get(i), palette);
+            si.setMulti0Color(project.getMulti0Color());
+            si.setMulti1Color(project.getMulti1Color());
+            si.redraw();
+            sprites.add(si);
         }
         setPreferredSize();
         repaint();
+        
+        reloadRequest = false;
     }
 
     public SpriteProject getProject() {
@@ -189,14 +204,12 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         
         sprites.clear();
         for (int i = 0; i < project.getMemoryData().size(); i++) {
-            sprites.add(new SpriteImage(project.getMemoryData().get(i), palette));
+            SpriteImage si = new SpriteImage(project.getMemoryData().get(i), palette);
+            si.setMulti0Color(project.getMulti0Color());
+            si.setMulti1Color(project.getMulti1Color());
+            si.redraw();
+            sprites.add(si);
         }
-        
-        sprites.forEach(s->{
-            s.setMulti0Color(project.getMulti0Color());
-            s.setMulti1Color(project.getMulti1Color());
-            s.setPalette(palette);
-        });
         
         selection.clear();
         popup.enable(selection);
@@ -440,6 +453,11 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     }
 
     public void refresh() {
+        refreshRequest = true;
+        
+        if (!isVisible())
+            return;
+        
         createUtilImages();
         sprites.forEach((si)->{
             si.setMulti0Color(project.getMulti0Color());
@@ -447,11 +465,31 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             si.redraw();
         });
         repaint();
+        
+        refreshRequest = false;
     }
     
     public void refreshSelection() {
+        refreshRequest = true;
+        
+        if (!isVisible())
+            return;
+        
         selection.forEach(i->sprites.get(i).redraw());
         repaint();
+        
+        refreshRequest = false;
+    }
+
+    @Override
+    public void setVisible(boolean aFlag) {
+        super.setVisible(aFlag);
+        
+        if (aFlag)
+            if (reloadRequest)
+                reload();
+            else if (refreshRequest)
+                refresh();
     }
     
     @Override

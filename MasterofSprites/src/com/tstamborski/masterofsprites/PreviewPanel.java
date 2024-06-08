@@ -173,6 +173,9 @@ public class PreviewPanel extends JPanel {
     public void setProject(SpriteProject p) {
         this.project = p;
         
+        lockButton.setSelected(false);
+        stop();
+        
         preview.setProject(this.project);
         setSelection(null);
         preview.reload();

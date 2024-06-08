@@ -38,12 +38,14 @@ import java.awt.image.BufferedImage;
  */
 public class SpriteRender {
     public static void renderSinglecolor(BufferedImage dst, SpriteData src, Palette pal) {
+        int spriteRGB = pal.getColor(src.getSpriteC64Color()).getRGB();
+        
         clearImage(dst);
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++)
                 if (src.getPixel(x, y) == SpriteColor.SpriteColor)
-                    dst.setRGB(x, y, pal.getColor(src.getSpriteC64Color()).getRGB());
+                    dst.setRGB(x, y, spriteRGB);
     }
     
     protected static void renderReverseSinglecolor(SpriteData dst, BufferedImage src, Palette pal) {
@@ -58,22 +60,26 @@ public class SpriteRender {
     }
     
     public static void renderMulticolor(BufferedImage dst, SpriteData src, Palette pal, C64Color multi0, C64Color multi1) {
+        int spriteRGB = pal.getColor(src.getSpriteC64Color()).getRGB();
+        int multi0RGB = pal.getColor(multi0).getRGB();
+        int multi1RGB = pal.getColor(multi1).getRGB();
+        
         clearImage(dst);
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++) {
                 switch (src.getPixel(x, y)) {
                     case SpriteColor:
-                        dst.setRGB(x*2, y, pal.getColor(src.getSpriteC64Color()).getRGB());
-                        dst.setRGB(x*2+1, y, pal.getColor(src.getSpriteC64Color()).getRGB());
+                        dst.setRGB(x*2, y, spriteRGB);
+                        dst.setRGB(x*2+1, y, spriteRGB);
                         break;
                     case Multi0Color:
-                        dst.setRGB(x*2, y, pal.getColor(multi0).getRGB());
-                        dst.setRGB(x*2+1, y, pal.getColor(multi0).getRGB());
+                        dst.setRGB(x*2, y, multi0RGB);
+                        dst.setRGB(x*2+1, y, multi0RGB);
                         break;
                     case Multi1Color:
-                        dst.setRGB(x*2, y, pal.getColor(multi1).getRGB());
-                        dst.setRGB(x*2+1, y, pal.getColor(multi1).getRGB());
+                        dst.setRGB(x*2, y, multi1RGB);
+                        dst.setRGB(x*2+1, y, multi1RGB);
                         break;
                     default:
                         break;
@@ -137,5 +143,7 @@ public class SpriteRender {
         
         g.setComposite(AlphaComposite.Clear);
         g.fillRect(0, 0, img.getWidth(), img.getHeight());
+        
+        g.dispose();
     }
 }

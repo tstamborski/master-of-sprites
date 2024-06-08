@@ -321,7 +321,7 @@ class SpriteMenu extends JMenu {
         
         negateMenuItem = new JMenuItem("Negate");
         negateMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)
+                KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK)
         );
         negateMenuItem.setMnemonic(KeyEvent.VK_N);
         negateMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/film16.png")));
@@ -369,8 +369,8 @@ class ViewMenu extends JMenu {
         switchTabMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         
         runNewInstanceMenuItem = new JMenuItem("Run New Instance");
-        runNewInstanceMenuItem.setMnemonic(KeyEvent.VK_R);
-        runNewInstanceMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, 
+        runNewInstanceMenuItem.setMnemonic(KeyEvent.VK_N);
+        runNewInstanceMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, 
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         runNewInstanceMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
         

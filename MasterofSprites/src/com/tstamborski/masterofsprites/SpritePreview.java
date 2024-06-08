@@ -150,6 +150,7 @@ public class SpritePreview extends JComponent {
             SpriteImage si = new SpriteImage(sd, palette);
             si.setMulti0Color(project.getMulti0Color());
             si.setMulti1Color(project.getMulti1Color());
+            si.redraw();
             images[i].add(si);
             
             while (sd != null && images[i].size() <= 8 && sd.isOverlay()) {
@@ -163,6 +164,7 @@ public class SpritePreview extends JComponent {
                 si = new SpriteImage(sd, palette);
                 si.setMulti0Color(project.getMulti0Color());
                 si.setMulti1Color(project.getMulti1Color());
+                si.redraw();
                 images[i].add(si);
             }
         }

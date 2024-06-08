@@ -193,6 +193,7 @@ public class SpriteEditor extends JComponent {
         spriteImg = new SpriteImage(data, palette);
         spriteImg.setMulti0Color(multi0Color);
         spriteImg.setMulti1Color(multi1Color);
+        spriteImg.redraw();
         
         repaint();
     }
@@ -208,6 +209,7 @@ public class SpriteEditor extends JComponent {
     public void setPalette(Palette palette) {
         this.palette = palette;
         spriteImg = new SpriteImage(spriteData, palette);
+        spriteImg.redraw();
         repaint();
     }
 
@@ -236,6 +238,7 @@ public class SpriteEditor extends JComponent {
             return;
         
         spriteImg.setMulti0Color(color);
+        spriteImg.redraw();
         repaint();
     }
     
@@ -246,6 +249,7 @@ public class SpriteEditor extends JComponent {
             return;
         
         spriteImg.setMulti1Color(color);
+        spriteImg.redraw();
         repaint();
     }
     
