@@ -55,7 +55,7 @@ public class MainWindow extends JFrame {
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
 
     public MainWindow() {
-        setIconImage(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("icons/commodore-puppet48.png")).getImage());
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -525,7 +525,7 @@ public class MainWindow extends JFrame {
 
     private void createCustomDialogs() {
         aboutDialog = new AboutDialog(this);
-        aboutDialog.setApplicationIcon(new ImageIcon(getClass().getResource("icons/commodore-tool32.png")));
+        aboutDialog.setApplicationIcon(new ImageIcon(getClass().getResource("icons/commodore-puppet48.png")));
         aboutDialog.setApplicationName(MasterofSprites.PROGRAM_NAME);
         aboutDialog.setApplicationVersion(MasterofSprites.PROGRAM_VERSION);
         aboutDialog.setApplicationCopyright(MasterofSprites.PROGRAM_COPYRIGHT);

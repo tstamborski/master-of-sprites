@@ -302,7 +302,7 @@ class SpriteMenu extends JMenu {
         
         rotateMenuItem = new JMenuItem("Rotate...");
         rotateMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+                KeyStroke.getKeyStroke(KeyEvent.VK_8, KeyEvent.CTRL_DOWN_MASK));
         rotateMenuItem.setMnemonic(KeyEvent.VK_R);
         
         rotate90CWMenuItem = new JMenuItem("Rotate 90° CW");
