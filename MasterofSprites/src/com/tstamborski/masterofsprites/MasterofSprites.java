@@ -36,6 +36,7 @@ public class MasterofSprites {
         cmdArray[0] = System.getProperty("java.home") + 
                 File.separator + "bin" +
                 File.separator + "java";
+        
         cmdArray[1] = "-jar";
             
         try {

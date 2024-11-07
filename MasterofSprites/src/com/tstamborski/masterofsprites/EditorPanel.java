@@ -92,17 +92,17 @@ public class EditorPanel extends JPanel {
         nextButton.addActionListener((ae)->setSprite(++selectionIndex));
         
         slideUpButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
-        slideUpButton.addActionListener(ae -> editor.slideUp());
+        slideUpButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.slideUp()));
         slideDownButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-down16.png")));
-        slideDownButton.addActionListener(ae -> editor.slideDown());
+        slideDownButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.slideDown()));
         slideLeftButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-left16.png")));
-        slideLeftButton.addActionListener(ae -> editor.slideLeft());
+        slideLeftButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.slideLeft()));
         slideRightButton = new JButton(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
-        slideRightButton.addActionListener(ae -> editor.slideRight());
+        slideRightButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.slideRight()));
         flipHorzButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
-        flipHorzButton.addActionListener(ae -> editor.flipHorizontally());
+        flipHorzButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.flipHorizontally()));
         flipVertButton = new JButton(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
-        flipVertButton.addActionListener(ae -> editor.flipVertically());
+        flipVertButton.addActionListener(ae -> editor.onCurrentSpriteData((sd)->sd.flipVertically()));
         
         sprColorButton = new JRadioButton("Sprite Color");
         sprColorButton.setSelected(true);

@@ -734,30 +734,30 @@ public class MainWindow extends JFrame {
         });
         
         menu.spriteMenu.slideUpMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().slideUp();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideUp());
         });
         menu.spriteMenu.slideDownMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().slideDown();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideDown());
         });
         menu.spriteMenu.slideLeftMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().slideLeft();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideLeft());
         });
         menu.spriteMenu.slideRightMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().slideRight();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideRight());
         });
         
         menu.spriteMenu.flipHorzMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().flipHorizontally();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.flipHorizontally());
         });
         menu.spriteMenu.flipVertMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().flipVertically();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.flipVertically());
         });
         
         menu.spriteMenu.reflectLeftMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().reflectLeft2Right();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.reflectLeft2Right());
         });
         menu.spriteMenu.reflectTopMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().reflectTop2Bottom();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.reflectTop2Bottom());
         });
         
         menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
@@ -772,7 +772,7 @@ public class MainWindow extends JFrame {
         });
         
         menu.spriteMenu.negateMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().negate();
+            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.negate());
         });
         
         menu.viewMenu.switchTabMenuItem.addActionListener(ae -> 

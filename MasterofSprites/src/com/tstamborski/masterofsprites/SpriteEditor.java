@@ -122,56 +122,8 @@ public class SpriteEditor extends JComponent {
         repaint();
     }
     
-    public void slideUp() {
-        spriteData.slideUp();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void slideDown() {
-        spriteData.slideDown();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void slideLeft() {
-        spriteData.slideLeft();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void slideRight() {
-        spriteData.slideRight();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void flipHorizontally() {
-        spriteData.flipHorizontally();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void flipVertically() {
-        spriteData.flipVertically();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void reflectLeft2Right() {
-        spriteData.reflectLeft2Right();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void reflectTop2Bottom() {
-        spriteData.reflectTop2Bottom();
-        refresh();
-        fireActionEvent();
-    }
-    
-    public void negate() {
-        spriteData.negate();
+    public void onCurrentSpriteData(SpriteDataOperation op) {
+        op.performOperation(spriteData);
         refresh();
         fireActionEvent();
     }
