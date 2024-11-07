@@ -94,7 +94,8 @@ public class MainWindow extends JFrame {
             previewPanel.setSelection(se.getSelection());
             
             menu.editMenu.enableClipboardMenuItems(se.getSelection());
-            menu.spriteMenu.enable(se.getSelection());
+            menu.spriteMenu.enableItems(se.getSelection());
+            menu.selectionMenu.enableItems(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.reload();
@@ -192,7 +193,8 @@ public class MainWindow extends JFrame {
         previewPanel.setProject(project);
         
         menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
-        menu.spriteMenu.enable(memoryPanel.getMemoryView().getSelection());
+        menu.spriteMenu.enableItems(memoryPanel.getMemoryView().getSelection());
+        menu.selectionMenu.enableItems(memoryPanel.getMemoryView().getSelection());
     }
     
     private void updateTitlebar() {

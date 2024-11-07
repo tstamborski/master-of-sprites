@@ -40,6 +40,7 @@ class MainMenu extends JMenuBar {
     public FileMenu fileMenu;
     public EditMenu editMenu;
     public SpriteMenu spriteMenu;
+    public SelectionMenu selectionMenu;
     public ViewMenu viewMenu;
     public HelpMenu helpMenu;
     
@@ -50,6 +51,8 @@ class MainMenu extends JMenuBar {
         editMenu.setMnemonic(KeyEvent.VK_E);
         spriteMenu = new SpriteMenu();
         spriteMenu.setMnemonic(KeyEvent.VK_S);
+        selectionMenu = new SelectionMenu();
+        selectionMenu.setMnemonic(KeyEvent.VK_L);
         viewMenu = new ViewMenu();
         viewMenu.setMnemonic(KeyEvent.VK_V);
         helpMenu = new HelpMenu();
@@ -58,6 +61,7 @@ class MainMenu extends JMenuBar {
         add(fileMenu);
         add(editMenu);
         add(spriteMenu);
+        add(selectionMenu);
         add(viewMenu);
         add(helpMenu);
     }
@@ -344,17 +348,89 @@ class SpriteMenu extends JMenu {
         add(negateMenuItem);
     }
     
-    public void enable(ArrayList<Integer> selection) {
-        enable(!selection.isEmpty());
+    public void enableItems(ArrayList<Integer> selection) {
+        enableItems(!selection.isEmpty());
     }
     
-    @Override
-    public void enable(boolean b) {
+    public void enableItems(boolean b) {
         for (int i = 0; i < getItemCount(); i++) {
             JMenuItem item = getItem(i);
             if (item != null)
                 item.setEnabled(b);
         }
+    }
+}
+
+class SelectionMenu extends JMenu {
+    public JMenuItem selectAllMenuItem, selectNoneMenuItem, invertMenuItem;
+    public JMenuItem shiftRightMenuItem, shiftLeftMenuItem;
+    public JMenuItem applySpriteColorMenuItem, applyMulticolorMenuItem, applyOverlayMenuItem;
+    
+    public SelectionMenu() {
+        super("Selection");
+        
+        selectAllMenuItem = new JMenuItem("Select All");
+        selectAllMenuItem.setMnemonic(KeyEvent.VK_A);
+        selectAllMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, KeyEvent.CTRL_DOWN_MASK));
+        selectAllMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/selection16.png")));
+        
+        selectNoneMenuItem = new JMenuItem("Select None");
+        selectNoneMenuItem.setMnemonic(KeyEvent.VK_N);
+        selectNoneMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
+                KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
+        selectNoneMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cross-red-small16.png")));
+        
+        invertMenuItem = new JMenuItem("Invert Selection");
+        invertMenuItem.setMnemonic(KeyEvent.VK_I);
+        invertMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.CTRL_DOWN_MASK));
+        invertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/invert16.png")));
+        
+        shiftRightMenuItem = new JMenuItem("Shift Selection Forward");
+        shiftRightMenuItem.setMnemonic(KeyEvent.VK_F);
+        shiftRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK));
+        shiftRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/increment16.png")));
+        
+        shiftLeftMenuItem = new JMenuItem("Shift Selection Backward");
+        shiftLeftMenuItem.setMnemonic(KeyEvent.VK_B);
+        shiftLeftMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, KeyEvent.CTRL_DOWN_MASK));
+        shiftLeftMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/decrement16.png")));
+        
+        applySpriteColorMenuItem = new JMenuItem("Apply Sprite Color...");
+        applySpriteColorMenuItem.setMnemonic(KeyEvent.VK_C);
+        applySpriteColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
+        applySpriteColorMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/palette16.png")));
+        
+        applyMulticolorMenuItem = new JMenuItem("Apply Multicolor Mode");
+        applyMulticolorMenuItem.setMnemonic(KeyEvent.VK_M);
+        applyMulticolorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+        
+        applyOverlayMenuItem = new JMenuItem("Apply Overlay Flag");
+        applyOverlayMenuItem.setMnemonic(KeyEvent.VK_O);
+        applyOverlayMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+        
+        add(selectAllMenuItem);
+        add(selectNoneMenuItem);
+        add(invertMenuItem);
+        addSeparator();
+        add(shiftRightMenuItem);
+        add(shiftLeftMenuItem);
+        addSeparator();
+        add(applySpriteColorMenuItem);
+        add(applyMulticolorMenuItem);
+        add(applyOverlayMenuItem);
+    }
+    
+    public void enableItems(ArrayList<Integer> selection) {
+        enableItems(!selection.isEmpty());
+    }
+    
+    public void enableItems(boolean b) {
+        shiftRightMenuItem.setEnabled(b);
+        shiftLeftMenuItem.setEnabled(b);
+        
+        applySpriteColorMenuItem.setEnabled(b);
+        applyMulticolorMenuItem.setEnabled(b);
+        applyOverlayMenuItem.setEnabled(b);
     }
 }
 
