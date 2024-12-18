@@ -54,8 +54,8 @@ import javax.swing.text.html.HTMLDocument;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class ManualDialog extends JDialog {
-    private static final int TEXTPANE_WIDTH = 600;
-    private static final int TEXTPANE_HEIGHT = 400;
+    private static final int DIALOG_WIDTH = 650;
+    private static final int DIALOG_HEIGHT = 450;
     
     private final JTextPane textPane;
     private final JScrollPane scrollPane;
@@ -72,7 +72,6 @@ public class ManualDialog extends JDialog {
         textPane = new JTextPane();
         textPane.setEditable(false);
         textPane.setContentType("text/html");
-        textPane.setPreferredSize(new Dimension(TEXTPANE_WIDTH, TEXTPANE_HEIGHT));
         textPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
         while (istream.read(b, 0, b.length) > 0)
             builder.append(decoder.decode(ByteBuffer.wrap(b)));
@@ -98,8 +97,8 @@ public class ManualDialog extends JDialog {
         add(southPanel, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(closeButton);
         setResizable(false);
+        setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
         setTitle("Manual... ");
-        pack();
         
         closeButton.addActionListener(ae -> {
             setVisible(false);
