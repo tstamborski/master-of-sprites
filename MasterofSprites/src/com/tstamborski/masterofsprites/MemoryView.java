@@ -2,6 +2,7 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.masterofsprites.model.C64Color;
+import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
@@ -39,7 +40,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     private final ArrayList<SpriteImage> sprites;
     
     private AbstractUtilImage selection_img, grid_img, background_img;
-    private final ArrayList<Integer> selection;
+    private Selection selection;
     
     private final ArrayList<ActionListener> actionListeners;
     private final ArrayList<SelectionListener> selectionListeners;
@@ -52,7 +53,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         this.columns = columns;
         grid = false;
         
-        selection = new ArrayList<>();
+        selection = new Selection(null);
         sprites = new ArrayList<>();
         
         enableEvents(MouseEvent.MOUSE_EVENT_MASK);
@@ -211,7 +212,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             sprites.add(si);
         }
         
-        selection.clear();
+        selection = new Selection(project);
         popup.enable(selection);
         createUtilImages();
         setPreferredSize();
@@ -266,9 +267,25 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         repaint();
     }
     
-    public ArrayList<Integer> getSelection() {
+    public Selection getSelection() {
         Collections.sort(selection);
         return selection;
+    }
+    
+    public void onSelection(SelectionOperation op) {
+        op.performOperation(selection);
+        fireSelectionEvent();
+        repaint();
+    }
+    
+    public void onSelectedSpriteData(SpriteDataOperation op) {
+        MemoryData mem_data = project.getMemoryData();
+        selection.forEach((i) -> {
+            op.performOperation(mem_data.get(i));
+        });
+        
+        fireActionEvent();
+        refreshSelection();
     }
     
     @Override

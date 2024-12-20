@@ -30,7 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
 
 /**
  *
@@ -49,7 +49,7 @@ public class RotationDialog extends AbstractInputDialog {
         
         getCentralPanel().setBorder(
                 BorderFactory.createCompoundBorder(
-                        BorderFactory.createBevelBorder(BevelBorder.RAISED), 
+                        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
                         BorderFactory.createEmptyBorder(16, 16, 16, 16))
         );
         getCentralPanel().setLayout(new BoxLayout(getCentralPanel(), BoxLayout.X_AXIS));

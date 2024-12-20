@@ -777,8 +777,27 @@ public class MainWindow extends JFrame {
             editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.negate());
         });
         
-        menu.viewMenu.switchTabMenuItem.addActionListener(ae -> 
-                centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2));
+        menu.selectionMenu.selectAllMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(s -> {s.clear();s.invert();})
+        );
+        menu.selectionMenu.invertMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(s -> {s.invert();})
+        );
+        menu.selectionMenu.selectNoneMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(s -> {s.clear();})
+        );
+        
+        menu.selectionMenu.shiftLeftMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(s -> {s.shift(-1);})
+        );
+        menu.selectionMenu.shiftRightMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(s -> {s.shift(1);})
+        );
+        
+        menu.viewMenu.switchTabMenuItem.addActionListener(ae -> {
+            centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2);
+            centralPane.requestFocus();
+        });
         menu.viewMenu.runNewInstanceMenuItem.addActionListener(ae -> MasterofSprites.runNewInstance());
 
         menu.helpMenu.manualMenuItem.addActionListener((ae) -> manDialog.setVisible(true));

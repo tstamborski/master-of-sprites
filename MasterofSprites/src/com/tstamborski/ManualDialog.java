@@ -25,7 +25,6 @@ package com.tstamborski;
 
 import java.awt.BorderLayout;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -54,8 +53,8 @@ import javax.swing.text.html.HTMLDocument;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class ManualDialog extends JDialog {
-    private static final int DIALOG_WIDTH = 650;
-    private static final int DIALOG_HEIGHT = 450;
+    private static final int DEFAULT_WIDTH = 650;
+    private static final int DEFAULT_HEIGHT = 450;
     
     private final JTextPane textPane;
     private final JScrollPane scrollPane;
@@ -97,7 +96,7 @@ public class ManualDialog extends JDialog {
         add(southPanel, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(closeButton);
         setResizable(false);
-        setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setTitle("Manual... ");
         
         closeButton.addActionListener(ae -> {

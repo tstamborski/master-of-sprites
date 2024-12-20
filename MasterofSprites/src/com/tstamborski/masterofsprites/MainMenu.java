@@ -278,28 +278,28 @@ class SpriteMenu extends JMenu {
         
         flipHorzMenuItem = new JMenuItem("Flip Horizontally");
         flipHorzMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0)
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK)
         );
         flipHorzMenuItem.setMnemonic(KeyEvent.VK_H);
         flipHorzMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-horz16.png")));
         
         flipVertMenuItem = new JMenuItem("Flip Vertically");
         flipVertMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0)
+                KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK)
         );
         flipVertMenuItem.setMnemonic(KeyEvent.VK_V);
         flipVertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
         
         reflectLeftMenuItem = new JMenuItem("Reflect Left to Right");
         reflectLeftMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0)
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK)
         );
         reflectLeftMenuItem.setMnemonic(KeyEvent.VK_L);
         reflectLeftMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/mirror-horizontal16.png")));
         
         reflectTopMenuItem = new JMenuItem("Reflect Top to Bottom");
         reflectTopMenuItem.setAccelerator(
-                KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0)
+                KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK)
         );
         reflectTopMenuItem.setMnemonic(KeyEvent.VK_T);
         reflectTopMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/mirror-vertical16.png")));
@@ -387,7 +387,7 @@ class SelectionMenu extends JMenu {
         
         shiftRightMenuItem = new JMenuItem("Shift Selection Forward");
         shiftRightMenuItem.setMnemonic(KeyEvent.VK_F);
-        shiftRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, KeyEvent.CTRL_DOWN_MASK));
+        shiftRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, KeyEvent.CTRL_DOWN_MASK));
         shiftRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/increment16.png")));
         
         shiftLeftMenuItem = new JMenuItem("Shift Selection Backward");
@@ -403,10 +403,12 @@ class SelectionMenu extends JMenu {
         applyMulticolorMenuItem = new JMenuItem("Apply Multicolor Mode");
         applyMulticolorMenuItem.setMnemonic(KeyEvent.VK_M);
         applyMulticolorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+        applyMulticolorMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flag-red16.png")));
         
         applyOverlayMenuItem = new JMenuItem("Apply Overlay Flag");
         applyOverlayMenuItem.setMnemonic(KeyEvent.VK_O);
         applyOverlayMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
+        applyOverlayMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flag-blue16.png")));
         
         add(selectAllMenuItem);
         add(selectNoneMenuItem);
