@@ -21,57 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package com.tstamborski.masterofsprites;
 
-import com.tstamborski.masterofsprites.model.SpriteProject;
-import java.util.ArrayList;
-import java.util.Collections;
+import com.tstamborski.AbstractInputDialog;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.border.EtchedBorder;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-
-public class Selection extends ArrayList<Integer> {
-    private final SpriteProject project;
+public class FlagDialog extends AbstractInputDialog {
+    private final ButtonGroup group;
+    private final JRadioButton trueButton, falseButton;
     
-    public Selection(SpriteProject proj) {
-        super();
-        this.project = proj;
-    }
-    
-    public SpriteProject getSpriteProject() {
-        return project;
-    }
-    
-    public void all() {
-        int bank_size = project.getMemoryData().size();
+    public FlagDialog(JFrame parent, String title) {
+        super(parent);
         
-        clear();
-        for (int i = 0; i < bank_size; i++)
-            add(i);
-    }
-    
-    public void invert() {
-        int bank_size = project.getMemoryData().size();
+        JPanel panel = getCentralPanel();
+        trueButton = new JRadioButton("TRUE");
+        falseButton = new JRadioButton("FALSE");
+        group = new ButtonGroup();
+        group.add(trueButton);
+        group.add(falseButton);
+        trueButton.setSelected(true);
+        panel.add(trueButton);
+        panel.add(falseButton);
+        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         
-        Collections.sort(this);
-        for (int i = 0; i < bank_size; i++) {
-            if (contains(i))
-                remove((Integer)i);
-            else
-                add(i);
-        }
+        setTitle(title);
+        pack();
     }
     
-    public void shift(int c) {
-        int bank_size = project.getMemoryData().size();
-        for (int n = 0; n < size(); n++) {
-            if (get(n) + c >= 0)
-                set(n, (get(n) + c) % bank_size);
-            else
-                set(n, bank_size + ((get(n) + c) % bank_size));
-        }
+    public boolean getValue() {
+        return trueButton.isSelected();
     }
 }

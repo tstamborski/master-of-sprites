@@ -400,12 +400,12 @@ class SelectionMenu extends JMenu {
         applySpriteColorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK));
         applySpriteColorMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/palette16.png")));
         
-        applyMulticolorMenuItem = new JMenuItem("Apply Multicolor Mode");
+        applyMulticolorMenuItem = new JMenuItem("Apply Multicolor Mode...");
         applyMulticolorMenuItem.setMnemonic(KeyEvent.VK_M);
         applyMulticolorMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
         applyMulticolorMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flag-red16.png")));
         
-        applyOverlayMenuItem = new JMenuItem("Apply Overlay Flag");
+        applyOverlayMenuItem = new JMenuItem("Apply Overlay Flag...");
         applyOverlayMenuItem.setMnemonic(KeyEvent.VK_O);
         applyOverlayMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK));
         applyOverlayMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flag-blue16.png")));
@@ -422,11 +422,13 @@ class SelectionMenu extends JMenu {
         add(applyOverlayMenuItem);
     }
     
-    public void enableItems(ArrayList<Integer> selection) {
+    public void enableItems(Selection selection) {
         enableItems(!selection.isEmpty());
     }
     
     public void enableItems(boolean b) {
+        selectNoneMenuItem.setEnabled(b);
+        
         shiftRightMenuItem.setEnabled(b);
         shiftLeftMenuItem.setEnabled(b);
         

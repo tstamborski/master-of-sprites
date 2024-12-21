@@ -46,8 +46,9 @@ public abstract class AbstractInputDialog extends JDialog {
     private boolean acceptedFlag;
     
     public AbstractInputDialog(JFrame parent) {
+        super(parent);
+        
         acceptedFlag = false;
-                
         centralPanel = new JPanel();
         
         southPanel = new JPanel();
@@ -67,6 +68,7 @@ public abstract class AbstractInputDialog extends JDialog {
         add(mainPanel);
         
         getRootPane().setDefaultButton(okButton);
+        okButton.requestFocusInWindow();
         setModal(true);
         setLocationRelativeTo(parent);
         setResizable(false);

@@ -50,6 +50,8 @@ public class MainWindow extends JFrame {
     private ExportPRGDialog addressDialog;
     private AsmSyntaxDialog asmSyntaxDialog;
     private RotationDialog rotateDialog;
+    private C64ColorDialog applyColorDialog;
+    private FlagDialog applyMulticolorDialog, applyOverlayDialog;
 
     private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog, asmDialog;
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
@@ -551,12 +553,21 @@ public class MainWindow extends JFrame {
         addressDialog = new ExportPRGDialog(this);
         addressDialog.setIconImage(
                 new ImageIcon(getClass().getResource("icons/commodore16.png")).getImage());
-        
         asmSyntaxDialog = new AsmSyntaxDialog(this);
         asmSyntaxDialog.setIconImage(
                 new ImageIcon(getClass().getResource("icons/asm-file16.png")).getImage());
         
         rotateDialog = new RotationDialog(this);
+        
+        applyColorDialog = new C64ColorDialog(this);
+        applyColorDialog.setIconImage(
+                new ImageIcon(getClass().getResource("icons/palette16.png")).getImage());
+        applyMulticolorDialog = new FlagDialog(this, "Multicolor? ");
+        applyMulticolorDialog.setIconImage(
+                new ImageIcon(getClass().getResource("icons/flag-red16.png")).getImage());
+        applyOverlayDialog = new FlagDialog(this, "Overlay? ");
+        applyOverlayDialog.setIconImage(
+                new ImageIcon(getClass().getResource("icons/flag-blue16.png")).getImage());
     }
 
     private void createFileDialogs() {
@@ -778,7 +789,7 @@ public class MainWindow extends JFrame {
         });
         
         menu.selectionMenu.selectAllMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.clear();s.invert();})
+                memoryPanel.getMemoryView().onSelection(s -> {s.all();})
         );
         menu.selectionMenu.invertMenuItem.addActionListener(ae -> 
                 memoryPanel.getMemoryView().onSelection(s -> {s.invert();})
@@ -794,9 +805,28 @@ public class MainWindow extends JFrame {
                 memoryPanel.getMemoryView().onSelection(s -> {s.shift(1);})
         );
         
+        menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
+                if (applyColorDialog.showDialog())
+                    memoryPanel.getMemoryView().onSelectedSpriteData(
+                            sd -> sd.setSpriteC64Color(applyColorDialog.getC64Color())
+                    );
+        });
+        menu.selectionMenu.applyMulticolorMenuItem.addActionListener(ae -> {
+                if (applyMulticolorDialog.showDialog())
+                    memoryPanel.getMemoryView().onSelectedSpriteData(
+                            sd -> sd.setMulticolor(applyMulticolorDialog.getValue())
+                    );
+        });
+        menu.selectionMenu.applyOverlayMenuItem.addActionListener(ae -> {
+                if (applyOverlayDialog.showDialog())
+                    memoryPanel.getMemoryView().onSelectedSpriteData(
+                            sd -> sd.setOverlay(applyOverlayDialog.getValue())
+                    );
+        });
+        
         menu.viewMenu.switchTabMenuItem.addActionListener(ae -> {
             centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2);
-            centralPane.requestFocus();
+            centralPane.requestFocusInWindow();
         });
         menu.viewMenu.runNewInstanceMenuItem.addActionListener(ae -> MasterofSprites.runNewInstance());
 

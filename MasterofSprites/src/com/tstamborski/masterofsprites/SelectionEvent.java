@@ -5,21 +5,20 @@
 package com.tstamborski.masterofsprites;
 
 import java.awt.AWTEvent;
-import java.util.ArrayList;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public class SelectionEvent extends AWTEvent {
-    private final ArrayList<Integer> selection;
+    private final Selection selection;
     
-    public SelectionEvent(Object source, ArrayList<Integer> selection) {
+    public SelectionEvent(Object source, Selection selection) {
         super(source, 0);
         this.selection = selection;
     }
 
-    public ArrayList<Integer> getSelection() {
+    public Selection getSelection() {
         return selection;
     }
 }
