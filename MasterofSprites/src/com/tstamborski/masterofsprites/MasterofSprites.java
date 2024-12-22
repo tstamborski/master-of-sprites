@@ -31,6 +31,8 @@ public class MasterofSprites {
     private static String outputPath = null;
     private static boolean exportOption = false;
     private static String exportFormat = null;
+    private static boolean helpOption = false;
+    
     /**
      * @param args the command line arguments
      */
@@ -40,6 +42,7 @@ public class MasterofSprites {
         while (i < args.length) {
             switch (args[i]) {
                 case "-e":
+                case "--export":
                     exportOption = true;
                     i++;
                     if (i >= args.length) {
@@ -60,19 +63,29 @@ public class MasterofSprites {
                     }
                     break;
                 case "-o":
+                case "--output":
                     i++;
                     if (i >= args.length) {
                         break OUTER;
                     }
                     outputPath = args[i];
                     break;
+                case "-h":
+                case "--help":
+                    helpOption = true;
+                    break;
                 default:
-                    inputPath = args[i];
+                    if (inputPath == null)
+                        inputPath = args[i];
                     break;
             }
             i++;
         }
         
+        if (helpOption) {
+            printUsageInfo();
+            return;
+        }
         if (exportOption) {
             export();
             return;
@@ -113,8 +126,12 @@ public class MasterofSprites {
     private static void export() {
         InputStream istream;
         ObjectInputStream oistream;
-        OutputStream ostream;
         SpriteProject project;
+        
+        if (inputPath == null) {
+            System.out.println("Error: Filename not specified.");
+            return;
+        }
         
         try {
             istream = new FileInputStream(new File(inputPath));
@@ -132,12 +149,23 @@ public class MasterofSprites {
             return;
         }
         
-        if (exportFormat == null) {
-            if (outputPath == null) {
+        if (exportFormat == null)
+            exportRawBinary(project);
+        else if (exportFormat.startsWith("0x"))
+            exportPRG(project);
+        else
+            exportASM(project);
+    }
+    
+    private static void exportASM(SpriteProject project) {
+        OutputStream ostream;
+        AsmCodeStream asmStream;
+        
+        if (outputPath == null) {
                 if (inputPath.endsWith(".spr"))
-                    outputPath = Util.removeExtension(inputPath) + ".bin";
+                    outputPath = Util.removeExtension(inputPath) + ".asm";
                 else
-                    outputPath = inputPath + ".bin";
+                    outputPath = inputPath + ".asm";
             }
             
             try {
@@ -147,14 +175,25 @@ public class MasterofSprites {
                 return;
             }
             
+            if (exportFormat.equalsIgnoreCase("tmpx"))
+                asmStream = new AsmCodeStream(ostream, AsmCodeStream.TMPX_SYNTAX);
+            else if (exportFormat.equalsIgnoreCase("acme"))
+                asmStream = new AsmCodeStream(ostream, AsmCodeStream.ACME_SYNTAX);
+            else
+                asmStream = new AsmCodeStream(ostream, AsmCodeStream.KICKASS_SYNTAX);
+            asmStream.printSpriteProject(project);
+            
             try {
-                project.getMemoryData().saveAsRAW(ostream);
                 ostream.close();
             } catch (IOException e) {
                 System.out.println(e);
             }
-        } else if (exportFormat.startsWith("0x")) {
-            if (outputPath == null) {
+    }
+    
+    private static void exportPRG(SpriteProject project) {
+        OutputStream ostream;
+        
+        if (outputPath == null) {
                 if (inputPath.endsWith(".spr"))
                     outputPath = Util.removeExtension(inputPath) + ".prg";
                 else
@@ -177,12 +216,16 @@ public class MasterofSprites {
             } catch (IOException e) {
                 System.out.println(e);
             }
-        } else {
-            if (outputPath == null) {
+    }
+    
+    private static void exportRawBinary(SpriteProject project) {
+        OutputStream ostream;
+        
+        if (outputPath == null) {
                 if (inputPath.endsWith(".spr"))
-                    outputPath = Util.removeExtension(inputPath) + ".asm";
+                    outputPath = Util.removeExtension(inputPath) + ".bin";
                 else
-                    outputPath = inputPath + ".asm";
+                    outputPath = inputPath + ".bin";
             }
             
             try {
@@ -192,20 +235,28 @@ public class MasterofSprites {
                 return;
             }
             
-            AsmCodeStream asmStream;
-            if (exportFormat.equalsIgnoreCase("tmpx"))
-                asmStream = new AsmCodeStream(ostream, AsmCodeStream.TMPX_SYNTAX);
-            else if (exportFormat.equalsIgnoreCase("acme"))
-                asmStream = new AsmCodeStream(ostream, AsmCodeStream.ACME_SYNTAX);
-            else
-                asmStream = new AsmCodeStream(ostream, AsmCodeStream.KICKASS_SYNTAX);
-            asmStream.printSpriteProject(project);
-            
             try {
+                project.getMemoryData().saveAsRAW(ostream);
                 ostream.close();
             } catch (IOException e) {
                 System.out.println(e);
             }
-        }
+    }
+
+    private static void printUsageInfo() {
+        System.out.println(MasterofSprites.PROGRAM_NAME + " " + MasterofSprites.PROGRAM_VERSION);
+        System.out.println();
+        System.out.println("Usage: java -jar MasterofSprites.jar [projectfile]");
+        System.out.println("       java -jar MasterofSprites.jar -e [format] projectfile [-o outfile]");
+        System.out.println();
+        System.out.println("Format Options:");
+        System.out.println("       EMPTY format specifier choose export as raw binary.");
+        System.out.println();
+        System.out.println("       HEXADECIMAL NUMBER WITH 0x PREFIX choose export as prg file with");
+        System.out.println("       start address specified by this number.");
+        System.out.println();
+        System.out.println("       KICKASS, ACME or TMPX choose export as assembly source code with");
+        System.out.println("       syntax of respective assembler.");
+        System.out.println();
     }
 }
