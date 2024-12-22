@@ -228,37 +228,40 @@ public class MainWindow extends JFrame {
     }
 
     public void openFile() {
+        if (projectDialog.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+            openFile(projectDialog.getSelectedFile());
+    }
+    
+    public void openFile(File f) {
         InputStream istream;
         ObjectInputStream oistream;
         
-        if (projectDialog.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            try {
-                istream = new FileInputStream(projectDialog.getSelectedFile());
-            } catch (FileNotFoundException e) {
-                Util.showError(this, e.getMessage());
-                return;
-            }
-            
-            try {
-                oistream = new ObjectInputStream(istream);
-                project = (SpriteProject)oistream.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                Util.showError(this, e.getMessage());
-                return;
-            }
-            
-            file = projectDialog.getSelectedFile();
-            newHistory();
-            setSaved(true);
-            reloadProject();
-            updateTitlebar();
-            
-            try {
-                oistream.close();
-                istream.close();
-            } catch (IOException e) {
-                Util.showError(this, e.getMessage());
-            }
+        try {
+            istream = new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+            Util.showError(this, e.getMessage());
+            return;
+        }
+
+        try {
+            oistream = new ObjectInputStream(istream);
+            project = (SpriteProject)oistream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            Util.showError(this, e.getMessage());
+            return;
+        }
+
+        file = f;
+        newHistory();
+        setSaved(true);
+        reloadProject();
+        updateTitlebar();
+
+        try {
+            oistream.close();
+            istream.close();
+        } catch (IOException e) {
+            Util.showError(this, e.getMessage());
         }
     }
     

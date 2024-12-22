@@ -24,7 +24,7 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.AbstractInputDialog;
-import java.awt.Color;
+import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
@@ -45,7 +45,9 @@ public class FlagDialog extends AbstractInputDialog {
         
         JPanel panel = getCentralPanel();
         trueButton = new JRadioButton("TRUE");
+        trueButton.setMnemonic(KeyEvent.VK_T);
         falseButton = new JRadioButton("FALSE");
+        falseButton.setMnemonic(KeyEvent.VK_F);
         group = new ButtonGroup();
         group.add(trueButton);
         group.add(falseButton);
