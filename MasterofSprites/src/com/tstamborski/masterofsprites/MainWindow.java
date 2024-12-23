@@ -15,7 +15,7 @@ import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -55,6 +55,8 @@ public class MainWindow extends JFrame {
 
     private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog, asmDialog;
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
+    
+    private final Settings settings;
 
     public MainWindow() {
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-puppet48.png")).getImage());
@@ -122,12 +124,8 @@ public class MainWindow extends JFrame {
                 
                 statusBar.showHint("Hold CTRL or SHIFT to make multiple selection;");
             }
-            
         });
-        memoryPanel.getMemoryView().addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {}
-
+        memoryPanel.getMemoryView().addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (!memoryPanel.getMemoryView().isEnabled())
@@ -149,7 +147,7 @@ public class MainWindow extends JFrame {
         });
         editorPanel.getSpriteEditor().addActionListener(ae -> {
             memoryPanel.getMemoryView().refreshSelection();
-            previewPanel.reload(); //dobrzy by to bylo zoptymalizowac jakos
+            previewPanel.reload();
             pushHistory();
         });
         editorPanel.getSpriteEditor().addMouseListener(new MouseAdapter() {
@@ -170,12 +168,8 @@ public class MainWindow extends JFrame {
                 
                 statusBar.showHint("CTRL+LCLICK to fill the shape; RCLICK to erase; MWHEEL to change color;");
             }
-            
         });
-        editorPanel.getSpriteEditor().addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {}
-
+        editorPanel.getSpriteEditor().addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
                 SpriteEditor editor = editorPanel.getSpriteEditor();
@@ -187,8 +181,31 @@ public class MainWindow extends JFrame {
                         editor.getSpriteX(e.getX()), editor.getSpriteY(e.getY())));
             }
         });
+        
+        settings = new Settings();
+        loadSettings();
     }
-
+    
+    private void loadSettings() {
+        settings.loadFileChooser(projectDialog, Settings.PROJECT_FILE_DLG);
+        settings.loadFileChooser(prgDialog, Settings.PRG_FILE_DLG);
+        settings.loadFileChooser(rawDialog, Settings.RAW_FILE_DLG);
+        settings.loadFileChooser(bitmapDialog, Settings.BITMAP_FILE_DLG);
+        settings.loadFileChooser(asmDialog, Settings.ASM_FILE_DLG);
+        
+        settings.loadAsmSyntaxDialog(asmSyntaxDialog);
+    }
+    
+    private void saveSettings() {
+        settings.saveFileChooser(projectDialog, Settings.PROJECT_FILE_DLG);
+        settings.saveFileChooser(prgDialog, Settings.PRG_FILE_DLG);
+        settings.saveFileChooser(rawDialog, Settings.RAW_FILE_DLG);
+        settings.saveFileChooser(bitmapDialog, Settings.BITMAP_FILE_DLG);
+        settings.saveFileChooser(asmDialog, Settings.ASM_FILE_DLG);
+        
+        settings.saveAsmSyntaxDialog(asmSyntaxDialog);
+    }
+    
     private void reloadProject() {
         memoryPanel.setProject(project);
         editorPanel.setProject(project);
@@ -205,7 +222,7 @@ public class MainWindow extends JFrame {
         if (file != null)
             setTitle(MasterofSprites.PROGRAM_NAME + " -- " + file.getName() + savedStr);
         else
-            setTitle(MasterofSprites.PROGRAM_NAME + " -- New File" + savedStr);
+            setTitle(MasterofSprites.PROGRAM_NAME + " -- Untitled" + savedStr);
     }
     
     public final void newFile() {
@@ -643,7 +660,14 @@ public class MainWindow extends JFrame {
 
     @Override
     protected void processWindowEvent(WindowEvent e) {
-        super.processWindowEvent(e); //To change body of generated methods, choose Tools | Templates.
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            saveSettings();
+            //if (!history.isSaved())
+                //if (!showUnsavedDialog())
+                    //return;
+        }
+        
+        super.processWindowEvent(e);
     }
     
     private void setSaved(boolean b) {
@@ -653,6 +677,7 @@ public class MainWindow extends JFrame {
 
     private void newHistory() {
         history = new History(project, HISTORY_SIZE);
+        history.setSaved(true); //zobaczymy (?)
         menu.editMenu.enableHistoryMenuItems(history);
         updateTitlebar();
     }

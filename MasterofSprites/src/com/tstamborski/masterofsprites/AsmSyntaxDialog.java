@@ -71,4 +71,18 @@ public class AsmSyntaxDialog extends AbstractInputDialog {
         else
             return AsmCodeStream.KICKASS_SYNTAX;
     }
+    
+    public void setAsmSyntax(int syntax) {
+        switch (syntax) {
+            case AsmCodeStream.TMPX_SYNTAX:
+                tmpxRadioButton.setSelected(true);
+                break;
+            case AsmCodeStream.ACME_SYNTAX:
+                acmeRadioButton.setSelected(true);
+                break;
+            default:
+                kickassRadioButton.setSelected(true);
+                break;
+        }
+    }
 }
