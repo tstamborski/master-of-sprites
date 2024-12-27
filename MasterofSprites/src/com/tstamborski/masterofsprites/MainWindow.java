@@ -282,11 +282,9 @@ public class MainWindow extends JFrame {
         }
     }
     
-    public void saveFile() {
-        if (file == null) {
-            saveAsFile();
-            return;
-        }
+    public boolean saveFile() {
+        if (file == null)
+            return saveAsFile();
         
         OutputStream ostream;
         ObjectOutputStream oostream;
@@ -295,7 +293,7 @@ public class MainWindow extends JFrame {
             ostream = new FileOutputStream(file);
         } catch (FileNotFoundException e) {
             Util.showError(this, e.getMessage());
-            return;
+            return true;
         }
             
         try {
@@ -303,7 +301,7 @@ public class MainWindow extends JFrame {
             oostream.writeObject(project);
         } catch (IOException e) {
             Util.showError(this, e.getMessage());
-            return;
+            return true;
         }
         
         setSaved(true);
@@ -314,9 +312,11 @@ public class MainWindow extends JFrame {
         } catch (IOException e) {
             Util.showError(this, e.getMessage());
         }
+        
+        return true;
     }
     
-    public void saveAsFile() {
+    public boolean saveAsFile() {
         OutputStream ostream;
         ObjectOutputStream oostream;
         File myProjectFile;
@@ -330,7 +330,7 @@ public class MainWindow extends JFrame {
                 ostream = new FileOutputStream(myProjectFile);
             } catch (FileNotFoundException e) {
                 Util.showError(this, e.getMessage());
-                return;
+                return true;
             }
             
             try {
@@ -338,7 +338,7 @@ public class MainWindow extends JFrame {
                 oostream.writeObject(project);
             } catch (IOException e) {
                 Util.showError(this, e.getMessage());
-                return;
+                return true;
             }
             
             setSaved(true);
@@ -351,6 +351,10 @@ public class MainWindow extends JFrame {
             } catch (IOException e) {
                 Util.showError(this, e.getMessage());
             }
+            
+            return true;
+        } else {
+            return false;
         }
     }
     
@@ -662,9 +666,8 @@ public class MainWindow extends JFrame {
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
             saveSettings();
-            //if (!history.isSaved())
-                //if (!showUnsavedDialog())
-                    //return;
+            if (!history.isSaved() && !showUnsavedDialog())
+                return;
         }
         
         super.processWindowEvent(e);
@@ -712,10 +715,12 @@ public class MainWindow extends JFrame {
         menu = new MainMenu();
         
         menu.fileMenu.newMenuItem.addActionListener((ae) -> {
-            newFile();
+            if (history.isSaved() || showUnsavedDialog())
+                newFile();
         });
         menu.fileMenu.openMenuItem.addActionListener((ae) -> {
-            openFile();
+            if (history.isSaved() || showUnsavedDialog())
+                openFile();
         });
         menu.fileMenu.saveMenuItem.addActionListener((ae) -> {
             saveFile();
@@ -724,10 +729,12 @@ public class MainWindow extends JFrame {
             saveAsFile();
         });
         menu.fileMenu.importPRGMenuItem.addActionListener((ae) -> {
-            importPRGFile();
+            if (history.isSaved() || showUnsavedDialog())
+                importPRGFile();
         });
         menu.fileMenu.importRawMenuItem.addActionListener((ae) -> {
-            importRawData();
+            if (history.isSaved() || showUnsavedDialog())
+                importRawData();
         });
         menu.fileMenu.exitMenuItem.addActionListener(
                 (ae) -> {

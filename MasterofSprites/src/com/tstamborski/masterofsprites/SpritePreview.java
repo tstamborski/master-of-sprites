@@ -136,30 +136,26 @@ public class SpritePreview extends JComponent {
             return null;
         
         int size = arrangement.width * arrangement.height;
+        int memBankSize = project.getMemoryData().size();
         
         ArrayList[] images = new ArrayList[size];
         for (int i = 0; i < size; i++) {
             images[i] = new ArrayList<SpriteImage>();
             
             int offset = 0;
-            SpriteData sd;
-            if (selection.get(i) + index + offset < project.getMemoryData().size())
-                sd = project.getMemoryData().get(selection.get(i) + index + offset);
-            else
-                sd = null;
+            SpriteData sd = 
+                    project.getMemoryData().get((selection.get(i) + index + offset) % memBankSize);
+            
             SpriteImage si = new SpriteImage(sd, palette);
             si.setMulti0Color(project.getMulti0Color());
             si.setMulti1Color(project.getMulti1Color());
             si.redraw();
             images[i].add(si);
             
-            while (sd != null && images[i].size() <= 8 && sd.isOverlay()) {
+            while (images[i].size() <= 8 && sd.isOverlay()) {
                 offset += project.getOverlayDistance();
-                
-                if (selection.get(i) + index + offset < project.getMemoryData().size())
-                    sd = project.getMemoryData().get(selection.get(i) + index + offset);
-                else
-                    break;
+
+                sd = project.getMemoryData().get((selection.get(i) + index + offset) % memBankSize);
                 
                 si = new SpriteImage(sd, palette);
                 si.setMulti0Color(project.getMulti0Color());
