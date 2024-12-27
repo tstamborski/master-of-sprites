@@ -653,8 +653,7 @@ public class MainWindow extends JFrame {
         
         switch (answer) {
             case JOptionPane.YES_OPTION:
-                saveFile();
-                return true;
+                return saveFile();
             case JOptionPane.NO_OPTION:
                 return true;
             default:
@@ -810,13 +809,19 @@ public class MainWindow extends JFrame {
         
         menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
             if (rotateDialog.showDialog())
-                editorPanel.getSpriteEditor().rotate(rotateDialog.getRadians());
+                editorPanel.getSpriteEditor().onCurrentSpriteData(
+                        sd -> SpriteRotator.rotate(sd, rotateDialog.getRadians())
+                );
         });
         menu.spriteMenu.rotate90CWMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().rotate(Math.toRadians(90.0));
+            editorPanel.getSpriteEditor().onCurrentSpriteData(
+                        sd -> SpriteRotator.rotate(sd, Math.toRadians(90.0d))
+                );
         });
         menu.spriteMenu.rotate90CCWMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().rotate(Math.toRadians(-90.0));
+            editorPanel.getSpriteEditor().onCurrentSpriteData(
+                        sd -> SpriteRotator.rotate(sd, Math.toRadians(-90.0d))
+                );
         });
         
         menu.spriteMenu.negateMenuItem.addActionListener(ae -> {

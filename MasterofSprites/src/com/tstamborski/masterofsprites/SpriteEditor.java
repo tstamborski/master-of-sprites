@@ -128,6 +128,7 @@ public class SpriteEditor extends JComponent {
         fireActionEvent();
     }
     
+/*
     public void rotate(double angle) {
         if (spriteData.isMulticolor())
             SpriteRender.rotateMulticolor(spriteData, spriteImg, 
@@ -139,6 +140,7 @@ public class SpriteEditor extends JComponent {
         refresh();
         fireActionEvent();
     }
+*/
     
     public void setSpriteData(SpriteData data) {
         spriteData = data;

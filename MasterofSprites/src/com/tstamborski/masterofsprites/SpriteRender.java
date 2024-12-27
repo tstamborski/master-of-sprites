@@ -48,7 +48,7 @@ public class SpriteRender {
                     dst.setRGB(x, y, spriteRGB);
     }
     
-    protected static void renderReverseSinglecolor(SpriteData dst, BufferedImage src, Palette pal) {
+    public static void renderReverseSinglecolor(SpriteData dst, BufferedImage src, Palette pal) {
         final int scRGB = pal.getColor(dst.getSpriteC64Color()).getRGB();
         
         for (int y = 0; y < src.getHeight(); y++)
@@ -87,7 +87,7 @@ public class SpriteRender {
             }
     }
     
-    protected static void renderReverseMulticolor(SpriteData dst, BufferedImage src, 
+    public static void renderReverseMulticolor(SpriteData dst, BufferedImage src, 
             Palette pal, C64Color multi0, C64Color multi1) {
         final int spriteRGB = pal.getColor(dst.getSpriteC64Color()).getRGB();
         final int multi0RGB = pal.getColor(multi0).getRGB();
@@ -111,6 +111,7 @@ public class SpriteRender {
             }
     }
     
+/*
     public static void rotateSinglecolor(SpriteData spr, BufferedImage img, double angle, Palette pal) {
         BufferedImage buffer = 
                 new BufferedImage(img.getWidth(), img.getHeight(), 
@@ -137,8 +138,9 @@ public class SpriteRender {
         
         renderReverseMulticolor(spr, buffer, pal, multi0, multi1);
     }
+*/
     
-    protected static void clearImage(BufferedImage img) {
+    private static void clearImage(BufferedImage img) {
         Graphics2D g = img.createGraphics();
         
         g.setComposite(AlphaComposite.Clear);
