@@ -468,7 +468,7 @@ class SelectionMenu extends JMenu {
 }
 
 class ViewMenu extends JMenu {
-    public JMenuItem switchTabMenuItem, runNewInstanceMenuItem;
+    public JMenuItem switchTabMenuItem, runNewWindowMenuItem;
     
     public ViewMenu() {
         super("View");
@@ -477,13 +477,13 @@ class ViewMenu extends JMenu {
         switchTabMenuItem.setMnemonic(KeyEvent.VK_S);
         switchTabMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         
-        runNewInstanceMenuItem = new JMenuItem("Run New Instance");
-        runNewInstanceMenuItem.setMnemonic(KeyEvent.VK_N);
-        runNewInstanceMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, 
+        runNewWindowMenuItem = new JMenuItem("Run New Window... ");
+        runNewWindowMenuItem.setMnemonic(KeyEvent.VK_N);
+        runNewWindowMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, 
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
-        runNewInstanceMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
+        runNewWindowMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
         
-        add(runNewInstanceMenuItem);
+        add(runNewWindowMenuItem);
         addSeparator();
         add(switchTabMenuItem);
     }

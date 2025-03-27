@@ -13,6 +13,7 @@ import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -31,6 +32,8 @@ import javax.swing.filechooser.*;
 public class MainWindow extends JFrame {
     private static final int HISTORY_SIZE = 10;
 
+    private static int instanceCounter = 0;
+    
     private SpriteProject project;
     private History history;
     private File file;
@@ -61,7 +64,8 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-puppet48.png")).getImage());
         setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        instanceCounter++;
 
         centralPane = new JTabbedPane();
         memoryPanel = new MemoryPanel();
@@ -669,6 +673,12 @@ public class MainWindow extends JFrame {
                 return;
         }
         
+        if (e.getID() == WindowEvent.WINDOW_CLOSED) {
+            instanceCounter--;
+            if (instanceCounter <= 0)
+                System.exit(0);
+        }
+        
         super.processWindowEvent(e);
     }
     
@@ -881,7 +891,12 @@ public class MainWindow extends JFrame {
             centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2);
             centralPane.requestFocusInWindow();
         });
-        menu.viewMenu.runNewInstanceMenuItem.addActionListener(ae -> MasterofSprites.runNewInstance());
+        menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
+            SwingUtilities.invokeLater(() -> {
+                MainWindow wnd = new MainWindow();
+                wnd.setVisible(true);
+            });
+        });
 
         menu.helpMenu.manualMenuItem.addActionListener((ae) -> manDialog.setVisible(true));
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {
