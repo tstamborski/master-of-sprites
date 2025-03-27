@@ -845,6 +845,19 @@ public class MainWindow extends JFrame {
                 memoryPanel.getMemoryView().onSelection(s -> {s.shift(1);})
         );
         
+        menu.selectionMenu.flipHorzMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.flipHorizontally())
+        );
+        menu.selectionMenu.flipVertMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.flipVertically())
+        );
+        menu.selectionMenu.rotateMenuItem.addActionListener(ae -> {
+                if (rotateDialog.showDialog())
+                    memoryPanel.getMemoryView().onSelectedSpriteData(
+                                sd -> SpriteRotator.rotate(sd, rotateDialog.getRadians())
+                            );
+        });
+        
         menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
                 if (applyColorDialog.showDialog())
                     memoryPanel.getMemoryView().onSelectedSpriteData(

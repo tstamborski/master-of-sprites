@@ -111,35 +111,6 @@ public class SpriteRender {
             }
     }
     
-/*
-    public static void rotateSinglecolor(SpriteData spr, BufferedImage img, double angle, Palette pal) {
-        BufferedImage buffer = 
-                new BufferedImage(img.getWidth(), img.getHeight(), 
-                        BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = buffer.createGraphics();
-        
-        
-        g2d.clearRect(0, 0, buffer.getWidth(), buffer.getHeight());
-        g2d.rotate(angle, buffer.getWidth() / 2, buffer.getHeight() / 2);
-        g2d.drawImage(img, 0, 0, null);
-        
-        renderReverseSinglecolor(spr, buffer, pal);
-    }
-    
-    public static void rotateMulticolor(SpriteData spr, BufferedImage img, double angle,
-            Palette pal, C64Color multi0, C64Color multi1) {
-        BufferedImage buffer = 
-                new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = buffer.createGraphics();
-        
-        g2d.clearRect(0, 0, buffer.getWidth(), buffer.getHeight());
-        g2d.rotate(angle, buffer.getWidth() / 2, buffer.getHeight() / 2);
-        g2d.drawImage(img, 0, 0, null);
-        
-        renderReverseMulticolor(spr, buffer, pal, multi0, multi1);
-    }
-*/
-    
     private static void clearImage(BufferedImage img) {
         Graphics2D g = img.createGraphics();
         
