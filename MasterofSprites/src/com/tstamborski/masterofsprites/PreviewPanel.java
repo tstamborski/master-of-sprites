@@ -56,7 +56,7 @@ public class PreviewPanel extends JPanel {
     private final JComboBox arrangementBox;
     private final ArrangementComboBoxModel arrangementModel;
     private final JSpinner zoomSpinner;
-    private final JToggleButton lockButton;
+    private final JToggleButton lockButton, pingpongButton;
     
     private final JButton nextButton, prevButton, stopButton;
     private final JToggleButton playButton, pauseButton;
@@ -66,6 +66,8 @@ public class PreviewPanel extends JPanel {
     private SpriteProject project;
     private ArrayList<Integer> requestedSelection, currentSelection;
     private Timer timer;
+    
+    private boolean directionFlag;
     
     public PreviewPanel() {
         arrangementBox = new JComboBox(arrangementModel = new ArrangementComboBoxModel());
@@ -79,9 +81,11 @@ public class PreviewPanel extends JPanel {
         zoomLabel = new JLabel(" Zoom: ");
         zoomLabel.setDisplayedMnemonic(KeyEvent.VK_Z);
         zoomLabel.setLabelFor(zoomSpinner);
+        pingpongButton = new JToggleButton(
+                new ImageIcon(getClass().getResource("icons/pingpong16.png"))
+        );
         lockButton = new JToggleButton(
-                new ImageIcon(getClass().getResource("icons/lock-open16.png")), 
-                false
+                new ImageIcon(getClass().getResource("icons/lock-open16.png"))
         );
         lockButton.setSelectedIcon(new ImageIcon(getClass().getResource("icons/lock16.png")));
         lockButton.setMnemonic(KeyEvent.VK_BACK_QUOTE);
@@ -122,6 +126,7 @@ public class PreviewPanel extends JPanel {
         northPanel.add(zoomLabel);
         northPanel.add(zoomSpinner);
         northPanel.add(Box.createHorizontalGlue());
+        northPanel.add(pingpongButton);
         northPanel.add(lockButton);
         
         southPanel = new JPanel();
@@ -144,7 +149,7 @@ public class PreviewPanel extends JPanel {
         
         currentSelection = new ArrayList<>();
         
-        timer = new Timer(100, ae->preview.nextFrame());
+        timer = new Timer(100, ae->playHandler());
         frameDelaySpinner.addChangeListener(che->timer.setDelay((Integer)frameDelaySpinner.getValue()));
         frameCountSpinner.addChangeListener(che->{
             preview.setFrameCount((Integer)frameCountSpinner.getValue());
@@ -233,5 +238,24 @@ public class PreviewPanel extends JPanel {
     public void prevFrame() {
         if (preview.getFrameIndex() > 0)
             preview.prevFrame();
+    }
+    
+    protected void playHandler() {
+        if (!pingpongButton.isSelected()) {
+            preview.nextFrame();
+        } else {
+            int frame = preview.getFrameIndex();
+            int frame_count = preview.getFrameCount();
+            
+            if (frame == 0)
+                directionFlag = false;
+            if (frame == frame_count - 1)
+                directionFlag = true;
+            
+            if (!directionFlag)
+                preview.nextFrame();
+            else
+                preview.prevFrame();
+        }
     }
 }
