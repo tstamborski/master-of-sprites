@@ -24,8 +24,8 @@ import javax.swing.SwingUtilities;
  */
 public class MasterofSprites {
     public static final String PROGRAM_NAME = "Master of Sprites";
-    public static final String PROGRAM_VERSION = "version 0.10";
-    public static final String PROGRAM_COPYRIGHT = "Copyright (c) 2024 Tobiasz Stamborski";
+    public static final String PROGRAM_VERSION = "version 0.11";
+    public static final String PROGRAM_COPYRIGHT = "Copyright (c) 2025 Tobiasz Stamborski";
     
     private static String inputPath = null;
     private static String outputPath = null;
@@ -250,9 +250,9 @@ public class MasterofSprites {
         System.out.println("       java -jar MasterofSprites.jar -e [format] projectfile [-o outfile]");
         System.out.println();
         System.out.println("Format Options:");
-        System.out.println("       EMPTY format specifier choose export as raw binary.");
+        System.out.println("       EMPTY format specifier choose export as a raw binary.");
         System.out.println();
-        System.out.println("       HEXADECIMAL NUMBER WITH 0x PREFIX choose export as prg file with");
+        System.out.println("       HEXADECIMAL NUMBER WITH 0x PREFIX choose export as a prg file with");
         System.out.println("       start address specified by this number.");
         System.out.println();
         System.out.println("       KICKASS, ACME or TMPX choose export as assembly source code with");
