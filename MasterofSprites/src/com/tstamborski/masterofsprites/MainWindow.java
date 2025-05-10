@@ -230,17 +230,7 @@ public class MainWindow extends JFrame {
     }
     
     public final void newFile() {
-        Calendar calendar = Calendar.getInstance();
-        
-        if (calendar.get(Calendar.MONTH) == Calendar.FEBRUARY && 
-                calendar.get(Calendar.DAY_OF_MONTH) == 14)
-            try {
-                project = SpriteProject.importPRGData(getClass().getResourceAsStream("easteregg/valentine.prg"));
-            } catch (IOException ex) {
-                project = SpriteProject.getNewProject(64, false);
-            }
-        else
-            project = SpriteProject.getNewProject(64, false);
+        project = SpriteProject.getNewProject(64, false);
         
         newHistory();
         file = null;
@@ -866,6 +856,16 @@ public class MainWindow extends JFrame {
                     memoryPanel.getMemoryView().onSelectedSpriteData(
                                 sd -> SpriteRotator.rotate(sd, rotateDialog.getRadians())
                             );
+        });
+        menu.selectionMenu.rotate90CWMenuItem.addActionListener(ae -> {
+            memoryPanel.getMemoryView().onSelectedSpriteData(
+                    sd -> SpriteRotator.rotate(sd, Math.toRadians(90.0d))
+            );
+        });
+        menu.selectionMenu.rotate90CCWMenuItem.addActionListener(ae -> {
+            memoryPanel.getMemoryView().onSelectedSpriteData(
+                    sd -> SpriteRotator.rotate(sd, Math.toRadians(-90.0d))
+            );
         });
         
         menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
