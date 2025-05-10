@@ -20,7 +20,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Calendar;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
