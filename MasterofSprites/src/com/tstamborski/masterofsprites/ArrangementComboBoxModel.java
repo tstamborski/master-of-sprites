@@ -36,8 +36,8 @@ public class ArrangementComboBoxModel extends DefaultComboBoxModel {
     public ArrangementComboBoxModel() {
         allArrangements = new ArrayList<>();
         allArrangements.add(new Arrangement(0, 0));
-        for (int x = 1; x <= 8; x++)
-            for (int y = 1; y*x <= 8; y++)
+        for (int y = 1; y <= 8; y++)
+            for (int x = 1; y*x <= 8; x++)
                 allArrangements.add(new Arrangement(x, y));
         
         setSelectionSize(0);
