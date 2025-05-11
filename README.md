@@ -1,9 +1,7 @@
 # ![](https://github.com/tstamborski/pixelart-icons/blob/main/png/commodore-puppet48.png) Master of Sprites
-Java editor for Commodore 64 sprites.
+Java editor for Commodore 64 sprites. My humble competition for SpritePad.
 
-In future, this project can be my small competition for SubChrist SpritePad.
-
-Recently I had draft a third preview release for anybody who wants to see my program and what works already and what not. **Jar file for download is [here](https://github.com/tstamborski/master-of-sprites/releases/download/v0.8/MasterofSprites.jar).** Check it out.
+**If you want to check the most recent version - jar file for download is [here](https://github.com/tstamborski/master-of-sprites/releases/download/v0.12/MasterofSprites.jar).**
 
 ![](screenshot0.png)
 ![](screenshot1.png)
