@@ -97,6 +97,7 @@ THE SOFTWARE.
             <ol type="A">
                 <li><a href="#appendixa">Appendix A: Miscellaneous Links</a></li>
             </ol>
+            <br><br>
         </nav>
         
         <article>
@@ -113,7 +114,7 @@ THE SOFTWARE.
                 "Master of Sprites". The main problems are: lack of batch mode support,
                 poor support for animation with sprite overlay or lack of support for
                 displaying connected multisprites. There are also some minor problems
-                like portability issues on operating systems different than Windows or
+                like small portability issues on operating systems different than Windows
                 or relatively old-fashioned and unhandy user interface. 
             </p>
             <p>
@@ -141,6 +142,7 @@ THE SOFTWARE.
                 Parameters"</i>. I think this is enough for an introduction.
             </p>
             <p><a href="#tableofcontents">Back to the Table of Contents.</a></p>
+            <br><br>
         </article>
         
         <article>
@@ -148,14 +150,94 @@ THE SOFTWARE.
             
             <h3>Editor Panel on the Left Side</h3>
             <p>
-                
+                Editor Panel is used for drawing and editing one particular sprite
+                from current selection. At the same top of the panel you can see two
+                opposite buttons which are used for choosing current sprite from all
+                selected sprites. Although some options here, like background color
+                or overlay distance, are project wide and affects all sprites in memory
+                bank.
             </p>
+            <p>
+                Buttons below of the editor view itself are the same as corresponding commands
+                from the the sprite menu. Current color options and color picker should be
+                obvious thing for you if you are making sprites for Commodore 64. I will
+                maybe just highlight few things about editor view:
+            </p>
+            <ul>
+                <li>
+                    <i>Right mouse button</i> is used for erasing - it always puts the
+                    background color.
+                </li>
+                <li>
+                    <i>CTRL + left or right click</i> is used for flood fill whole area
+                    of the same color.
+                </li>
+                <li>
+                    <i>Mouse wheel</i>, if you hover cursor at editor view, will quickly
+                    change the current color option.
+                </li>
+            </ul>
+            <p>
+                Multicolor option is probably obvious too, but lets talk about <i>"Overlay
+                Next Sprite"</i> and <i>"Overlay Distance"</i>. First of all, they change
+                nothing here, in editor view. All of their effects deal with <i>"Preview"</i> tab
+                where you can preview your sprites with overlay. <i>"Overlay Distance"</i> is
+                a project wide option which decide how far in memory bank is the next overlayed
+                sprite. By default it is 8 sprites further, so next layer of overlay is one
+                row below in the <i>"Memory"</i> tab. <i>"Overlay Next Sprite"</i> is unchecked
+                by default and you must check it for overlay starts to work. <i>LETS REPEAT IT
+                AGAIN - THESE OPTIONS AFFECT THE PREVIEW NOT THE EDITOR.</i>
+            </p>
+            <br>
+            
+            <h3>Memory Tab on the Right Side</h3>
+            <p>
+                Here you can change the selection and view all sprites in the same order
+                as in the C64 memory. You can also change the size of memory bank by using
+                <i>"Quantity"</i> spinner below the view ("Delete" command from menu just
+                clears currently selected sprites). 
+            </p>
+            <p>
+                If you want to make multiple sprites selection you should hold <i>CTRL</i> or
+                <i>SHIFT</i> key while clicking by mouse. Curious thing is how copy and paste
+                works here - pasting fills whole selection by clipboard content, so you can
+                easily copy one sprite and paste it over whole memory bank.
+            </p>
+            <br>
+            
+            <h3>Preview Tab on the Right Side</h3>
+            <p>
+                Here you can preview your animation or overlayed sprites. There is also the
+                <i>"Arrangement"</i> option useful when you want to preview a multisprite
+                made from a few connected single sprites. Lets shortly describe also other
+                options.
+            </p>
+            <p>
+                The <i>"Count"</i> and <i>"Delay"</i> options next to the player buttons.
+                <i>"Count"</i> is the number of animation frames - you must change it to
+                something above one to see your animation. <i>"Delay"</i> is the number
+                of miliseconds between animation frames. It decides how fast or slow animation
+                runs. The Default is 100ms which corresponds 10Hz so you will probably want
+                to change it to smaller value for faster animation. Minimal value of 20ms
+                is 50Hz.
+            </p>
+            <p>
+                The two buttons at the top right: one with ping-pong palette and second with
+                lock. <i>The ping-pong button</i> cause animation flows in different way - it doesn't
+                loop from beginning but instead it bounces from first frame to the last and
+                vice versa. <i>The lock button</i> cause preview freeze on the current selection - 
+                if pressed you can change selection in "Memory" tab and it will not change
+                your preview.
+            </p>
+            <br>
             
             <p><a href="#tableofcontents">Back to the Table of Contents.</a></p>
+            <br><br>
         </article>
         
         <article>
             <h2><a name="commandlineparameters">3. Command Line Parameters</a></h2>
+            
             <h3>Opening Project From Command Line</h3>
             <blockquote>
                 java -jar MasterofSprites.jar <i>project_file</i>
@@ -165,6 +247,7 @@ THE SOFTWARE.
                 line interface. <em>Unfortunally it doesn't support opening multiple windows
                 with multiple projects.</em>
             </p>
+            <br>
             
             <h3>Export From Command Line</h3>
             <p>
@@ -208,7 +291,10 @@ THE SOFTWARE.
                 using capabilities of makefiles. Worse if you are using Windows batch
                 files - as far as I know there is no looping there. :(
             </p>
+            <br>
+            
             <p><a href="#tableofcontents">Back to the Table of Contents.</a></p>
+            <br><br>
         </article>
         
         <article>
@@ -257,8 +343,7 @@ THE SOFTWARE.
                 </dd>
             </dl>
             <p><a href="#tableofcontents">Back to the Table of Contents.</a></p>
+            <br><br>
         </article>
-        
-        <br><br>
     </body>
 </html>
