@@ -45,12 +45,13 @@ import javax.swing.border.EtchedBorder;
 public class GhostSkinningDialog extends AbstractInputDialog {
     ButtonGroup buttonGroup;
     JRadioButton noSkinningBtn, memSkinningBtn, selSkinningBtn, ovSkinningBtn;
-    GhostSkinning overlayMode;
+    GhostSkinning overlayMode, selectionMode;
     
     public GhostSkinningDialog(JFrame parent) {
         super(parent);
         
         overlayMode = new OverlaySkinning();
+        selectionMode = new SelectionSkinning();
         
         noSkinningBtn = new JRadioButton("0. No ghost skinning.");
         noSkinningBtn.setMnemonic('0');
@@ -83,13 +84,48 @@ public class GhostSkinningDialog extends AbstractInputDialog {
     public GhostSkinning getGhostSkinning() {
         if (ovSkinningBtn.isSelected())
             return overlayMode;
+        else if (selSkinningBtn.isSelected())
+            return selectionMode;
         else
             return null;
     }
 }
 
+class SelectionSkinning implements GhostSkinning {
+    private final BufferedImage bgImage;
+    
+    public SelectionSkinning() {
+        bgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    @Override
+    public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette) {
+        return null;
+    }
+
+    @Override
+    public BufferedImage getBgImage(Selection selection, int selectionIndex, Palette palette) {
+        if (selectionIndex - 1 < 0)
+            return null;
+        
+        MemoryData mem = selection.getSpriteProject().getMemoryData();
+        C64Color m0col = selection.getSpriteProject().getMulti0Color();
+        C64Color m1col = selection.getSpriteProject().getMulti1Color();
+        SpriteData sd = mem.get(selection.get(selectionIndex-1));
+        
+        if (sd.isMulticolor())
+            SpriteRender.renderMulticolorAlpha(
+                    bgImage, sd, palette, m0col, m1col, DEFAULT_ALPHA
+            );
+        else
+            SpriteRender.renderSinglecolorAlpha(bgImage, sd, palette, DEFAULT_ALPHA);
+        
+        return bgImage;
+    }
+}
+
 class OverlaySkinning implements GhostSkinning {
-    BufferedImage fgImage, toDraw;
+    private final BufferedImage fgImage, toDraw;
     
     public OverlaySkinning() {
         fgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
@@ -104,10 +140,11 @@ class OverlaySkinning implements GhostSkinning {
         
         int dist = selection.getSpriteProject().getOverlayDistance();
         int index = selection.get(selectionIndex) - dist;
+        int i = 0;
         MemoryData mem = selection.getSpriteProject().getMemoryData();
         C64Color m0color = selection.getSpriteProject().getMulti0Color();
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
-        while (index >= 0) {
+        while (index >= 0 && i < 7) {
             SpriteData sd = mem.get(index);
             if (!sd.isOverlay())
                 break;
@@ -119,6 +156,7 @@ class OverlaySkinning implements GhostSkinning {
             
             g2d.drawImage(toDraw, null, 0, 0);
             index -= dist;
+            i++;
         }
         
         g2d.dispose();
