@@ -29,6 +29,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.border.EtchedBorder;
 
 /**
  *
@@ -48,7 +49,7 @@ public class ExportPRGDialog extends AbstractInputDialog {
         startAddressLabel.setLabelFor(startAddressSpinner);
         
         getCentralPanel().setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createRaisedBevelBorder(), BorderFactory.createEmptyBorder(4,4,4,4)
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory.createEmptyBorder(4,4,4,4)
         ));
         getCentralPanel().setLayout(new GridBagLayout());
         getCentralPanel().add(startAddressLabel);

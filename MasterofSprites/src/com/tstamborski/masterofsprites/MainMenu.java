@@ -487,6 +487,7 @@ class SelectionMenu extends JMenu {
 
 class ViewMenu extends JMenu {
     public JMenuItem switchTabMenuItem, runNewWindowMenuItem;
+    public JMenuItem ghostSkinningMenuItem;
     
     public ViewMenu() {
         super("View");
@@ -501,7 +502,15 @@ class ViewMenu extends JMenu {
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         runNewWindowMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
         
+        ghostSkinningMenuItem = new JMenuItem("Set Ghost Skinning... ");
+        ghostSkinningMenuItem.setMnemonic(KeyEvent.VK_G);
+        ghostSkinningMenuItem.setAccelerator(
+                KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK));
+        ghostSkinningMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/ghost16.png")));
+        
         add(runNewWindowMenuItem);
+        addSeparator();
+        add(ghostSkinningMenuItem);
         addSeparator();
         add(switchTabMenuItem);
     }

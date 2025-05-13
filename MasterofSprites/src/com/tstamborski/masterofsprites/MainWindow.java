@@ -54,6 +54,7 @@ public class MainWindow extends JFrame {
     private RotationDialog rotateDialog;
     private C64ColorDialog applyColorDialog;
     private FlagDialog applyMulticolorDialog, applyOverlayDialog;
+    private GhostSkinningDialog ghostDialog;
 
     private JFileChooser prgDialog, rawDialog, bitmapDialog, projectDialog, asmDialog;
     private FileNameExtensionFilter spr_filter, prg_filter, png_filter, jpg_filter, bmp_filter, asm_filter;
@@ -585,6 +586,9 @@ public class MainWindow extends JFrame {
         applyOverlayDialog = new FlagDialog(this, "Overlay? ");
         applyOverlayDialog.setIconImage(
                 new ImageIcon(getClass().getResource("icons/flag-blue16.png")).getImage());
+        
+        ghostDialog = new GhostSkinningDialog(this);
+        ghostDialog.setIconImage(new ImageIcon(getClass().getResource("icons/ghost16.png")).getImage());
     }
 
     private void createFileDialogs() {
@@ -889,6 +893,11 @@ public class MainWindow extends JFrame {
         menu.viewMenu.switchTabMenuItem.addActionListener(ae -> {
             centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2);
             centralPane.requestFocusInWindow();
+        });
+        menu.viewMenu.ghostSkinningMenuItem.addActionListener(ae -> {
+            if (ghostDialog.showDialog()) {
+                //TODO
+            }
         });
         menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
             SwingUtilities.invokeLater(() -> {
