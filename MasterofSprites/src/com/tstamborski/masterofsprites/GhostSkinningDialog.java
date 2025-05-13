@@ -24,6 +24,12 @@
 package com.tstamborski.masterofsprites;
 
 import com.tstamborski.AbstractInputDialog;
+import com.tstamborski.masterofsprites.model.C64Color;
+import com.tstamborski.masterofsprites.model.MemoryData;
+import com.tstamborski.masterofsprites.model.SpriteData;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -39,9 +45,12 @@ import javax.swing.border.EtchedBorder;
 public class GhostSkinningDialog extends AbstractInputDialog {
     ButtonGroup buttonGroup;
     JRadioButton noSkinningBtn, memSkinningBtn, selSkinningBtn, ovSkinningBtn;
+    GhostSkinning overlayMode;
     
     public GhostSkinningDialog(JFrame parent) {
         super(parent);
+        
+        overlayMode = new OverlaySkinning();
         
         noSkinningBtn = new JRadioButton("0. No ghost skinning.");
         noSkinningBtn.setMnemonic('0');
@@ -56,7 +65,8 @@ public class GhostSkinningDialog extends AbstractInputDialog {
         buttonGroup.add(memSkinningBtn);
         buttonGroup.add(selSkinningBtn);
         buttonGroup.add(ovSkinningBtn);
-        ovSkinningBtn.setSelected(true);
+        //ovSkinningBtn.setSelected(true);
+        noSkinningBtn.setSelected(true);
         
         JPanel panel = getCentralPanel();
         panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
@@ -71,6 +81,52 @@ public class GhostSkinningDialog extends AbstractInputDialog {
     }
     
     public GhostSkinning getGhostSkinning() {
+        if (ovSkinningBtn.isSelected())
+            return overlayMode;
+        else
+            return null;
+    }
+}
+
+class OverlaySkinning implements GhostSkinning {
+    BufferedImage fgImage, toDraw;
+    
+    public OverlaySkinning() {
+        fgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        toDraw = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    @Override
+    public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette) {
+        Graphics2D g2d = fgImage.createGraphics();
+        g2d.setBackground(new Color(0,0,0,0));
+        g2d.clearRect(0, 0, SpriteImage.WIDTH, SpriteImage.HEIGHT);
+        
+        int dist = selection.getSpriteProject().getOverlayDistance();
+        int index = selection.get(selectionIndex) - dist;
+        MemoryData mem = selection.getSpriteProject().getMemoryData();
+        C64Color m0color = selection.getSpriteProject().getMulti0Color();
+        C64Color m1color = selection.getSpriteProject().getMulti1Color();
+        while (index >= 0) {
+            SpriteData sd = mem.get(index);
+            if (!sd.isOverlay())
+                break;
+            
+            if (sd.isMulticolor())
+                SpriteRender.renderMulticolor(toDraw, sd, palette, m0color, m1color);
+            else
+                SpriteRender.renderSinglecolor(toDraw, sd, palette);
+            
+            g2d.drawImage(toDraw, null, 0, 0);
+            index -= dist;
+        }
+        
+        g2d.dispose();
+        return fgImage;
+    }
+
+    @Override
+    public BufferedImage getBgImage(Selection selection, int selectionIndex, Palette palette) {
         return null;
     }
 }

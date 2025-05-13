@@ -896,7 +896,7 @@ public class MainWindow extends JFrame {
         });
         menu.viewMenu.ghostSkinningMenuItem.addActionListener(ae -> {
             if (ghostDialog.showDialog()) {
-                //TODO
+                editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
             }
         });
         menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {

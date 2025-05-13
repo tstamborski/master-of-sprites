@@ -15,6 +15,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -30,6 +31,10 @@ public class SpriteEditor extends JComponent {
     private SpriteData spriteData;
     private Selection selection;
     private int selectionIndex;
+    
+    private BufferedImage fgGhostImg, bgGhostImg;
+    private GhostSkinning ghostSkinning;
+    
     private C64Color multi0Color, multi1Color, bgColor;
     private SpriteColor currentSpriteColor;
     
@@ -114,19 +119,33 @@ public class SpriteEditor extends JComponent {
         g2d.setColor(palette.getColor(bgColor));
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
+        if (bgGhostImg != null)
+            g2d.drawImage(bgGhostImg, 0, 0, getWidth(), getHeight(), this);
         if (spriteImg != null)
             g2d.drawImage(spriteImg, 0, 0, getWidth(), getHeight(), this);
+        if (fgGhostImg != null)
+            g2d.drawImage(fgGhostImg, 0, 0, getWidth(), getHeight(), this);
     }
     
     public void refresh() {
+        if (ghostSkinning != null) {
+            fgGhostImg = ghostSkinning.getFgImage(selection, selectionIndex, palette);
+            bgGhostImg = ghostSkinning.getBgImage(selection, selectionIndex, palette);
+        }
+        
         if (spriteImg != null)
             spriteImg.redraw();
+        
         repaint();
     }
     
     public void onCurrentSpriteData(SpriteDataOperation op) {
         op.performOperation(spriteData);
-        refresh();
+        
+        if (spriteImg != null)
+            spriteImg.redraw();
+        
+        repaint();
         fireActionEvent();
     }
     
@@ -140,26 +159,14 @@ public class SpriteEditor extends JComponent {
         spriteImg = new SpriteImage(spriteData, palette);
         spriteImg.setMulti0Color(multi0Color);
         spriteImg.setMulti1Color(multi1Color);
-        spriteImg.redraw();
         
-        repaint();
+        refresh();
     }
     
-    /*
-    public void setSpriteData(SpriteData data) {
-        spriteData = data;
-        spriteImg = new SpriteImage(data, palette);
-        spriteImg.setMulti0Color(multi0Color);
-        spriteImg.setMulti1Color(multi1Color);
-        spriteImg.redraw();
-        
-        repaint();
+    public void setGhostSkinning(GhostSkinning skinning) {
+        this.ghostSkinning = skinning;
+        refresh();
     }
-    
-    public SpriteData getSpriteData() {
-        return spriteData;
-    }
-    */
 
     public Palette getPalette() {
         return palette;
