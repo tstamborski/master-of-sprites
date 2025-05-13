@@ -28,6 +28,8 @@ public class SpriteEditor extends JComponent {
     private Palette palette;
     private SpriteImage spriteImg;
     private SpriteData spriteData;
+    private Selection selection;
+    private int selectionIndex;
     private C64Color multi0Color, multi1Color, bgColor;
     private SpriteColor currentSpriteColor;
     
@@ -128,20 +130,22 @@ public class SpriteEditor extends JComponent {
         fireActionEvent();
     }
     
-/*
-    public void rotate(double angle) {
-        if (spriteData.isMulticolor())
-            SpriteRender.rotateMulticolor(spriteData, spriteImg, 
-                    angle, palette, multi0Color, multi1Color);
-        else
-            SpriteRender.rotateSinglecolor(spriteData, spriteImg, 
-                    angle, palette);
+    public void setSelection(Selection selection, int selectionIndex) {
+        this.selection = selection;
+        this.selectionIndex = selectionIndex;
         
-        refresh();
-        fireActionEvent();
+        spriteData = 
+                selection.getSpriteProject().getMemoryData().get(selection.get(selectionIndex));
+        
+        spriteImg = new SpriteImage(spriteData, palette);
+        spriteImg.setMulti0Color(multi0Color);
+        spriteImg.setMulti1Color(multi1Color);
+        spriteImg.redraw();
+        
+        repaint();
     }
-*/
     
+    /*
     public void setSpriteData(SpriteData data) {
         spriteData = data;
         spriteImg = new SpriteImage(data, palette);
@@ -155,6 +159,7 @@ public class SpriteEditor extends JComponent {
     public SpriteData getSpriteData() {
         return spriteData;
     }
+    */
 
     public Palette getPalette() {
         return palette;

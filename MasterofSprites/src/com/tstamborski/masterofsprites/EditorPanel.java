@@ -56,7 +56,7 @@ public class EditorPanel extends JPanel {
     private final ArrayList<PreviewListener> previewListeners;
     
     private SpriteProject project;
-    private ArrayList<Integer> selection;
+    private Selection selection;
     private int selectionIndex;
     
     public EditorPanel() {
@@ -385,7 +385,7 @@ public class EditorPanel extends JPanel {
             fireActionEvent();
     }
     
-    public final void setSelection(ArrayList<Integer> sel) {
+    public final void setSelection(Selection sel) {
         this.selection = sel;
         
         if (sel == null || sel.isEmpty()) {
@@ -444,8 +444,9 @@ public class EditorPanel extends JPanel {
     
     private void setSprite(int index) {
         if (project != null) {
+            editor.setSelection(selection, index);
+            
             SpriteData sd = project.getMemoryData().get(selection.get(index));
-            editor.setSpriteData(sd);
             sprColorLabel.setC64Color(sd.getSpriteC64Color());
             if (sprColorButton.isSelected())
                 colorPicker.setCurrentC64Color(sd.getSpriteC64Color());
