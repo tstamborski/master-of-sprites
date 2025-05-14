@@ -363,7 +363,7 @@ class SpriteMenu extends JMenu {
 
 class SelectionMenu extends JMenu {
     public JMenuItem selectAllMenuItem, selectNoneMenuItem, invertMenuItem;
-    public JMenuItem shiftRightMenuItem, shiftLeftMenuItem;
+    public JMenuItem nextFrameMenuItem, prevFrameMenuItem, overlayForwardMenuItem, overlayBackwardMenuItem;
     public JMenuItem flipHorzMenuItem, flipVertMenuItem, rotateMenuItem, rotate90CWMenuItem, rotate90CCWMenuItem;
     public JMenuItem applySpriteColorMenuItem, applyMulticolorMenuItem, applyOverlayMenuItem;
     
@@ -376,7 +376,7 @@ class SelectionMenu extends JMenu {
         selectAllMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/selection16.png")));
         
         selectNoneMenuItem = new JMenuItem("Select None");
-        selectNoneMenuItem.setMnemonic(KeyEvent.VK_N);
+        selectNoneMenuItem.setMnemonic(KeyEvent.VK_E);
         selectNoneMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         selectNoneMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cross-red-small16.png")));
@@ -386,17 +386,29 @@ class SelectionMenu extends JMenu {
         invertMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.CTRL_DOWN_MASK));
         invertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/invert16.png")));
         
-        shiftRightMenuItem = new JMenuItem("Shift Selection Forward");
-        shiftRightMenuItem.setMnemonic(KeyEvent.VK_F);
-        shiftRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 
+        nextFrameMenuItem = new JMenuItem("Next Frame");
+        nextFrameMenuItem.setMnemonic(KeyEvent.VK_N);
+        nextFrameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
-        shiftRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/increment16.png")));
+        nextFrameMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/increment16.png")));
         
-        shiftLeftMenuItem = new JMenuItem("Shift Selection Backward");
-        shiftLeftMenuItem.setMnemonic(KeyEvent.VK_B);
-        shiftLeftMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 
+        prevFrameMenuItem = new JMenuItem("Previous Frame");
+        prevFrameMenuItem.setMnemonic(KeyEvent.VK_P);
+        prevFrameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
-        shiftLeftMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/decrement16.png")));
+        prevFrameMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/decrement16.png")));
+        
+        overlayForwardMenuItem = new JMenuItem("Overlay Distance Forward");
+        overlayForwardMenuItem.setMnemonic(KeyEvent.VK_F);
+        overlayForwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN,
+                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        overlayForwardMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/scroll-right16.png")));
+        
+        overlayBackwardMenuItem = new JMenuItem("Overlay Distance Backward");
+        overlayBackwardMenuItem.setMnemonic(KeyEvent.VK_B);
+        overlayBackwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP,
+                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        overlayBackwardMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/scroll-left16.png")));
         
         flipHorzMenuItem = new JMenuItem("Flip Horizontally");
         flipHorzMenuItem.setMnemonic(KeyEvent.VK_H);
@@ -449,8 +461,10 @@ class SelectionMenu extends JMenu {
         add(selectNoneMenuItem);
         add(invertMenuItem);
         addSeparator();
-        add(shiftRightMenuItem);
-        add(shiftLeftMenuItem);
+        add(nextFrameMenuItem);
+        add(prevFrameMenuItem);
+        add(overlayForwardMenuItem);
+        add(overlayBackwardMenuItem);
         addSeparator();
         add(rotateMenuItem);
         add(rotate90CWMenuItem);
@@ -470,8 +484,10 @@ class SelectionMenu extends JMenu {
     public void enableItems(boolean b) {
         //selectNoneMenuItem.setEnabled(b);
         
-        shiftRightMenuItem.setEnabled(b);
-        shiftLeftMenuItem.setEnabled(b);
+        nextFrameMenuItem.setEnabled(b);
+        prevFrameMenuItem.setEnabled(b);
+        overlayForwardMenuItem.setEnabled(b);
+        overlayBackwardMenuItem.setEnabled(b);
         
         flipHorzMenuItem.setEnabled(b);
         flipVertMenuItem.setEnabled(b);

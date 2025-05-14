@@ -841,11 +841,21 @@ public class MainWindow extends JFrame {
                 memoryPanel.getMemoryView().onSelection(s -> {s.clear();})
         );
         
-        menu.selectionMenu.shiftLeftMenuItem.addActionListener(ae -> 
+        menu.selectionMenu.prevFrameMenuItem.addActionListener(ae -> 
                 memoryPanel.getMemoryView().onSelection(s -> {s.shift(-1);})
         );
-        menu.selectionMenu.shiftRightMenuItem.addActionListener(ae -> 
+        menu.selectionMenu.nextFrameMenuItem.addActionListener(ae -> 
                 memoryPanel.getMemoryView().onSelection(s -> {s.shift(1);})
+        );
+        menu.selectionMenu.overlayBackwardMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(
+                        s -> {s.shift(-s.getSpriteProject().getOverlayDistance());}
+                )
+        );
+        menu.selectionMenu.overlayForwardMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelection(
+                        s -> {s.shift(s.getSpriteProject().getOverlayDistance());}
+                )
         );
         
         menu.selectionMenu.flipHorzMenuItem.addActionListener(ae ->
