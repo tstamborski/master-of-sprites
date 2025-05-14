@@ -49,7 +49,8 @@ public class ExportPRGDialog extends AbstractInputDialog {
         startAddressLabel.setLabelFor(startAddressSpinner);
         
         getCentralPanel().setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), BorderFactory.createEmptyBorder(4,4,4,4)
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)
         ));
         getCentralPanel().setLayout(new GridBagLayout());
         getCentralPanel().add(startAddressLabel);

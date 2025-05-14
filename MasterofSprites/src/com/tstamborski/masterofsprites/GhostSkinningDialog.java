@@ -45,13 +45,14 @@ import javax.swing.border.EtchedBorder;
 public class GhostSkinningDialog extends AbstractInputDialog {
     ButtonGroup buttonGroup;
     JRadioButton noSkinningBtn, memSkinningBtn, selSkinningBtn, ovSkinningBtn;
-    GhostSkinning overlayMode, selectionMode;
+    GhostSkinning overlayMode, selectionMode, memoryMode;
     
     public GhostSkinningDialog(JFrame parent) {
         super(parent);
         
         overlayMode = new OverlaySkinning();
         selectionMode = new SelectionSkinning();
+        memoryMode = new MemorySkinning();
         
         noSkinningBtn = new JRadioButton("0. No ghost skinning.");
         noSkinningBtn.setMnemonic('0');
@@ -70,7 +71,11 @@ public class GhostSkinningDialog extends AbstractInputDialog {
         noSkinningBtn.setSelected(true);
         
         JPanel panel = getCentralPanel();
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        panel.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
+                        BorderFactory.createEmptyBorder(8, 8, 8, 8))
+        );
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(noSkinningBtn);
         panel.add(memSkinningBtn);
@@ -86,8 +91,43 @@ public class GhostSkinningDialog extends AbstractInputDialog {
             return overlayMode;
         else if (selSkinningBtn.isSelected())
             return selectionMode;
+        else if (memSkinningBtn.isSelected())
+            return memoryMode;
         else
             return null;
+    }
+}
+
+class MemorySkinning implements GhostSkinning {
+    private final BufferedImage bgImage;
+    
+    public MemorySkinning() {
+        bgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
+    }
+
+    @Override
+    public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette) {
+        return null;
+    }
+
+    @Override
+    public BufferedImage getBgImage(Selection selection, int selectionIndex, Palette palette) {
+        if (selection.get(selectionIndex) - 1 < 0)
+            return null;
+        
+        MemoryData mem = selection.getSpriteProject().getMemoryData();
+        C64Color m0col = selection.getSpriteProject().getMulti0Color();
+        C64Color m1col = selection.getSpriteProject().getMulti1Color();
+        SpriteData sd = mem.get(selection.get(selectionIndex) - 1);
+        
+        if (sd.isMulticolor())
+            SpriteRender.renderMulticolorAlpha(
+                    bgImage, sd, palette, m0col, m1col, DEFAULT_ALPHA
+            );
+        else
+            SpriteRender.renderSinglecolorAlpha(bgImage, sd, palette, DEFAULT_ALPHA);
+        
+        return bgImage;
     }
 }
 
