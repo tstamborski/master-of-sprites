@@ -30,7 +30,7 @@ import java.awt.image.BufferedImage;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 public interface GhostSkinning {
-    public static final int DEFAULT_ALPHA = 0x80;
+    public static final int DEFAULT_ALPHA = 0x60;
     
     public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette);
     public BufferedImage getBgImage(Selection selection, int selectionIndex, Palette palette);

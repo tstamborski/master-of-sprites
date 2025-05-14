@@ -95,7 +95,7 @@ public class PreviewPanel extends JPanel {
         pauseButton = new JToggleButton(new ImageIcon(getClass().getResource("icons/pause16.png")));
         stopButton = new JButton(new ImageIcon(getClass().getResource("icons/stop16.png")));
         nextButton = new JButton(new ImageIcon(getClass().getResource("icons/next16.png")));
-        frameCountSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 16, 1));
+        frameCountSpinner = new JSpinner(new SpinnerNumberModel(4, 1, 16, 1));
         frameCountSpinner.setMaximumSize(frameCountSpinner.getMinimumSize());
         frameDelaySpinner = new JSpinner(new SpinnerNumberModel(100, 20, 2000, 20));
         frameDelaySpinner.setMaximumSize(frameDelaySpinner.getMinimumSize());
@@ -107,6 +107,7 @@ public class PreviewPanel extends JPanel {
         frameDelayLabel.setLabelFor(frameDelaySpinner);
         
         preview = new SpritePreview();
+        preview.setFrameCount(4);
         
         centralPanel = new JPanel();
         centralPanel.setLayout(new GridBagLayout());
