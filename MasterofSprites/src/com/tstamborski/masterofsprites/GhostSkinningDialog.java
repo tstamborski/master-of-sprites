@@ -91,6 +91,39 @@ public class GhostSkinningDialog extends AbstractInputDialog {
         pack();
     }
     
+    public int getIndex() {
+        if (iSkinningBtn.isSelected())
+            return 4;
+        else if (ovSkinningBtn.isSelected())
+            return 3;
+        else if (selSkinningBtn.isSelected())
+            return 2;
+        else if (memSkinningBtn.isSelected())
+            return 1;
+        else
+            return 0;
+    }
+    
+    public void setIndex(int i) {
+        switch (i) {
+            case 4:
+                iSkinningBtn.setSelected(true);
+                break;
+            case 3:
+                ovSkinningBtn.setSelected(true);
+                break;
+            case 2:
+                selSkinningBtn.setSelected(true);
+                break;
+            case 1:
+                memSkinningBtn.setSelected(true);
+                break;
+            default:
+                noSkinningBtn.setSelected(true);
+                break;
+        }
+    }
+    
     public GhostSkinning getGhostSkinning() {
         if (iSkinningBtn.isSelected())
             return intelligentMode;

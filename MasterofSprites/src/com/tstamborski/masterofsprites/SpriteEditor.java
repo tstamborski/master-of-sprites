@@ -165,6 +165,11 @@ public class SpriteEditor extends JComponent {
     
     public void setGhostSkinning(GhostSkinning skinning) {
         this.ghostSkinning = skinning;
+        if (skinning == null) {
+            fgGhostImg = null;
+            bgGhostImg = null;
+        }
+        
         refresh();
     }
 

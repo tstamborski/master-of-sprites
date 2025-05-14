@@ -198,6 +198,8 @@ public class MainWindow extends JFrame {
         settings.loadFileChooser(asmDialog, Settings.ASM_FILE_DLG);
         
         settings.loadAsmSyntaxDialog(asmSyntaxDialog);
+        settings.loadGhostSkinningDialog(ghostDialog);
+        editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
     }
     
     private void saveSettings() {
@@ -208,6 +210,7 @@ public class MainWindow extends JFrame {
         settings.saveFileChooser(asmDialog, Settings.ASM_FILE_DLG);
         
         settings.saveAsmSyntaxDialog(asmSyntaxDialog);
+        settings.saveGhostSkinningDialog(ghostDialog);
     }
     
     private void reloadProject() {

@@ -40,9 +40,11 @@ public class Settings {
     public static final String PRG_FILE_DLG = "prgDialog";
     
     private static final String ASM_SYNTAX_DLG = "asmSyntaxDialog";
+    private static final String GHOST_SKINNING_DLG = "ghostDialog";
     
     private static final String CURRENT_DIR = ".currentDir";
     private static final String SYNTAX = ".syntax";
+    private static final String SKINNING = ".skinning";
     
     
     private final Preferences prefs;
@@ -67,5 +69,13 @@ public class Settings {
     
     public void loadAsmSyntaxDialog(AsmSyntaxDialog dlg) {
         dlg.setAsmSyntax(prefs.getInt(ASM_SYNTAX_DLG+SYNTAX, AsmCodeStream.KICKASS_SYNTAX));
+    }
+    
+    public void saveGhostSkinningDialog(GhostSkinningDialog dlg) {
+        prefs.putInt(GHOST_SKINNING_DLG+SKINNING, dlg.getIndex());
+    }
+    
+    public void loadGhostSkinningDialog(GhostSkinningDialog dlg) {
+        dlg.setIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 0));
     }
 }
