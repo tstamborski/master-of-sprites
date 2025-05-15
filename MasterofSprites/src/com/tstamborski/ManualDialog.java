@@ -97,7 +97,7 @@ public class ManualDialog extends JDialog {
             scrollPane.getViewport().setViewPosition(new Point(0, 0));
         });
         textPane.addHyperlinkListener(hle -> {
-            if (hle.getEventType() == HyperlinkEvent.EventType.ACTIVATED && hle.getURL() == null) {
+            if (hle.getEventType() == HyperlinkEvent.EventType.ACTIVATED && hle.getURL().sameFile(page)) {
                 String description = hle.getDescription();
                 HTMLDocument doc = (HTMLDocument)textPane.getStyledDocument();
                 
@@ -110,7 +110,7 @@ public class ManualDialog extends JDialog {
                 } catch (BadLocationException ex) {
                     Util.showError(this, ex.getMessage());
                 }
-            } else if (hle.getEventType() == HyperlinkEvent.EventType.ACTIVATED && hle.getURL() != null) {
+            } else if (hle.getEventType() == HyperlinkEvent.EventType.ACTIVATED && !hle.getURL().sameFile(page)) {
                 if (Desktop.isDesktopSupported()) {
                     try {
                         Desktop.getDesktop().browse(hle.getURL().toURI());
