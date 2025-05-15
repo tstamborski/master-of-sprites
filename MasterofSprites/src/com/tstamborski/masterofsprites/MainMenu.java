@@ -23,12 +23,11 @@
  */
 package com.tstamborski.masterofsprites;
 
-import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.model.History;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -146,21 +145,12 @@ class FileMenu extends JMenu {
         
         examplesMenu = new JMenu("Examples");
         examplesMenu.setMnemonic(KeyEvent.VK_M);
-        File examplesDir;
-        File[] examples;
-        try {
-            examplesDir = new File(getClass().getResource("examples").toURI());
-        } catch (URISyntaxException e) {
-            Util.casualError(e, null);
-            examplesDir = null;
-        }
-        if (examplesDir != null) {
-            examples = examplesDir.listFiles();
-            for (File example: examples) {
-                examplesMenu.add(new JMenuItem(example.getName()));
-            }
-        }
-
+        //class loader w javie *8* nie obsluguje
+        //zeby przejrzec caly pakiet - trzeba na piechote
+        examplesMenu.add(new JMenuItem("Gorilla.spr"));
+        examplesMenu.add(new JMenuItem("Halloween.spr"));
+        examplesMenu.add(new JMenuItem("Pirate.spr"));
+        
         add(newMenuItem);
         add(openMenuItem);
         add(saveMenuItem);
