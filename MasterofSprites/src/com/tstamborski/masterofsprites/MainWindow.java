@@ -269,7 +269,35 @@ public class MainWindow extends JFrame {
         newHistory();
         setSaved(true);
         reloadProject();
-        updateTitlebar();
+        //updateTitlebar();
+
+        try {
+            oistream.close();
+            istream.close();
+        } catch (IOException e) {
+            Util.showError(this, e.getMessage());
+        }
+    }
+    
+    public void loadExample(String name) {
+        InputStream istream;
+        ObjectInputStream oistream;
+        
+        istream = getClass().getResourceAsStream("examples/" + name);
+
+        try {
+            oistream = new ObjectInputStream(istream);
+            project = (SpriteProject)oistream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            Util.showError(this, e.getMessage());
+            return;
+        }
+
+        file = null;
+        newHistory();
+        setSaved(true);
+        reloadProject();
+        //updateTitlebar();
 
         try {
             oistream.close();
@@ -564,7 +592,7 @@ public class MainWindow extends JFrame {
         }
         
         try {
-            manDialog = new ManualDialog(this, getClass().getResourceAsStream("docs/manual.html"));
+            manDialog = new ManualDialog(this, getClass().getResource("docs/manual.html"));
             manDialog.setIconImage(
                     new ImageIcon(getClass().getResource("icons/handbook16.png")).getImage());
         } catch (IOException e) {
@@ -741,6 +769,14 @@ public class MainWindow extends JFrame {
             if (history.isSaved() || showUnsavedDialog())
                 importRawData();
         });
+        int itCount = menu.fileMenu.examplesMenu.getItemCount();
+        for (int i = 0; i < itCount; i++) {
+            JMenuItem item = menu.fileMenu.examplesMenu.getItem(i);
+            item.addActionListener(ae -> {
+                if (history.isSaved() || showUnsavedDialog())
+                    loadExample(item.getText());
+            });
+        }
         menu.fileMenu.exitMenuItem.addActionListener(
                 (ae) -> {
                     dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));

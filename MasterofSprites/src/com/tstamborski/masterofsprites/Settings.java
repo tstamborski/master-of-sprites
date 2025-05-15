@@ -72,10 +72,10 @@ public class Settings {
     }
     
     public void saveGhostSkinningDialog(GhostSkinningDialog dlg) {
-        prefs.putInt(GHOST_SKINNING_DLG+SKINNING, dlg.getIndex());
+        prefs.putInt(GHOST_SKINNING_DLG+SKINNING, dlg.getSkinningIndex());
     }
     
     public void loadGhostSkinningDialog(GhostSkinningDialog dlg) {
-        dlg.setIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 0));
+        dlg.setSkinningIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 0));
     }
 }

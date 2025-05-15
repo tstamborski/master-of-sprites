@@ -29,11 +29,8 @@ import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -61,20 +58,14 @@ public class ManualDialog extends JDialog {
     private final JButton closeButton, back2TopButton;
     private final JPanel southPanel;
     
-    public ManualDialog(JFrame parent, InputStream istream) throws IOException {
+    public ManualDialog(JFrame parent, URL page) throws IOException {
         super(parent);
-        
-        CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
-        StringBuilder builder = new StringBuilder();
-        byte b[] = new byte[2048];
         
         textPane = new JTextPane();
         textPane.setEditable(false);
         textPane.setContentType("text/html");
         textPane.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-        while (istream.read(b, 0, b.length) > 0)
-            builder.append(decoder.decode(ByteBuffer.wrap(b)));
-        textPane.setText(builder.toString());
+        textPane.setPage(page);
         
         closeButton = new JButton("Close");
         closeButton.setMnemonic('C');

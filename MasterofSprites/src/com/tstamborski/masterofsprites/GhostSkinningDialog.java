@@ -91,7 +91,7 @@ public class GhostSkinningDialog extends AbstractInputDialog {
         pack();
     }
     
-    public int getIndex() {
+    public int getSkinningIndex() {
         if (iSkinningBtn.isSelected())
             return 4;
         else if (ovSkinningBtn.isSelected())
@@ -104,7 +104,7 @@ public class GhostSkinningDialog extends AbstractInputDialog {
             return 0;
     }
     
-    public void setIndex(int i) {
+    public void setSkinningIndex(int i) {
         switch (i) {
             case 4:
                 iSkinningBtn.setSelected(true);

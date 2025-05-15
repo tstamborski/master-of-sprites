@@ -128,7 +128,7 @@ public class SpriteEditor extends JComponent {
     }
     
     public void refresh() {
-        if (ghostSkinning != null) {
+        if (ghostSkinning != null && selection != null) {
             fgGhostImg = ghostSkinning.getFgImage(selection, selectionIndex, palette);
             bgGhostImg = ghostSkinning.getBgImage(selection, selectionIndex, palette);
         }

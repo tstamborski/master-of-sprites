@@ -23,8 +23,12 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.model.History;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
@@ -77,6 +81,7 @@ class FileMenu extends JMenu {
     public JMenuItem importPRGMenuItem;
     public JMenuItem exportRawMenuItem;
     public JMenuItem importRawMenuItem;
+    public final JMenu examplesMenu;
     
     private final JMenu exportMenu;
     
@@ -138,6 +143,23 @@ class FileMenu extends JMenu {
         exportMenu.add(exportAsmMenuItem);
         exportMenu.add(exportBitmapMenuItem);
         exportMenu.add(exportRawMenuItem);
+        
+        examplesMenu = new JMenu("Examples");
+        examplesMenu.setMnemonic(KeyEvent.VK_M);
+        File examplesDir;
+        File[] examples;
+        try {
+            examplesDir = new File(getClass().getResource("examples").toURI());
+        } catch (URISyntaxException e) {
+            Util.casualError(e, null);
+            examplesDir = null;
+        }
+        if (examplesDir != null) {
+            examples = examplesDir.listFiles();
+            for (File example: examples) {
+                examplesMenu.add(new JMenuItem(example.getName()));
+            }
+        }
 
         add(newMenuItem);
         add(openMenuItem);
@@ -147,6 +169,8 @@ class FileMenu extends JMenu {
         add(importPRGMenuItem);
         add(importRawMenuItem);
         add(exportMenu);
+        addSeparator();
+        add(examplesMenu);
         addSeparator();
         add(exitMenuItem);
     }
