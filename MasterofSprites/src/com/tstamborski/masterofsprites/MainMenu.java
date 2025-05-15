@@ -147,6 +147,8 @@ class FileMenu extends JMenu {
         examplesMenu.add(new JMenuItem("Gorilla.spr"));
         examplesMenu.add(new JMenuItem("Halloween.spr"));
         examplesMenu.add(new JMenuItem("Pirate.spr"));
+        examplesMenu.add(new JMenuItem("Symbols.spr"));
+        examplesMenu.add(new JMenuItem("Various.spr"));
         
         add(newMenuItem);
         add(openMenuItem);
