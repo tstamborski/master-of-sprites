@@ -23,6 +23,10 @@ public class Time implements Serializable {
         this.seconds += secondsCount;
     }
     
+    public void reset() {
+        this.seconds = 0;
+    }
+    
     public int getSeconds() {
         return (int)(seconds % 60);
     }

@@ -267,8 +267,8 @@ public class MainWindow extends JFrame {
 
         file = f;
         newHistory();
-        setSaved(true);
         reloadProject();
+        setSaved(true);
         //updateTitlebar();
 
         try {
@@ -294,9 +294,10 @@ public class MainWindow extends JFrame {
         }
 
         file = null;
+        project.getWorkTime().reset();
         newHistory();
-        setSaved(true);
         reloadProject();
+        setSaved(true);
         //updateTitlebar();
 
         try {
