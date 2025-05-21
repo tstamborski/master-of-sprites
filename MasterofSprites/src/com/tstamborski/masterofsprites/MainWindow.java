@@ -949,6 +949,9 @@ public class MainWindow extends JFrame {
                 editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
             }
         });
+        menu.viewMenu.editorGridMenuItem.addActionListener(ae -> {
+            editorPanel.getSpriteEditor().setGrid(!editorPanel.getSpriteEditor().isGrid());
+        });
         menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
             SwingUtilities.invokeLater(() -> {
                 MainWindow wnd = new MainWindow();

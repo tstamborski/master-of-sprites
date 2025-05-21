@@ -8,6 +8,7 @@ import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,6 +35,9 @@ public class SpriteEditor extends JComponent {
     
     private BufferedImage fgGhostImg, bgGhostImg;
     private GhostSkinning ghostSkinning;
+    
+    private BufferedImage gridImg;
+    private boolean gridFlag;
     
     private C64Color multi0Color, multi1Color, bgColor;
     private SpriteColor currentSpriteColor;
@@ -125,6 +129,9 @@ public class SpriteEditor extends JComponent {
             g2d.drawImage(spriteImg, 0, 0, getWidth(), getHeight(), this);
         if (fgGhostImg != null)
             g2d.drawImage(fgGhostImg, 0, 0, getWidth(), getHeight(), this);
+        
+        if (gridFlag)
+            g2d.drawImage(gridImg, 0, 0, this);
     }
     
     public void refresh() {
@@ -135,6 +142,8 @@ public class SpriteEditor extends JComponent {
         
         if (spriteImg != null)
             spriteImg.redraw();
+        
+        createGridIamge();
         
         repaint();
     }
@@ -190,6 +199,7 @@ public class SpriteEditor extends JComponent {
 
     public void setBgC64Color(C64Color bgColor) {
         this.bgColor = bgColor;
+        createGridIamge();
         repaint();
     }
     
@@ -248,6 +258,18 @@ public class SpriteEditor extends JComponent {
         currentSpriteColor = color;
     }
     
+    public void setGrid(boolean b) {
+        if (gridFlag == b)
+            return;
+        
+        gridFlag = b;
+        repaint();
+    }
+    
+    public boolean isGrid() {
+        return gridFlag;
+    }
+    
     public void addActionListener(ActionListener listener) {
         actionListeners.add(listener);
     }
@@ -302,5 +324,31 @@ public class SpriteEditor extends JComponent {
         actionListeners.forEach(al -> al.actionPerformed(new ActionEvent(
                 this, ActionEvent.ACTION_PERFORMED, null
             )));
+    }
+    
+    private void createGridIamge() {
+        int width = zoom * SpriteImage.WIDTH;
+        int height = zoom * SpriteImage.HEIGHT;
+        int stepx = (spriteData != null && spriteData.isMulticolor()) ? zoom*2 : zoom;
+        int stepy = zoom;
+        Color gridColor = 
+                (bgColor == C64Color.Black || bgColor == C64Color.Blue) ? Color.WHITE : Color.BLACK;
+        
+        if (gridImg == null)
+            gridImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = gridImg.createGraphics();
+        g2d.setBackground(new Color(0, 0, 0, 0));
+        g2d.clearRect(0, 0, width, height);
+        g2d.setColor(gridColor);
+        
+        for (int x = 0; x < width; x += stepx)
+            g2d.drawLine(x, 0, x, height);
+        g2d.drawLine(width-1, 0, width-1, height);
+        
+        for (int y = 0; y < height; y += stepy)
+            g2d.drawLine(0, y, width, y);
+        g2d.drawLine(0, height-1, width, height-1);
+        
+        g2d.dispose();
     }
 }

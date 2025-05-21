@@ -27,6 +27,7 @@ import com.tstamborski.masterofsprites.model.History;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -142,7 +143,7 @@ class FileMenu extends JMenu {
         
         examplesMenu = new JMenu("Examples");
         examplesMenu.setMnemonic(KeyEvent.VK_M);
-        //class loader w javie *8* nie obsluguje
+        //class loader w javie **8** nie obsluguje
         //zeby przejrzec caly pakiet - trzeba na piechote
         examplesMenu.add(new JMenuItem("Gorilla.spr"));
         examplesMenu.add(new JMenuItem("Halloween.spr"));
@@ -517,12 +518,13 @@ class SelectionMenu extends JMenu {
 class ViewMenu extends JMenu {
     public JMenuItem switchTabMenuItem, runNewWindowMenuItem;
     public JMenuItem ghostSkinningMenuItem;
+    public JMenuItem editorGridMenuItem;
     
     public ViewMenu() {
         super("View");
         
         switchTabMenuItem = new JMenuItem("Switch Memory / Preview");
-        switchTabMenuItem.setMnemonic(KeyEvent.VK_S);
+        switchTabMenuItem.setMnemonic(KeyEvent.VK_M);
         switchTabMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         
         runNewWindowMenuItem = new JMenuItem("Run New Window... ");
@@ -531,8 +533,13 @@ class ViewMenu extends JMenu {
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         runNewWindowMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
         
+        editorGridMenuItem = new JMenuItem("Editor Grid");
+        editorGridMenuItem.setMnemonic(KeyEvent.VK_G);
+        editorGridMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
+        editorGridMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/grid16.png")));
+        
         ghostSkinningMenuItem = new JMenuItem("Set Ghost Skinning... ");
-        ghostSkinningMenuItem.setMnemonic(KeyEvent.VK_G);
+        ghostSkinningMenuItem.setMnemonic(KeyEvent.VK_S);
         ghostSkinningMenuItem.setAccelerator(
                 KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK));
         ghostSkinningMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/ghost16.png")));
@@ -540,6 +547,7 @@ class ViewMenu extends JMenu {
         add(runNewWindowMenuItem);
         addSeparator();
         add(ghostSkinningMenuItem);
+        add(editorGridMenuItem);
         addSeparator();
         add(switchTabMenuItem);
     }
