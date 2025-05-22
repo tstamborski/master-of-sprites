@@ -200,6 +200,8 @@ public class MainWindow extends JFrame {
         settings.loadAsmSyntaxDialog(asmSyntaxDialog);
         settings.loadGhostSkinningDialog(ghostDialog);
         editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
+        
+        settings.loadSpriteEditor(editorPanel.getSpriteEditor());
     }
     
     private void saveSettings() {
@@ -211,6 +213,8 @@ public class MainWindow extends JFrame {
         
         settings.saveAsmSyntaxDialog(asmSyntaxDialog);
         settings.saveGhostSkinningDialog(ghostDialog);
+        
+        settings.saveSpriteEditor(editorPanel.getSpriteEditor());
     }
     
     private void reloadProject() {

@@ -41,10 +41,12 @@ public class Settings {
     
     private static final String ASM_SYNTAX_DLG = "asmSyntaxDialog";
     private static final String GHOST_SKINNING_DLG = "ghostDialog";
+    private static final String SPRITE_EDITOR = "spriteEditor";
     
     private static final String CURRENT_DIR = ".currentDir";
     private static final String SYNTAX = ".syntax";
     private static final String SKINNING = ".skinning";
+    private static final String GRID = ".grid";
     
     
     private final Preferences prefs;
@@ -77,5 +79,13 @@ public class Settings {
     
     public void loadGhostSkinningDialog(GhostSkinningDialog dlg) {
         dlg.setSkinningIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 0));
+    }
+    
+    public void saveSpriteEditor(SpriteEditor ed) {
+        prefs.putBoolean(SPRITE_EDITOR+GRID, ed.isGrid());
+    }
+    
+    public void loadSpriteEditor(SpriteEditor ed) {
+        ed.setGrid(prefs.getBoolean(SPRITE_EDITOR+GRID, false));
     }
 }
