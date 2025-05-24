@@ -222,13 +222,14 @@ class OverlaySkinning implements GhostSkinning {
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
         SpriteData sd = mem.get(index);
         while (i < 7) {
-            if (index >= mem.size())
-                break;
             if (!sd.isOverlay())
                 break;
             
             index += dist;
             i++;
+            
+            if (index >= mem.size())
+                break;
             sd = mem.get(index);
             
             if (sd.isMulticolor())
@@ -268,13 +269,14 @@ class IntelligentSkinning implements GhostSkinning {
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
         SpriteData sd = mem.get(index);
         while (i < 7) {
-            if (index >= mem.size())
-                break;
             if (!sd.isOverlay())
                 break;
             
             index += dist;
             i++;
+            
+            if (index >= mem.size())
+                break;
             sd = mem.get(index);
             
             if (sd.isMulticolor())
