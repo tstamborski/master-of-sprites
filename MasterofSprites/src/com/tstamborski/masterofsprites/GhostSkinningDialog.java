@@ -27,8 +27,6 @@ import com.tstamborski.AbstractInputDialog;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteData;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -71,7 +69,6 @@ public class GhostSkinningDialog extends AbstractInputDialog {
         buttonGroup.add(selSkinningBtn);
         buttonGroup.add(ovSkinningBtn);
         buttonGroup.add(iSkinningBtn);
-        //ovSkinningBtn.setSelected(true);
         noSkinningBtn.setSelected(true);
         
         JPanel panel = getCentralPanel();
@@ -160,6 +157,7 @@ class MemorySkinning implements GhostSkinning {
         C64Color m1col = selection.getSpriteProject().getMulti1Color();
         SpriteData sd = mem.get(selection.get(selectionIndex) - 1);
         
+        SpriteRender.clearImage(bgImage);
         if (sd.isMulticolor())
             SpriteRender.renderMulticolorAlpha(
                     bgImage, sd, palette, m0col, m1col, DEFAULT_ALPHA
@@ -193,6 +191,7 @@ class SelectionSkinning implements GhostSkinning {
         C64Color m1col = selection.getSpriteProject().getMulti1Color();
         SpriteData sd = mem.get(selection.get(selectionIndex-1));
         
+        SpriteRender.clearImage(bgImage);
         if (sd.isMulticolor())
             SpriteRender.renderMulticolorAlpha(
                     bgImage, sd, palette, m0col, m1col, DEFAULT_ALPHA
@@ -205,41 +204,39 @@ class SelectionSkinning implements GhostSkinning {
 }
 
 class OverlaySkinning implements GhostSkinning {
-    private final BufferedImage fgImage, toDraw;
+    private final BufferedImage fgImage;
     
     public OverlaySkinning() {
         fgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        toDraw = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
     @Override
     public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette) {
-        Graphics2D g2d = fgImage.createGraphics();
-        g2d.setBackground(new Color(0,0,0,0));
-        g2d.clearRect(0, 0, SpriteImage.WIDTH, SpriteImage.HEIGHT);
+        SpriteRender.clearImage(fgImage);
         
         int dist = selection.getSpriteProject().getOverlayDistance();
-        int index = selection.get(selectionIndex) - dist;
+        int index = selection.get(selectionIndex);
         int i = 0;
         MemoryData mem = selection.getSpriteProject().getMemoryData();
         C64Color m0color = selection.getSpriteProject().getMulti0Color();
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
-        while (index >= 0 && i < 7) {
-            SpriteData sd = mem.get(index);
+        SpriteData sd = mem.get(index);
+        while (i < 7) {
+            if (index >= mem.size())
+                break;
             if (!sd.isOverlay())
                 break;
             
-            if (sd.isMulticolor())
-                SpriteRender.renderMulticolor(toDraw, sd, palette, m0color, m1color);
-            else
-                SpriteRender.renderSinglecolor(toDraw, sd, palette);
-            
-            g2d.drawImage(toDraw, null, 0, 0);
-            index -= dist;
+            index += dist;
             i++;
+            sd = mem.get(index);
+            
+            if (sd.isMulticolor())
+                SpriteRender.renderMulticolor(fgImage, sd, palette, m0color, m1color);
+            else
+                SpriteRender.renderSinglecolor(fgImage, sd, palette);
         }
         
-        g2d.dispose();
         if (i == 0)
             return null;
         return fgImage;
@@ -252,42 +249,40 @@ class OverlaySkinning implements GhostSkinning {
 }
 
 class IntelligentSkinning implements GhostSkinning {
-    private final BufferedImage fgImage, bgImage, toDraw;
+    private final BufferedImage fgImage, bgImage;
     
     public IntelligentSkinning() {
         fgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
         bgImage = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        toDraw = new BufferedImage(SpriteImage.WIDTH, SpriteImage.HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
     @Override
     public BufferedImage getFgImage(Selection selection, int selectionIndex, Palette palette) {
-        Graphics2D g2d = fgImage.createGraphics();
-        g2d.setBackground(new Color(0,0,0,0));
-        g2d.clearRect(0, 0, SpriteImage.WIDTH, SpriteImage.HEIGHT);
+        SpriteRender.clearImage(fgImage);
         
         int dist = selection.getSpriteProject().getOverlayDistance();
-        int index = selection.get(selectionIndex) - dist;
+        int index = selection.get(selectionIndex);
         int i = 0;
         MemoryData mem = selection.getSpriteProject().getMemoryData();
         C64Color m0color = selection.getSpriteProject().getMulti0Color();
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
-        while (index >= 0 && i < 7) {
-            SpriteData sd = mem.get(index);
+        SpriteData sd = mem.get(index);
+        while (i < 7) {
+            if (index >= mem.size())
+                break;
             if (!sd.isOverlay())
                 break;
             
-            if (sd.isMulticolor())
-                SpriteRender.renderMulticolor(toDraw, sd, palette, m0color, m1color);
-            else
-                SpriteRender.renderSinglecolor(toDraw, sd, palette);
-            
-            g2d.drawImage(toDraw, null, 0, 0);
-            index -= dist;
+            index += dist;
             i++;
+            sd = mem.get(index);
+            
+            if (sd.isMulticolor())
+                SpriteRender.renderMulticolor(fgImage, sd, palette, m0color, m1color);
+            else
+                SpriteRender.renderSinglecolor(fgImage, sd, palette);
         }
         
-        g2d.dispose();
         if (i == 0)
             return null;
         return fgImage;
@@ -295,47 +290,34 @@ class IntelligentSkinning implements GhostSkinning {
 
     @Override
     public BufferedImage getBgImage(Selection selection, int selectionIndex, Palette palette) {
-        Graphics2D g2d = bgImage.createGraphics();
-        g2d.setBackground(new Color(0,0,0,0));
-        g2d.clearRect(0, 0, SpriteImage.WIDTH, SpriteImage.HEIGHT);
+        SpriteRender.clearImage(bgImage);
         
         int dist = selection.getSpriteProject().getOverlayDistance();
         int index = selection.get(selectionIndex) - 1;
-        if (index < 0)
+        if (index < 0 || index % dist == dist - 1)
             return null;
-        if ((index + 1) % dist == 0) 
-            return null;
-        
+        int i = 0;
         MemoryData mem = selection.getSpriteProject().getMemoryData();
         C64Color m0color = selection.getSpriteProject().getMulti0Color();
         C64Color m1color = selection.getSpriteProject().getMulti1Color();
-        
-        SpriteData sd = mem.get(index);
-        if (sd.isMulticolor())
-            SpriteRender.renderMulticolorAlpha(toDraw, sd, palette, m0color, m1color, DEFAULT_ALPHA);
-        else
-            SpriteRender.renderSinglecolorAlpha(toDraw, sd, palette, DEFAULT_ALPHA);
-        g2d.drawImage(toDraw, null, 0, 0);
-        index -= dist;
-        
-        int i = 0;
-        while (index >= 0 && i < 7) {
-            sd = mem.get(index);
-            if (!sd.isOverlay())
+        while (i < 8) {
+            if (index >= mem.size())
                 break;
+            SpriteData sd = mem.get(index);
             
             if (sd.isMulticolor())
                 SpriteRender.renderMulticolorAlpha(
-                        toDraw, sd, palette, m0color, m1color, DEFAULT_ALPHA);
+                        bgImage, sd, palette, m0color, m1color, DEFAULT_ALPHA);
             else
-                SpriteRender.renderSinglecolorAlpha(toDraw, sd, palette, DEFAULT_ALPHA);
+                SpriteRender.renderSinglecolorAlpha(
+                        bgImage, sd, palette, DEFAULT_ALPHA);
             
-            g2d.drawImage(toDraw, null, 0, 0);
-            index -= dist;
+            if (!sd.isOverlay())
+                break;
+            index += dist;
             i++;
         }
         
-        g2d.dispose();
         return bgImage;
     }
 }

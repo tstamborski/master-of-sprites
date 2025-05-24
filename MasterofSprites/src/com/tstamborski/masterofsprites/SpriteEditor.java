@@ -249,6 +249,8 @@ public class SpriteEditor extends JComponent {
     public void setOverlay(boolean b) {
         if (spriteData != null) {
             spriteData.setOverlay(b);
+            refresh();
+            
             fireActionEvent();
         }
     }

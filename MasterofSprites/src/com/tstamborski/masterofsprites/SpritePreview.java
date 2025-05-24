@@ -138,45 +138,42 @@ public class SpritePreview extends JComponent {
         int size = arrangement.width * arrangement.height;
         int memBankSize = project.getMemoryData().size();
         
-        ArrayList[] images = new ArrayList[size];
+        BufferedImage[] images = new BufferedImage[size];
         for (int i = 0; i < size; i++) {
-            images[i] = new ArrayList<SpriteImage>();
-            
+            images[i] = new BufferedImage(
+                    SpriteImage.WIDTH, SpriteImage.HEIGHT,
+                    BufferedImage.TYPE_INT_ARGB
+                );
             int offset = 0;
-            SpriteData sd = 
+            
+            for (int j = 0; j < 8; j++) {
+                SpriteData sd = 
                     project.getMemoryData().get((selection.get(i) + index + offset) % memBankSize);
-            
-            SpriteImage si = new SpriteImage(sd, palette);
-            si.setMulti0Color(project.getMulti0Color());
-            si.setMulti1Color(project.getMulti1Color());
-            si.redraw();
-            images[i].add(si);
-            
-            while (images[i].size() <= 8 && sd.isOverlay()) {
-                offset += project.getOverlayDistance();
-
-                sd = project.getMemoryData().get((selection.get(i) + index + offset) % memBankSize);
                 
-                si = new SpriteImage(sd, palette);
-                si.setMulti0Color(project.getMulti0Color());
-                si.setMulti1Color(project.getMulti1Color());
-                si.redraw();
-                images[i].add(si);
+                if (sd.isMulticolor())
+                    SpriteRender.renderMulticolor(
+                            images[i], sd, palette, project.getMulti0Color(), project.getMulti1Color());
+                else
+                    SpriteRender.renderSinglecolor(images[i], sd, palette);
+                
+                if (sd.isOverlay())
+                    offset += project.getOverlayDistance();
+                else
+                    break;
             }
         }
         
         BufferedImage frame = new BufferedImage(
-                arrangement.width*SpriteImage.WIDTH*zoom, 
-                arrangement.height*SpriteImage.HEIGHT*zoom, 
-        BufferedImage.TYPE_INT_ARGB
+            arrangement.width*SpriteImage.WIDTH*zoom, 
+            arrangement.height*SpriteImage.HEIGHT*zoom, 
+            BufferedImage.TYPE_INT_ARGB
         );
         Graphics2D g2d = frame.createGraphics();
         g2d.setBackground(palette.getColor(project.getBgColor()));
         g2d.clearRect(0, 0, frame.getWidth(), frame.getHeight());
         for (int y = 0; y < arrangement.height; y++)
             for (int x = 0; x < arrangement.width; x++)
-                for (int layer = images[y*arrangement.width+x].size()-1; layer >= 0; layer--)
-                    g2d.drawImage((SpriteImage)images[y*arrangement.width+x].get(layer), 
+                g2d.drawImage(images[y*arrangement.width+x], 
                             x*SpriteImage.WIDTH*zoom, y*SpriteImage.HEIGHT*zoom,
                             SpriteImage.WIDTH*zoom, SpriteImage.HEIGHT*zoom, null);
         g2d.dispose();

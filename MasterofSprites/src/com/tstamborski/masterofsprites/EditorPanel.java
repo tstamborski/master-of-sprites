@@ -138,7 +138,7 @@ public class EditorPanel extends JPanel {
                 editor.setMulticolor(multicolorCheckBox.isSelected());
                 setSprite(selectionIndex);
             });
-        overlayCheckBox = new JCheckBox("Overlay on Next Sprite");
+        overlayCheckBox = new JCheckBox("Overlay by Next Sprite");
         overlayCheckBox.setMnemonic('O');
         overlayCheckBox.addActionListener(ae -> {
                 editor.setOverlay(overlayCheckBox.isSelected());

@@ -37,6 +37,8 @@ public class SpriteImage extends BufferedImage {
     }
     
     public final void redraw() {
+        SpriteRender.clearImage(this);
+        
         if (sprite_data.isMulticolor())
             SpriteRender.renderMulticolor(this, sprite_data, palette, multi0_color, multi1_color);
         else

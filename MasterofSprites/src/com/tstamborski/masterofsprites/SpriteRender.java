@@ -40,8 +40,6 @@ public class SpriteRender {
     public static void renderSinglecolor(BufferedImage dst, SpriteData src, Palette pal) {
         int spriteRGB = pal.getColor(src.getSpriteC64Color()).getRGB();
         
-        clearImage(dst);
-        
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++)
                 if (src.getPixel(x, y) == SpriteColor.SpriteColor)
@@ -50,8 +48,6 @@ public class SpriteRender {
     
     public static void renderSinglecolorAlpha(BufferedImage dst, SpriteData src, Palette pal, int alpha) {
         int spriteRGB = (pal.getColor(src.getSpriteC64Color()).getRGB() & 0x00ffffff) | (alpha << 24);
-        
-        clearImage(dst);
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++)
@@ -74,8 +70,6 @@ public class SpriteRender {
         int spriteRGB = pal.getColor(src.getSpriteC64Color()).getRGB();
         int multi0RGB = pal.getColor(multi0).getRGB();
         int multi1RGB = pal.getColor(multi1).getRGB();
-        
-        clearImage(dst);
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++) {
@@ -108,8 +102,6 @@ public class SpriteRender {
                 (pal.getColor(multi0).getRGB() & 0x00ffffff) | (alpha << 24);
         int multi1RGB = 
                 (pal.getColor(multi1).getRGB() & 0x00ffffff) | (alpha << 24);
-        
-        clearImage(dst);
         
         for (int y = 0; y < src.getHeight(); y++)
             for (int x = 0; x < src.getWidth(); x++) {
@@ -156,7 +148,7 @@ public class SpriteRender {
             }
     }
     
-    private static void clearImage(BufferedImage img) {
+    public static void clearImage(BufferedImage img) {
         Graphics2D g = img.createGraphics();
         
         g.setComposite(AlphaComposite.Clear);
