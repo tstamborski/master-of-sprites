@@ -296,11 +296,11 @@ public class SpriteData implements Serializable {
     }
     
     public boolean isOverlay() {
-        return (data[63] & 0x40) != 0;
+        return (data[63] & 0x10) != 0;
     }
     
     public void setOverlay(boolean overlay) {
-        data[63] = overlay ? (byte)(data[63] | 0x40) : (byte)(data[63] & 0xbf);
+        data[63] = overlay ? (byte)(data[63] | 0x10) : (byte)(data[63] & 0xef);
     }
     
     public C64Color getSpriteC64Color() {
