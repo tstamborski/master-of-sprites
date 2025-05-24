@@ -202,6 +202,9 @@ public class MainWindow extends JFrame {
         editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
         
         settings.loadSpriteEditor(editorPanel.getSpriteEditor());
+        menu.viewMenu.editorGridMenuItem.setSelected(
+                editorPanel.getSpriteEditor().isGrid()
+        );
     }
     
     private void saveSettings() {

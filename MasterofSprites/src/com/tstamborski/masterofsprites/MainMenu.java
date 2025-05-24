@@ -518,7 +518,7 @@ class SelectionMenu extends JMenu {
 class ViewMenu extends JMenu {
     public JMenuItem switchTabMenuItem, runNewWindowMenuItem;
     public JMenuItem ghostSkinningMenuItem;
-    public JMenuItem editorGridMenuItem;
+    public JCheckBoxMenuItem editorGridMenuItem;
     
     public ViewMenu() {
         super("View");
@@ -533,7 +533,7 @@ class ViewMenu extends JMenu {
                 KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
         runNewWindowMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/run16.png")));
         
-        editorGridMenuItem = new JMenuItem("Editor Grid");
+        editorGridMenuItem = new JCheckBoxMenuItem("Editor Grid", false);
         editorGridMenuItem.setMnemonic(KeyEvent.VK_G);
         editorGridMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK));
         editorGridMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/grid16.png")));

@@ -120,15 +120,18 @@ public class SpriteEditor extends JComponent {
         if (!isEnabled())
             return;
         
+        int width = zoom * SpriteImage.WIDTH;
+        int height = zoom * SpriteImage.HEIGHT;
+        
         g2d.setColor(palette.getColor(bgColor));
         g2d.fillRect(0, 0, getWidth(), getHeight());
         
         if (bgGhostImg != null)
-            g2d.drawImage(bgGhostImg, 0, 0, getWidth(), getHeight(), this);
+            g2d.drawImage(bgGhostImg, 0, 0, width, height, this);
         if (spriteImg != null)
-            g2d.drawImage(spriteImg, 0, 0, getWidth(), getHeight(), this);
+            g2d.drawImage(spriteImg, 0, 0, width, height, this);
         if (fgGhostImg != null)
-            g2d.drawImage(fgGhostImg, 0, 0, getWidth(), getHeight(), this);
+            g2d.drawImage(fgGhostImg, 0, 0, width, height, this);
         
         if (gridFlag)
             g2d.drawImage(gridImg, 0, 0, this);
