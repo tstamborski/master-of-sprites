@@ -957,7 +957,7 @@ public class MainWindow extends JFrame {
             }
         });
         menu.viewMenu.editorGridMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().setGrid(!editorPanel.getSpriteEditor().isGrid());
+            editorPanel.getSpriteEditor().setGrid(menu.viewMenu.editorGridMenuItem.isSelected());
         });
         menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
             SwingUtilities.invokeLater(() -> {

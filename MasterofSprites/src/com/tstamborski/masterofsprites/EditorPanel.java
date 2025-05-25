@@ -146,6 +146,7 @@ public class EditorPanel extends JPanel {
         overlayDistSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 128, 1));
         overlayDistSpinner.addChangeListener(che -> {
                 project.setOverlayDistance((Integer)overlayDistSpinner.getValue());
+                editor.refresh();
                 firePreviewEvent();
             });
         overlayDistLabel = new JLabel("Overlay Distance:    ");
