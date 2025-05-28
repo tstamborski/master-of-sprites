@@ -127,7 +127,7 @@ public class MainWindow extends JFrame {
                     return;
                 
                 statusBar.showHint(
-                        "Hold CTRL or SHIFT to make multiple selection; CTRL+ALT for block selectin;");
+                        "Hold CTRL or SHIFT to make multiple selection; CTRL+ALT for block selection;");
             }
         });
         memoryPanel.getMemoryView().addMouseMotionListener(new MouseMotionAdapter() {

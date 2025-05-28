@@ -403,25 +403,25 @@ class SelectionMenu extends JMenu {
         nextFrameMenuItem = new JMenuItem("Next Frame");
         nextFrameMenuItem.setMnemonic(KeyEvent.VK_N);
         nextFrameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, 
-                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+                KeyEvent.CTRL_DOWN_MASK));
         nextFrameMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/increment16.png")));
         
         prevFrameMenuItem = new JMenuItem("Previous Frame");
         prevFrameMenuItem.setMnemonic(KeyEvent.VK_P);
         prevFrameMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, 
-                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+                KeyEvent.CTRL_DOWN_MASK));
         prevFrameMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/decrement16.png")));
         
         overlayForwardMenuItem = new JMenuItem("Overlay Distance Forward");
         overlayForwardMenuItem.setMnemonic(KeyEvent.VK_F);
         overlayForwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN,
-                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+                KeyEvent.CTRL_DOWN_MASK));
         overlayForwardMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/scroll-right16.png")));
         
         overlayBackwardMenuItem = new JMenuItem("Overlay Distance Backward");
         overlayBackwardMenuItem.setMnemonic(KeyEvent.VK_B);
         overlayBackwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP,
-                KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+                KeyEvent.CTRL_DOWN_MASK));
         overlayBackwardMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/scroll-left16.png")));
         
         flipHorzMenuItem = new JMenuItem("Flip Horizontally");

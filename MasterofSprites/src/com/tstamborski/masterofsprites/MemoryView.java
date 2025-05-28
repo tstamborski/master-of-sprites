@@ -328,9 +328,15 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
             new_selection = getIndexAt(e.getX(),e.getY());
             if (getSelection().isEmpty())
-                old_selection = 0;
+                old_selection = new_selection;
             else
-                old_selection = getSelection().get(0);
+                if (selection.contains(new_selection))
+                    old_selection = selection.get(0);
+                else
+                    if (new_selection < selection.get(0))
+                        old_selection = selection.get(selection.size()-1);
+                    else
+                        old_selection = selection.get(0);
                 
             if (e.isControlDown() && e.isAltDown())
                 blockSelection(Math.min(old_selection, new_selection),
