@@ -29,6 +29,7 @@ import javax.swing.*;
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
+
 public class MemoryView extends JComponent implements ClipboardOwner {
     private int zoom;
     private int columns;
@@ -325,40 +326,65 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             return;
         
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
-            if (!e.isShiftDown()) { //bez klawisza shift
-                new_selection = getIndexAt(e.getX(),e.getY());
+            new_selection = getIndexAt(e.getX(),e.getY());
+            if (getSelection().isEmpty())
+                old_selection = 0;
+            else
+                old_selection = getSelection().get(0);
                 
-                if (e.isControlDown()) { //control wcisniety
-                    if (!selection.contains(new_selection))
-                        selection.add(new_selection);
-                    else
-                        selection.remove(new_selection);
-                }
-                else { //bez klawisza control
-                    selection.clear();
-                    selection.add(new_selection);
-                }
-            }
-            else { //shift wcisniety
-                if (getSelection().isEmpty())
-                    old_selection = 0;
-                else
-                    old_selection = getSelection().get(0);
-                
-                new_selection = getIndexAt(e.getX(),e.getY());
-                selection.clear();
-                
-                if (new_selection > old_selection)
-                    for (int i = old_selection; i <= new_selection; i++)
-                        selection.add(i);
-                else
-                    for (int i = new_selection; i <= old_selection; i++)
-                        selection.add(i);
-            }
-            
-            repaint();
-            fireSelectionEvent();
+            if (e.isControlDown() && e.isAltDown())
+                blockSelection(Math.min(old_selection, new_selection),
+                        Math.max(old_selection, new_selection));
+            else if (e.isControlDown())
+                updateSelection(new_selection);
+            else if (e.isShiftDown())
+                rangeSelection(Math.min(old_selection, new_selection),
+                        Math.max(old_selection, new_selection));
+            else
+                singleSelection(new_selection);
         }
+    }
+    
+    protected void singleSelection(int elem) {
+        selection.clear();
+        selection.add(elem);
+        
+        repaint();
+        fireSelectionEvent();
+    }
+    
+    protected void updateSelection(int elem) {
+        if (!selection.contains(elem))
+            selection.add(elem);
+        else
+            selection.remove((Integer)elem);
+        
+        repaint();
+        fireSelectionEvent();
+    }
+    
+    protected void rangeSelection(int from, int to) {
+        selection.clear();
+        
+        for (int i = from; i <= to; i++)
+            selection.add(i);
+        
+        repaint();
+        fireSelectionEvent();
+    }
+    
+    protected void blockSelection(int from, int to) {
+        selection.clear();
+        
+        int minx = Math.min(from % columns, to % columns);
+        int maxx = Math.max(from % columns, to % columns);
+        
+        for (int x = minx; x <= maxx; x++)
+            for (int y = from / columns; y <= to / columns; y++)
+                selection.add(y*columns+x);
+        
+        repaint();
+        fireSelectionEvent();
     }
     
     private void setPreferredSize() {
