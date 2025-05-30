@@ -318,7 +318,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     protected void processMouseEvent(MouseEvent e) {
         super.processMouseEvent(e);
         
-        Integer new_selection, old_selection;
+        int new_selection, old_selection;
         
         if (project == null || project.getMemoryData() == null)
             return;
@@ -328,7 +328,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         if (getIndexAt(e.getX(),e.getY()) < sprites.size()) {
             new_selection = getIndexAt(e.getX(),e.getY());
             if (getSelection().isEmpty())
-                old_selection = new_selection;
+                old_selection = 0;
             else
                 if (selection.contains(new_selection))
                     old_selection = selection.get(0);
@@ -338,7 +338,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
                     else
                         old_selection = selection.get(0);
                 
-            if (e.isControlDown() && e.isAltDown())
+            if (e.isAltDown())
                 blockSelection(Math.min(old_selection, new_selection),
                         Math.max(old_selection, new_selection));
             else if (e.isControlDown())

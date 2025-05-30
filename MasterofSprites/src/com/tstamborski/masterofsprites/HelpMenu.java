@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
+ * Copyright 2025 Tobiasz Stamborski <tstamborski@outlook.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,39 +24,32 @@
 package com.tstamborski.masterofsprites;
 
 import java.awt.event.KeyEvent;
-import javax.swing.JMenuBar;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class MainMenu extends JMenuBar {
-    public FileMenu fileMenu;
-    public EditMenu editMenu;
-    public SpriteMenu spriteMenu;
-    public SelectionMenu selectionMenu;
-    public ViewMenu viewMenu;
-    public HelpMenu helpMenu;
+public class HelpMenu extends JMenu {
     
-    public MainMenu() {
-        fileMenu = new FileMenu();
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-        editMenu = new EditMenu();
-        editMenu.setMnemonic(KeyEvent.VK_E);
-        spriteMenu = new SpriteMenu();
-        spriteMenu.setMnemonic(KeyEvent.VK_S);
-        selectionMenu = new SelectionMenu();
-        selectionMenu.setMnemonic(KeyEvent.VK_L);
-        viewMenu = new ViewMenu();
-        viewMenu.setMnemonic(KeyEvent.VK_V);
-        helpMenu = new HelpMenu();
-        helpMenu.setMnemonic(KeyEvent.VK_H);
-        
-        add(fileMenu);
-        add(editMenu);
-        add(spriteMenu);
-        add(selectionMenu);
-        add(viewMenu);
-        add(helpMenu);
+    public JMenuItem aboutMenuItem;
+    public JMenuItem manualMenuItem;
+
+    public HelpMenu() {
+        super("Help");
+        manualMenuItem = new JMenuItem("Manual...");
+        manualMenuItem.setMnemonic(KeyEvent.VK_M);
+        manualMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        manualMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/handbook16.png")));
+        aboutMenuItem = new JMenuItem("About...");
+        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
+        add(manualMenuItem);
+        addSeparator();
+        add(aboutMenuItem);
     }
+    
 }
