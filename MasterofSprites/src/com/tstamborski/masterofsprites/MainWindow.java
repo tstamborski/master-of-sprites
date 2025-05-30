@@ -906,6 +906,18 @@ public class MainWindow extends JFrame {
                 )
         );
         
+        menu.selectionMenu.slideUpMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideUp())
+        );
+        menu.selectionMenu.slideDownMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideDown())
+        );
+        menu.selectionMenu.slideLeftMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideLeft())
+        );
+        menu.selectionMenu.slideRightMenuItem.addActionListener(ae ->
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideRight())
+        );
         menu.selectionMenu.flipHorzMenuItem.addActionListener(ae ->
                 memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.flipHorizontally())
         );
@@ -928,6 +940,9 @@ public class MainWindow extends JFrame {
                     sd -> SpriteRotator.rotate(sd, Math.toRadians(-90.0d))
             );
         });
+        menu.selectionMenu.negateMenuItem.addActionListener(ae -> 
+                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.negate())
+        );
         
         menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
                 if (applyColorDialog.showDialog())

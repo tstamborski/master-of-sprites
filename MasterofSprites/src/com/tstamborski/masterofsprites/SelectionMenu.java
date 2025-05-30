@@ -38,18 +38,26 @@ public class SelectionMenu extends JMenu {
     public JMenuItem selectAllMenuItem;
     public JMenuItem selectNoneMenuItem;
     public JMenuItem invertMenuItem;
+    
     public JMenuItem nextFrameMenuItem;
     public JMenuItem prevFrameMenuItem;
     public JMenuItem overlayForwardMenuItem;
     public JMenuItem overlayBackwardMenuItem;
+    
+    public JMenuItem slideUpMenuItem, slideDownMenuItem;
+    public JMenuItem slideLeftMenuItem, slideRightMenuItem;
     public JMenuItem flipHorzMenuItem;
     public JMenuItem flipVertMenuItem;
     public JMenuItem rotateMenuItem;
     public JMenuItem rotate90CWMenuItem;
     public JMenuItem rotate90CCWMenuItem;
+    public JMenuItem negateMenuItem;
+    
     public JMenuItem applySpriteColorMenuItem;
     public JMenuItem applyMulticolorMenuItem;
     public JMenuItem applyOverlayMenuItem;
+    
+    private final JMenu commandsMenu;
 
     public SelectionMenu() {
         super("Selection");
@@ -84,6 +92,25 @@ public class SelectionMenu extends JMenu {
         overlayBackwardMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, KeyEvent.CTRL_DOWN_MASK));
         overlayBackwardMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/scroll-left16.png")));
         
+        commandsMenu = new JMenu("Commands");
+        commandsMenu.setMnemonic(KeyEvent.VK_C);
+        
+        slideUpMenuItem = new JMenuItem("Slide Up");
+        slideUpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        slideUpMenuItem.setMnemonic(KeyEvent.VK_U);
+        slideUpMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-up16.png")));
+        slideDownMenuItem = new JMenuItem("Slide Down");
+        slideDownMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        slideDownMenuItem.setMnemonic(KeyEvent.VK_D);
+        slideDownMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-down16.png")));
+        slideLeftMenuItem = new JMenuItem("Slide Left");
+        slideLeftMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        slideLeftMenuItem.setMnemonic(KeyEvent.VK_L);
+        slideLeftMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-left16.png")));
+        slideRightMenuItem = new JMenuItem("Slide Right");
+        slideRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        slideRightMenuItem.setMnemonic(KeyEvent.VK_R);
+        slideRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
         flipHorzMenuItem = new JMenuItem("Flip Horizontally");
         flipHorzMenuItem.setMnemonic(KeyEvent.VK_H);
         flipHorzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
@@ -103,6 +130,24 @@ public class SelectionMenu extends JMenu {
         rotate90CCWMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/counter-clockwise16.png")));
         rotate90CCWMenuItem.setMnemonic(KeyEvent.VK_C);
         rotate90CCWMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        negateMenuItem = new JMenuItem("Negate");
+        negateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK));
+        negateMenuItem.setMnemonic(KeyEvent.VK_N);
+        negateMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/film16.png")));
+        
+        commandsMenu.add(slideUpMenuItem);
+        commandsMenu.add(slideDownMenuItem);
+        commandsMenu.add(slideLeftMenuItem);
+        commandsMenu.add(slideRightMenuItem);
+        commandsMenu.addSeparator();
+        commandsMenu.add(flipHorzMenuItem);
+        commandsMenu.add(flipVertMenuItem);
+        commandsMenu.addSeparator();
+        commandsMenu.add(rotateMenuItem);
+        commandsMenu.add(rotate90CWMenuItem);
+        commandsMenu.add(rotate90CCWMenuItem);
+        commandsMenu.addSeparator();
+        commandsMenu.add(negateMenuItem);
         
         applySpriteColorMenuItem = new JMenuItem("Apply Sprite Color...");
         applySpriteColorMenuItem.setMnemonic(KeyEvent.VK_L);
@@ -126,11 +171,7 @@ public class SelectionMenu extends JMenu {
         add(overlayForwardMenuItem);
         add(overlayBackwardMenuItem);
         addSeparator();
-        add(rotateMenuItem);
-        add(rotate90CWMenuItem);
-        add(rotate90CCWMenuItem);
-        add(flipHorzMenuItem);
-        add(flipVertMenuItem);
+        add(commandsMenu);
         addSeparator();
         add(applySpriteColorMenuItem);
         add(applyMulticolorMenuItem);
@@ -142,16 +183,23 @@ public class SelectionMenu extends JMenu {
     }
 
     public void enableItems(boolean b) {
-        //selectNoneMenuItem.setEnabled(b);
         nextFrameMenuItem.setEnabled(b);
         prevFrameMenuItem.setEnabled(b);
         overlayForwardMenuItem.setEnabled(b);
         overlayBackwardMenuItem.setEnabled(b);
-        flipHorzMenuItem.setEnabled(b);
-        flipVertMenuItem.setEnabled(b);
-        rotateMenuItem.setEnabled(b);
-        rotate90CWMenuItem.setEnabled(b);
-        rotate90CCWMenuItem.setEnabled(b);
+        
+        commandsMenu.setEnabled(b);
+//        slideUpMenuItem.setEnabled(b);
+//        slideDownMenuItem.setEnabled(b);
+//        slideLeftMenuItem.setEnabled(b);
+//        slideRightMenuItem.setEnabled(b);
+//        flipHorzMenuItem.setEnabled(b);
+//        flipVertMenuItem.setEnabled(b);
+//        rotateMenuItem.setEnabled(b);
+//        rotate90CWMenuItem.setEnabled(b);
+//        rotate90CCWMenuItem.setEnabled(b);
+//        negateMenuItem.setEnabled(b);
+        
         applySpriteColorMenuItem.setEnabled(b);
         applyMulticolorMenuItem.setEnabled(b);
         applyOverlayMenuItem.setEnabled(b);
