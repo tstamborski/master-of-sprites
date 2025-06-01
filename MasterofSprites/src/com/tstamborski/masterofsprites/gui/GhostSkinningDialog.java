@@ -21,9 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.AbstractInputDialog;
+import com.tstamborski.masterofsprites.GhostSkinning;
+import com.tstamborski.masterofsprites.Palette;
+import com.tstamborski.masterofsprites.Selection;
+import com.tstamborski.masterofsprites.SpriteImage;
+import com.tstamborski.masterofsprites.SpriteRender;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteData;

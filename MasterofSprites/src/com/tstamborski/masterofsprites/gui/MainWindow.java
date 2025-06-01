@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.AboutDialog;
 import com.tstamborski.ManualDialog;
 import com.tstamborski.Util;
+import com.tstamborski.masterofsprites.MasterofSprites;
+import com.tstamborski.masterofsprites.Settings;
+import com.tstamborski.masterofsprites.SpriteRotator;
 import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import com.tstamborski.masterofsprites.model.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;

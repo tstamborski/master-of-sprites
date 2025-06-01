@@ -1,6 +1,17 @@
 
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
+import com.tstamborski.masterofsprites.AbstractUtilImage;
+import com.tstamborski.masterofsprites.BackgroundImage;
+import com.tstamborski.masterofsprites.DefaultPalette;
+import com.tstamborski.masterofsprites.GridImage;
+import com.tstamborski.masterofsprites.Palette;
+import com.tstamborski.masterofsprites.Selection;
+import com.tstamborski.masterofsprites.SelectionEvent;
+import com.tstamborski.masterofsprites.SelectionImage;
+import com.tstamborski.masterofsprites.SelectionListener;
+import com.tstamborski.masterofsprites.SpriteDataTransferable;
+import com.tstamborski.masterofsprites.SpriteImage;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteData;

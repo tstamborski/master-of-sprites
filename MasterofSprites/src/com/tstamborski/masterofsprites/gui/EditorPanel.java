@@ -2,8 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
+import com.tstamborski.masterofsprites.PreviewEvent;
+import com.tstamborski.masterofsprites.PreviewListener;
+import com.tstamborski.masterofsprites.Selection;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;

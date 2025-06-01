@@ -21,38 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.AbstractInputDialog;
-import com.tstamborski.masterofsprites.model.C64Color;
-import java.awt.Color;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EtchedBorder;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class C64ColorDialog extends AbstractInputDialog {
-    private final C64ColorPicker picker;
+public class RotationDialog extends AbstractInputDialog {
+    private final JLabel rotationLabel, degreesLabel;
+    private final JSpinner spinner;
     
-    public C64ColorDialog(JFrame parent) {
+    public RotationDialog(JFrame parent) {
         super(parent);
         
-        JPanel panel = getCentralPanel();
-        picker = new C64ColorPicker();
-        picker.setCurrentC64Color(C64Color.Red);
-        picker.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        panel.add(picker);
-        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        rotationLabel = new JLabel("Rotation:    ");
+        degreesLabel = new JLabel(" ° ");
+        spinner = new JSpinner(new SpinnerNumberModel(90, -360, 360, 1));
         
-        setTitle("Confirm Color... ");
+        getCentralPanel().setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
+                        BorderFactory.createEmptyBorder(16, 16, 16, 16))
+        );
+        getCentralPanel().setLayout(new BoxLayout(getCentralPanel(), BoxLayout.X_AXIS));
+        getCentralPanel().add(rotationLabel);
+        getCentralPanel().add(spinner);
+        getCentralPanel().add(degreesLabel);
+        
+        setTitle("Rotate...");
         pack();
     }
     
-    public C64Color getC64Color() {
-        return picker.getCurrentC64Color();
+    public double getDegrees() {
+        return (Integer)spinner.getValue();
+    }
+    
+    public double getRadians() {
+        return Math.toRadians((Integer)spinner.getValue());
     }
 }

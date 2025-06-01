@@ -23,6 +23,9 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.gui.GhostSkinningDialog;
+import com.tstamborski.masterofsprites.gui.SpriteEditor;
+import com.tstamborski.masterofsprites.gui.AsmSyntaxDialog;
 import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import java.io.File;
 import java.util.prefs.Preferences;

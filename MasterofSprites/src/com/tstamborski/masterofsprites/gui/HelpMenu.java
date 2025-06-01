@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
+ * Copyright 2025 Tobiasz Stamborski <tstamborski@outlook.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
+public class HelpMenu extends JMenu {
+    
+    public JMenuItem aboutMenuItem;
+    public JMenuItem manualMenuItem;
 
-abstract public class AbstractUtilImage extends BufferedImage {
-    private final Color primaryColor;
-    
-    public AbstractUtilImage(int width, int height, Color color) {
-        super(width, height, BufferedImage.TYPE_INT_ARGB);
-        primaryColor = color;
+    public HelpMenu() {
+        super("Help");
+        manualMenuItem = new JMenuItem("Manual...");
+        manualMenuItem.setMnemonic(KeyEvent.VK_M);
+        manualMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+        manualMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/handbook16.png")));
+        aboutMenuItem = new JMenuItem("About...");
+        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
+        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
+        add(manualMenuItem);
+        addSeparator();
+        add(aboutMenuItem);
     }
     
-    public Color getPrimaryColor() {
-        return primaryColor;
-    }
 }

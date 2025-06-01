@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2023 Tobiasz Stamborski <tstamborski@outlook.com>.
+ * Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,50 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.AbstractInputDialog;
-import java.awt.GridBagLayout;
-import java.awt.event.KeyEvent;
+import com.tstamborski.masterofsprites.model.C64Color;
+import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class ExportPRGDialog extends AbstractInputDialog {
-    private final JLabel startAddressLabel;
-    private final AddressSpinner startAddressSpinner;
+public class C64ColorDialog extends AbstractInputDialog {
+    private final C64ColorPicker picker;
     
-    public ExportPRGDialog(JFrame parent) {
+    public C64ColorDialog(JFrame parent) {
         super(parent);
         
-        startAddressSpinner = new AddressSpinner();
-        startAddressLabel = new JLabel("Start Address:  ");
-        startAddressLabel.setDisplayedMnemonic(KeyEvent.VK_A);
-        startAddressLabel.setDisplayedMnemonicIndex(6);
-        startAddressLabel.setLabelFor(startAddressSpinner);
+        JPanel panel = getCentralPanel();
+        picker = new C64ColorPicker();
+        picker.setCurrentC64Color(C64Color.Red);
+        picker.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        panel.add(picker);
+        panel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         
-        getCentralPanel().setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
-                BorderFactory.createEmptyBorder(8, 8, 8, 8)
-        ));
-        getCentralPanel().setLayout(new GridBagLayout());
-        getCentralPanel().add(startAddressLabel);
-        getCentralPanel().add(startAddressSpinner);
-        
-        setTitle("Export to PRG File...");
+        setTitle("Confirm Color... ");
         pack();
     }
     
-    public void setAddress(int address) {
-        startAddressSpinner.setValue(address);
-    }
-    
-    public int getAddress() {
-        return (Integer)startAddressSpinner.getValue();
+    public C64Color getC64Color() {
+        return picker.getCurrentC64Color();
     }
 }

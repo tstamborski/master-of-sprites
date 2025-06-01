@@ -21,53 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package com.tstamborski.masterofsprites.gui;
 
-package com.tstamborski.masterofsprites;
-
-import com.tstamborski.masterofsprites.model.Time;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import com.tstamborski.AbstractInputDialog;
+import java.awt.GridBagLayout;
+import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.border.*;
+import javax.swing.border.EtchedBorder;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class StatusBar extends JPanel {
-    private final JLabel contextLabel, hintLabel, timeLabel;
+public class ExportPRGDialog extends AbstractInputDialog {
+    private final JLabel startAddressLabel;
+    private final AddressSpinner startAddressSpinner;
     
-    public StatusBar() {
-        contextLabel = new JLabel();
-        contextLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        contextLabel.setPreferredSize(new Dimension(150,20));
-        contextLabel.setHorizontalAlignment(JLabel.CENTER);
+    public ExportPRGDialog(JFrame parent) {
+        super(parent);
         
-        hintLabel = new JLabel();
-        hintLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        startAddressSpinner = new AddressSpinner();
+        startAddressLabel = new JLabel("Start Address:  ");
+        startAddressLabel.setDisplayedMnemonic(KeyEvent.VK_A);
+        startAddressLabel.setDisplayedMnemonicIndex(6);
+        startAddressLabel.setLabelFor(startAddressSpinner);
         
-        timeLabel = new JLabel();
-        timeLabel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
-        timeLabel.setPreferredSize(new Dimension(100,20));
-        timeLabel.setHorizontalAlignment(JLabel.CENTER);
+        getCentralPanel().setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), 
+                BorderFactory.createEmptyBorder(8, 8, 8, 8)
+        ));
+        getCentralPanel().setLayout(new GridBagLayout());
+        getCentralPanel().add(startAddressLabel);
+        getCentralPanel().add(startAddressSpinner);
         
-        setLayout(new BorderLayout());
-        add(contextLabel, BorderLayout.WEST);
-        add(hintLabel, BorderLayout.CENTER);
-        add(timeLabel, BorderLayout.EAST);
+        setTitle("Export to PRG File...");
+        pack();
     }
     
-    public void showContextInfo(String info) {
-        contextLabel.setText(info);
+    public void setAddress(int address) {
+        startAddressSpinner.setValue(address);
     }
     
-    public void showHint(String hint) {
-        hintLabel.setText(hint);
-    }
-    
-    public void showTime(Time time) {
-        timeLabel.setText(time.toString());
+    public int getAddress() {
+        return (Integer)startAddressSpinner.getValue();
     }
 }

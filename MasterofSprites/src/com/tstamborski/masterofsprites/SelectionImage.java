@@ -23,33 +23,23 @@
  */
 package com.tstamborski.masterofsprites;
 
-import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class HelpMenu extends JMenu {
+public class SelectionImage extends AbstractUtilImage {
     
-    public JMenuItem aboutMenuItem;
-    public JMenuItem manualMenuItem;
-
-    public HelpMenu() {
-        super("Help");
-        manualMenuItem = new JMenuItem("Manual...");
-        manualMenuItem.setMnemonic(KeyEvent.VK_M);
-        manualMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
-        manualMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/handbook16.png")));
-        aboutMenuItem = new JMenuItem("About...");
-        aboutMenuItem.setMnemonic(KeyEvent.VK_A);
-        aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/info16.png")));
-        add(manualMenuItem);
-        addSeparator();
-        add(aboutMenuItem);
+    public SelectionImage(int w, int h, Color c) {
+        super(w, h, c);
+        
+        Graphics2D g2d;
+        g2d = createGraphics();
+        g2d.setColor(new Color((getPrimaryColor().getRGB() & 0x00ffffff) | (0x30 << 24), true));
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g2d.setColor(getPrimaryColor());
+        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
-    
 }

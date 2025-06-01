@@ -21,8 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
+import com.tstamborski.masterofsprites.Arrangement;
+import com.tstamborski.masterofsprites.DefaultPalette;
+import com.tstamborski.masterofsprites.Palette;
+import com.tstamborski.masterofsprites.SpriteImage;
+import com.tstamborski.masterofsprites.SpriteRender;
 import com.tstamborski.masterofsprites.model.SpriteData;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.awt.Dimension;

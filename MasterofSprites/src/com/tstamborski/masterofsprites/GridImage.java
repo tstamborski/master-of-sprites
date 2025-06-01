@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2024 Tobiasz Stamborski <tstamborski@outlook.com>.
+ * Copyright 2025 Tobiasz Stamborski <tstamborski@outlook.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,22 +24,20 @@
 package com.tstamborski.masterofsprites;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
+import java.awt.Graphics2D;
 
 /**
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-
-abstract public class AbstractUtilImage extends BufferedImage {
-    private final Color primaryColor;
+public class GridImage extends AbstractUtilImage {
     
-    public AbstractUtilImage(int width, int height, Color color) {
-        super(width, height, BufferedImage.TYPE_INT_ARGB);
-        primaryColor = color;
-    }
-    
-    public Color getPrimaryColor() {
-        return primaryColor;
+    public GridImage(int width, int height, Color color) {
+        super(width, height, color);
+        
+        Graphics2D g2d;
+        g2d = createGraphics();
+        g2d.setColor(getPrimaryColor());
+        g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 }

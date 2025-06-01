@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites;
+package com.tstamborski.masterofsprites.gui;
 
+import com.tstamborski.masterofsprites.Arrangement;
+import com.tstamborski.masterofsprites.ArrangementComboBoxModel;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;

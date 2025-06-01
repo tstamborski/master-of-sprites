@@ -4,6 +4,7 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.gui.MainWindow;
 import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.model.AsmCodeStream;
 import com.tstamborski.masterofsprites.model.SpriteProject;
