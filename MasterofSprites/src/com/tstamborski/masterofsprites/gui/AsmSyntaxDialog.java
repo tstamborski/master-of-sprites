@@ -24,7 +24,7 @@
 package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.AbstractInputDialog;
-import com.tstamborski.masterofsprites.model.AsmCodeStream;
+import com.tstamborski.masterofsprites.AsmCodeStream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;

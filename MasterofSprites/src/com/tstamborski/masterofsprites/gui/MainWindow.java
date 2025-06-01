@@ -11,8 +11,8 @@ import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.MasterofSprites;
 import com.tstamborski.masterofsprites.Settings;
 import com.tstamborski.masterofsprites.SpriteRotator;
-import com.tstamborski.masterofsprites.model.AsmCodeStream;
-import com.tstamborski.masterofsprites.model.History;
+import com.tstamborski.masterofsprites.AsmCodeStream;
+import com.tstamborski.masterofsprites.History;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;

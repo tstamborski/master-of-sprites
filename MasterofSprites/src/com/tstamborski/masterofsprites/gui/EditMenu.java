@@ -24,7 +24,7 @@
 package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.masterofsprites.SpriteDataTransferable;
-import com.tstamborski.masterofsprites.model.History;
+import com.tstamborski.masterofsprites.History;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;

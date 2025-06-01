@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.tstamborski.masterofsprites.model;
+package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.model.SpriteData;
+import com.tstamborski.masterofsprites.model.SpriteProject;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
