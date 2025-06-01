@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Consumer;
 import javax.swing.JComponent;
 
 /**
@@ -151,8 +152,8 @@ public class SpriteEditor extends JComponent {
         repaint();
     }
     
-    public void onCurrentSpriteData(SpriteDataOperation op) {
-        op.performOperation(spriteData);
+    public void onCurrentSpriteData(Consumer<SpriteData> operation) {
+        operation.accept(spriteData);
         
         if (spriteImg != null)
             spriteImg.redraw();

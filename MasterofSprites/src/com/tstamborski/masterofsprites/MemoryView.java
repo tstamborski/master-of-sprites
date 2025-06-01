@@ -23,6 +23,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import javax.swing.*;
 
 /**
@@ -108,7 +110,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         repaint();
     }
     
-    public void specialPaste(ByteOperation op) {
+    public void specialPaste(BinaryOperator<Byte> operator) {
         Clipboard clip = getToolkit().getSystemClipboard();
         Transferable transfer = clip.getContents(this);
         SpriteDataTransferable transferData;
@@ -126,7 +128,7 @@ public class MemoryView extends JComponent implements ClipboardOwner {
             byte[] dst = project.getMemoryData().get(selection.get(i)).toByteArray();
             
             for (int j = 0; j < src.length - 1; j++) //pomijamy bajt atrybutow
-                dst[j] = op.performOperation(dst[j], src[j]);
+                dst[j] = operator.apply(dst[j], src[j]);
             
             sprites.get(selection.get(i)).redraw();
         }
@@ -273,16 +275,16 @@ public class MemoryView extends JComponent implements ClipboardOwner {
         return selection;
     }
     
-    public void onSelection(SelectionOperation op) {
-        op.performOperation(selection);
+    public void onSelection(Consumer<Selection> operation) {
+        operation.accept(selection);
         fireSelectionEvent();
         repaint();
     }
     
-    public void onSelectedSpriteData(SpriteDataOperation op) {
+    public void onSelectedSpriteData(Consumer<SpriteData> operation) {
         MemoryData mem_data = project.getMemoryData();
         selection.forEach((i) -> {
-            op.performOperation(mem_data.get(i));
+            operation.accept(mem_data.get(i));
         });
         
         fireActionEvent();

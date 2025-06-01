@@ -51,6 +51,7 @@ public class SpriteMenu extends JMenu {
 
     public SpriteMenu() {
         super("Sprite");
+        
         slideUpMenuItem = new JMenuItem("Slide Up");
         slideUpMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, KeyEvent.CTRL_DOWN_MASK));
         slideUpMenuItem.setMnemonic(KeyEvent.VK_U);
@@ -67,6 +68,7 @@ public class SpriteMenu extends JMenu {
         slideRightMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK));
         slideRightMenuItem.setMnemonic(KeyEvent.VK_R);
         slideRightMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/dir-right16.png")));
+        
         flipHorzMenuItem = new JMenuItem("Flip Horizontally");
         flipHorzMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK));
         flipHorzMenuItem.setMnemonic(KeyEvent.VK_H);
@@ -75,6 +77,7 @@ public class SpriteMenu extends JMenu {
         flipVertMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         flipVertMenuItem.setMnemonic(KeyEvent.VK_V);
         flipVertMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/flip-vert16.png")));
+        
         reflectLeftMenuItem = new JMenuItem("Reflect Left to Right");
         reflectLeftMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK));
         reflectLeftMenuItem.setMnemonic(KeyEvent.VK_L);
@@ -83,6 +86,7 @@ public class SpriteMenu extends JMenu {
         reflectTopMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
         reflectTopMenuItem.setMnemonic(KeyEvent.VK_T);
         reflectTopMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/mirror-vertical16.png")));
+        
         rotateMenuItem = new JMenuItem("Rotate...");
         rotateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_8, KeyEvent.CTRL_DOWN_MASK));
         rotateMenuItem.setMnemonic(KeyEvent.VK_R);
@@ -94,10 +98,12 @@ public class SpriteMenu extends JMenu {
         rotate90CCWMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK));
         rotate90CCWMenuItem.setMnemonic(KeyEvent.VK_C);
         rotate90CCWMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/counter-clockwise16.png")));
+        
         negateMenuItem = new JMenuItem("Negate");
         negateMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_DOWN_MASK));
         negateMenuItem.setMnemonic(KeyEvent.VK_N);
         negateMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/film16.png")));
+        
         add(slideUpMenuItem);
         add(slideDownMenuItem);
         add(slideLeftMenuItem);
@@ -116,7 +122,7 @@ public class SpriteMenu extends JMenu {
         add(negateMenuItem);
     }
 
-    public void enableItems(ArrayList<Integer> selection) {
+    public void enableItems(Selection selection) {
         enableItems(!selection.isEmpty());
     }
 

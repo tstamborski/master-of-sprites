@@ -189,16 +189,6 @@ public class SelectionMenu extends JMenu {
         overlayBackwardMenuItem.setEnabled(b);
         
         commandsMenu.setEnabled(b);
-//        slideUpMenuItem.setEnabled(b);
-//        slideDownMenuItem.setEnabled(b);
-//        slideLeftMenuItem.setEnabled(b);
-//        slideRightMenuItem.setEnabled(b);
-//        flipHorzMenuItem.setEnabled(b);
-//        flipVertMenuItem.setEnabled(b);
-//        rotateMenuItem.setEnabled(b);
-//        rotate90CWMenuItem.setEnabled(b);
-//        rotate90CCWMenuItem.setEnabled(b);
-//        negateMenuItem.setEnabled(b);
         
         applySpriteColorMenuItem.setEnabled(b);
         applyMulticolorMenuItem.setEnabled(b);

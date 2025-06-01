@@ -85,7 +85,7 @@ class ClipboardPopupMenu extends JPopupMenu {
         add(deleteMenuItem);
     }
     
-    public void enable(ArrayList<Integer> selection) {
+    public void enable(Selection selection) {
         deleteMenuItem.setEnabled(!selection.isEmpty());
         cutMenuItem.setEnabled(!selection.isEmpty());
         copyMenuItem.setEnabled(!selection.isEmpty());
