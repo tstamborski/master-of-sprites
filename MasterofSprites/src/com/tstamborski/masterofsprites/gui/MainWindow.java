@@ -78,12 +78,12 @@ public class MainWindow extends JFrame {
         editorPanel = new EditorPanel();
         statusBar = new StatusBar();
         
-        menuManager = new MenuManager();
-        setJMenuBar(menuManager.createMenu(this));
-        
         add(centralPane, BorderLayout.CENTER);
         add(editorPanel, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
+        
+        menuManager = new MenuManager();
+        setJMenuBar(menuManager.createMenu());
 
         createFileDialogs();
         createCustomDialogs();
@@ -186,6 +186,8 @@ public class MainWindow extends JFrame {
                         editor.getSpriteX(e.getX()), editor.getSpriteY(e.getY())));
             }
         });
+        
+        menuManager.wireMenu(this);
         
         settings = new Settings();
         loadSettings();

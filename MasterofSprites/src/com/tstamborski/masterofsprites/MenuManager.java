@@ -41,9 +41,12 @@ public class MenuManager {
     public MenuManager() {
     }
     
-    public JMenuBar createMenu(MainWindow wnd) {
+    public JMenuBar createMenu() {
         menu = new MainMenu();
+        return menu;
+    }
         
+    public void wireMenu(MainWindow wnd) {
         menu.fileMenu.newMenuItem.addActionListener((ae) -> {
             if (wnd.isSaved() || wnd.showUnsavedDialog())
                 wnd.newFile();
@@ -263,8 +266,6 @@ public class MenuManager {
         
         wnd.getToolkit().getSystemClipboard().addFlavorListener(fe -> 
                 menu.editMenu.enableClipboardMenuItems(wnd.getSelection()));
-        
-        return menu;
     }
     
     public boolean isEditorGrid() {
