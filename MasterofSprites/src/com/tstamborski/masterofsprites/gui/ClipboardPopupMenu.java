@@ -26,7 +26,6 @@ package com.tstamborski.masterofsprites.gui;
 import com.tstamborski.masterofsprites.Selection;
 import com.tstamborski.masterofsprites.SpriteDataTransferable;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -70,9 +69,9 @@ class ClipboardPopupMenu extends JPopupMenu {
         xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
         
         
-        deleteMenuItem = new JMenuItem("Delete");
+        deleteMenuItem = new JMenuItem("Clear");
         deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
-        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
+        deleteMenuItem.setMnemonic(KeyEvent.VK_C);
         deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
         
         

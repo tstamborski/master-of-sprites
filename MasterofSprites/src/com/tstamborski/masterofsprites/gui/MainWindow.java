@@ -10,13 +10,13 @@ import com.tstamborski.ManualDialog;
 import com.tstamborski.Util;
 import com.tstamborski.masterofsprites.MasterofSprites;
 import com.tstamborski.masterofsprites.Settings;
-import com.tstamborski.masterofsprites.SpriteRotator;
 import com.tstamborski.masterofsprites.AsmCodeStream;
 import com.tstamborski.masterofsprites.History;
+import com.tstamborski.masterofsprites.MenuManager;
+import com.tstamborski.masterofsprites.Selection;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -41,17 +41,17 @@ public class MainWindow extends JFrame {
     private File file;
     
     private final Timer timer;
+    
+    private final MenuManager menuManager;
 
     private final JTabbedPane centralPane;
     private final MemoryPanel memoryPanel;
     private final PreviewPanel previewPanel;
     private final EditorPanel editorPanel;
     private final StatusBar statusBar;
-    private MainMenu menu;
 
     private AboutDialog aboutDialog;
     private ManualDialog manDialog;
-    
     private ExportPRGDialog addressDialog;
     private AsmSyntaxDialog asmSyntaxDialog;
     private RotationDialog rotateDialog;
@@ -76,10 +76,11 @@ public class MainWindow extends JFrame {
         centralPane.add("Memory", memoryPanel);
         centralPane.add("Preview", previewPanel);
         editorPanel = new EditorPanel();
-
         statusBar = new StatusBar();
         
-        createMenu();
+        menuManager = new MenuManager();
+        setJMenuBar(menuManager.createMenu(this));
+        
         add(centralPane, BorderLayout.CENTER);
         add(editorPanel, BorderLayout.WEST);
         add(statusBar, BorderLayout.SOUTH);
@@ -98,15 +99,11 @@ public class MainWindow extends JFrame {
         });
         timer.start();
         
-        getToolkit().getSystemClipboard().addFlavorListener(fe -> 
-                menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection()));
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
             previewPanel.setSelection(se.getSelection());
             
-            menu.editMenu.enableClipboardMenuItems(se.getSelection());
-            menu.spriteMenu.enableItems(se.getSelection());
-            menu.selectionMenu.enableItems(se.getSelection());
+            menuManager.enableBySelection(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
             editorPanel.reload();
@@ -206,9 +203,7 @@ public class MainWindow extends JFrame {
         editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
         
         settings.loadSpriteEditor(editorPanel.getSpriteEditor());
-        menu.viewMenu.editorGridMenuItem.setSelected(
-                editorPanel.getSpriteEditor().isGrid()
-        );
+        menuManager.setEditorGrid(editorPanel.getSpriteEditor().isGrid());
     }
     
     private void saveSettings() {
@@ -229,9 +224,7 @@ public class MainWindow extends JFrame {
         editorPanel.setProject(project);
         previewPanel.setProject(project);
         
-        menu.editMenu.enableClipboardMenuItems(memoryPanel.getMemoryView().getSelection());
-        menu.spriteMenu.enableItems(memoryPanel.getMemoryView().getSelection());
-        menu.selectionMenu.enableItems(memoryPanel.getMemoryView().getSelection());
+        menuManager.enableBySelection(getSelection());
     }
     
     private void updateTitlebar() {
@@ -676,7 +669,7 @@ public class MainWindow extends JFrame {
         bitmapDialog.setMultiSelectionEnabled(false);
     }
     
-    protected boolean showOverwriteDialog(File file) {
+    public boolean showOverwriteDialog(File file) {
         if (file.exists()) {
             return JOptionPane.showConfirmDialog(this, "Do you want to overwrite?", "File Exist!", JOptionPane.YES_NO_OPTION)
                     == JOptionPane.YES_OPTION;
@@ -686,7 +679,7 @@ public class MainWindow extends JFrame {
         }
     }
     
-    protected boolean showUnsavedDialog() {
+    public boolean showUnsavedDialog() {
         int answer = JOptionPane.showConfirmDialog(this, 
                 "Do you want to save before proceeding?", 
                 "Unsaved work!", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -705,7 +698,7 @@ public class MainWindow extends JFrame {
     protected void processWindowEvent(WindowEvent e) {
         if (e.getID() == WindowEvent.WINDOW_CLOSING) {
             saveSettings();
-            if (!history.isSaved() && !showUnsavedDialog())
+            if (!isSaved() && !showUnsavedDialog())
                 return;
         }
         
@@ -718,21 +711,73 @@ public class MainWindow extends JFrame {
         super.processWindowEvent(e);
     }
     
-    private void setSaved(boolean b) {
+    public void setSaved(boolean b) {
         history.setSaved(b);
         updateTitlebar();
+    }
+    
+    public boolean isSaved() {
+        return history.isSaved();
+    }
+    
+    public Selection getSelection() {
+        return memoryPanel.getMemoryView().getSelection();
+    }
+    
+    public MemoryPanel getMemoryPanel() {
+        return memoryPanel;
+    }
+    
+    public PreviewPanel getPreviewPanel() {
+        return previewPanel;
+    }
+    
+    public EditorPanel getEditorPanel() {
+        return editorPanel;
+    }
+    
+    public JTabbedPane getTabbedPane() {
+        return centralPane;
+    }
+    
+    public RotationDialog getRotationDialog() {
+        return rotateDialog;
+    }
+    
+    public GhostSkinningDialog getGhostSkinningDialog() {
+        return ghostDialog;
+    }
+    
+    public C64ColorDialog getApplyColorDialog() {
+        return applyColorDialog;
+    }
+    
+    public FlagDialog getApplyMulticolorDialog() {
+        return applyMulticolorDialog;
+    }
+    
+    public FlagDialog getApplyOverlayDialog() {
+        return applyOverlayDialog;
+    }
+    
+    public void showAboutDialog() {
+        aboutDialog.setVisible(true);
+    }
+    
+    public void showManualDialog() {
+        manDialog.setVisible(true);
     }
 
     private void newHistory() {
         history = new History(project, HISTORY_SIZE);
         history.setSaved(true); //zobaczymy (?)
-        menu.editMenu.enableHistoryMenuItems(history);
+        menuManager.enableByHistory(history);
         updateTitlebar();
     }
     
     private void pushHistory() {
         history.push(project);
-        menu.editMenu.enableHistoryMenuItems(history);
+        menuManager.enableByHistory(history);
         updateTitlebar();
     }
     
@@ -742,7 +787,7 @@ public class MainWindow extends JFrame {
         memoryPanel.reload();
         previewPanel.reload();
         
-        menu.editMenu.enableHistoryMenuItems(history);
+        menuManager.enableByHistory(history);
         updateTitlebar();
     }
     
@@ -752,244 +797,7 @@ public class MainWindow extends JFrame {
         memoryPanel.reload();
         previewPanel.reload();
         
-        menu.editMenu.enableHistoryMenuItems(history);
+        menuManager.enableByHistory(history);
         updateTitlebar();
-    }
-    
-    private void createMenu() {
-        menu = new MainMenu();
-        
-        menu.fileMenu.newMenuItem.addActionListener((ae) -> {
-            if (history.isSaved() || showUnsavedDialog())
-                newFile();
-        });
-        menu.fileMenu.openMenuItem.addActionListener((ae) -> {
-            if (history.isSaved() || showUnsavedDialog())
-                openFile();
-        });
-        menu.fileMenu.saveMenuItem.addActionListener((ae) -> {
-            saveFile();
-        });
-        menu.fileMenu.saveAsMenuItem.addActionListener((ae) -> {
-            saveAsFile();
-        });
-        menu.fileMenu.importPRGMenuItem.addActionListener((ae) -> {
-            if (history.isSaved() || showUnsavedDialog())
-                importPRGFile();
-        });
-        menu.fileMenu.importRawMenuItem.addActionListener((ae) -> {
-            if (history.isSaved() || showUnsavedDialog())
-                importRawData();
-        });
-        int itCount = menu.fileMenu.examplesMenu.getItemCount();
-        for (int i = 0; i < itCount; i++) {
-            JMenuItem item = menu.fileMenu.examplesMenu.getItem(i);
-            item.addActionListener(ae -> {
-                if (history.isSaved() || showUnsavedDialog())
-                    loadExample(item.getText());
-            });
-        }
-        menu.fileMenu.exitMenuItem.addActionListener(
-                (ae) -> {
-                    dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
-                }
-        );
-         
-        menu.fileMenu.exportPRGMenuItem.addActionListener((ae)->{exportPRGFile();});
-        menu.fileMenu.exportAsmMenuItem.addActionListener((ae)->{exportAsmCode();});
-        menu.fileMenu.exportRawMenuItem.addActionListener((ae)->{exportRawData();});
-        menu.fileMenu.exportBitmapMenuItem.addActionListener((ae) -> {
-            exportBitmap();
-        });
-
-        menu.editMenu.undoMenuItem.addActionListener((ae) -> {
-            undo();
-        });
-        menu.editMenu.redoMenuItem.addActionListener((ae) -> {
-            redo();
-        });
-        
-        
-        menu.editMenu.cutMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().cut();
-        });
-        menu.editMenu.copyMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().copy();
-        });
-        menu.editMenu.pasteMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().paste();
-        });
-        
-        menu.editMenu.orPasteMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a | b));
-        });
-        menu.editMenu.andPasteMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a & b));
-        });
-        menu.editMenu.xorPasteMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().specialPaste((a,b) -> (byte)(a ^ b));
-        });
-        
-        menu.editMenu.deleteMenuItem.addActionListener((ae) -> {
-            memoryPanel.getMemoryView().delete();
-        });
-        
-        menu.spriteMenu.slideUpMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideUp());
-        });
-        menu.spriteMenu.slideDownMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideDown());
-        });
-        menu.spriteMenu.slideLeftMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideLeft());
-        });
-        menu.spriteMenu.slideRightMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.slideRight());
-        });
-        
-        menu.spriteMenu.flipHorzMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.flipHorizontally());
-        });
-        menu.spriteMenu.flipVertMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.flipVertically());
-        });
-        
-        menu.spriteMenu.reflectLeftMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.reflectLeft2Right());
-        });
-        menu.spriteMenu.reflectTopMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.reflectTop2Bottom());
-        });
-        
-        menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
-            if (rotateDialog.showDialog())
-                editorPanel.getSpriteEditor().onCurrentSpriteData(
-                        sd -> SpriteRotator.rotate(sd, rotateDialog.getRadians())
-                );
-        });
-        menu.spriteMenu.rotate90CWMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData(
-                        sd -> SpriteRotator.rotate(sd, Math.toRadians(90.0d))
-                );
-        });
-        menu.spriteMenu.rotate90CCWMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData(
-                        sd -> SpriteRotator.rotate(sd, Math.toRadians(-90.0d))
-                );
-        });
-        
-        menu.spriteMenu.negateMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().onCurrentSpriteData((sd)->sd.negate());
-        });
-        
-        menu.selectionMenu.selectAllMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.all();})
-        );
-        menu.selectionMenu.invertMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.invert();})
-        );
-        menu.selectionMenu.selectNoneMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.clear();})
-        );
-        
-        menu.selectionMenu.prevFrameMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.shift(-1);})
-        );
-        menu.selectionMenu.nextFrameMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(s -> {s.shift(1);})
-        );
-        menu.selectionMenu.overlayBackwardMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(
-                        s -> {s.shift(-s.getSpriteProject().getOverlayDistance());}
-                )
-        );
-        menu.selectionMenu.overlayForwardMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelection(
-                        s -> {s.shift(s.getSpriteProject().getOverlayDistance());}
-                )
-        );
-        
-        menu.selectionMenu.slideUpMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideUp())
-        );
-        menu.selectionMenu.slideDownMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideDown())
-        );
-        menu.selectionMenu.slideLeftMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideLeft())
-        );
-        menu.selectionMenu.slideRightMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.slideRight())
-        );
-        menu.selectionMenu.flipHorzMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.flipHorizontally())
-        );
-        menu.selectionMenu.flipVertMenuItem.addActionListener(ae ->
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.flipVertically())
-        );
-        menu.selectionMenu.rotateMenuItem.addActionListener(ae -> {
-                if (rotateDialog.showDialog())
-                    memoryPanel.getMemoryView().onSelectedSpriteData(
-                                sd -> SpriteRotator.rotate(sd, rotateDialog.getRadians())
-                            );
-        });
-        menu.selectionMenu.rotate90CWMenuItem.addActionListener(ae -> {
-            memoryPanel.getMemoryView().onSelectedSpriteData(
-                    sd -> SpriteRotator.rotate(sd, Math.toRadians(90.0d))
-            );
-        });
-        menu.selectionMenu.rotate90CCWMenuItem.addActionListener(ae -> {
-            memoryPanel.getMemoryView().onSelectedSpriteData(
-                    sd -> SpriteRotator.rotate(sd, Math.toRadians(-90.0d))
-            );
-        });
-        menu.selectionMenu.negateMenuItem.addActionListener(ae -> 
-                memoryPanel.getMemoryView().onSelectedSpriteData(sd -> sd.negate())
-        );
-        
-        menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
-                if (applyColorDialog.showDialog())
-                    memoryPanel.getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setSpriteC64Color(applyColorDialog.getC64Color())
-                    );
-        });
-        menu.selectionMenu.applyMulticolorMenuItem.addActionListener(ae -> {
-                if (applyMulticolorDialog.showDialog())
-                    memoryPanel.getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setMulticolor(applyMulticolorDialog.getValue())
-                    );
-        });
-        menu.selectionMenu.applyOverlayMenuItem.addActionListener(ae -> {
-                if (applyOverlayDialog.showDialog())
-                    memoryPanel.getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setOverlay(applyOverlayDialog.getValue())
-                    );
-        });
-        
-        menu.viewMenu.switchTabMenuItem.addActionListener(ae -> {
-            centralPane.setSelectedIndex((centralPane.getSelectedIndex() + 1) % 2);
-            centralPane.requestFocusInWindow();
-        });
-        menu.viewMenu.ghostSkinningMenuItem.addActionListener(ae -> {
-            if (ghostDialog.showDialog()) {
-                editorPanel.getSpriteEditor().setGhostSkinning(ghostDialog.getGhostSkinning());
-            }
-        });
-        menu.viewMenu.editorGridMenuItem.addActionListener(ae -> {
-            editorPanel.getSpriteEditor().setGrid(menu.viewMenu.editorGridMenuItem.isSelected());
-        });
-        menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
-            SwingUtilities.invokeLater(() -> {
-                MainWindow wnd = new MainWindow();
-                wnd.setVisible(true);
-            });
-        });
-
-        menu.helpMenu.manualMenuItem.addActionListener((ae) -> manDialog.setVisible(true));
-        menu.helpMenu.aboutMenuItem.addActionListener((ae) -> {
-            aboutDialog.setVisible(true);
-        });
-        
-        setJMenuBar(menu);
     }
 }

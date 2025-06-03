@@ -25,8 +25,8 @@ package com.tstamborski.masterofsprites.gui;
 
 import com.tstamborski.masterofsprites.SpriteDataTransferable;
 import com.tstamborski.masterofsprites.History;
+import com.tstamborski.masterofsprites.Selection;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -50,6 +50,7 @@ public class EditMenu extends JMenu {
 
     public EditMenu() {
         super("Edit");
+        
         undoMenuItem = new JMenuItem("Undo");
         undoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/undo16.png")));
         undoMenuItem.setMnemonic(KeyEvent.VK_U);
@@ -58,6 +59,7 @@ public class EditMenu extends JMenu {
         redoMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/redo16.png")));
         redoMenuItem.setMnemonic(KeyEvent.VK_R);
         redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK));
+        
         cutMenuItem = new JMenuItem("Cut");
         cutMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/cut16.png")));
         cutMenuItem.setMnemonic(KeyEvent.VK_T);
@@ -70,16 +72,19 @@ public class EditMenu extends JMenu {
         pasteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/paste16.png")));
         pasteMenuItem.setMnemonic(KeyEvent.VK_P);
         pasteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK));
+        
         orPasteMenuItem = new JMenuItem("OR Paste");
         orPasteMenuItem.setMnemonic(KeyEvent.VK_O);
         andPasteMenuItem = new JMenuItem("AND Paste");
         andPasteMenuItem.setMnemonic(KeyEvent.VK_A);
         xorPasteMenuItem = new JMenuItem("XOR Paste");
         xorPasteMenuItem.setMnemonic(KeyEvent.VK_X);
-        deleteMenuItem = new JMenuItem("Delete");
+        
+        deleteMenuItem = new JMenuItem("Clear");
         deleteMenuItem.setIcon(new ImageIcon(getClass().getResource("icons/bin16.png")));
-        deleteMenuItem.setMnemonic(KeyEvent.VK_D);
+        deleteMenuItem.setMnemonic(KeyEvent.VK_C);
         deleteMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+        
         add(undoMenuItem);
         add(redoMenuItem);
         addSeparator();
@@ -94,7 +99,7 @@ public class EditMenu extends JMenu {
         add(deleteMenuItem);
     }
 
-    public void enableClipboardMenuItems(ArrayList<Integer> selection) {
+    public void enableClipboardMenuItems(Selection selection) {
         deleteMenuItem.setEnabled(!selection.isEmpty());
         cutMenuItem.setEnabled(!selection.isEmpty());
         copyMenuItem.setEnabled(!selection.isEmpty());
