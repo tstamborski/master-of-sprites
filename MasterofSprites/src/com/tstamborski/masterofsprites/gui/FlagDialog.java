@@ -27,7 +27,6 @@ import com.tstamborski.AbstractInputDialog;
 import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EtchedBorder;
@@ -40,9 +39,7 @@ public class FlagDialog extends AbstractInputDialog {
     private final ButtonGroup group;
     private final JRadioButton trueButton, falseButton;
     
-    public FlagDialog(JFrame parent, String title) {
-        super(parent);
-        
+    public FlagDialog(String title) {
         JPanel panel = getCentralPanel();
         trueButton = new JRadioButton("TRUE");
         trueButton.setMnemonic(KeyEvent.VK_T);

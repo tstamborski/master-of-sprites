@@ -24,6 +24,7 @@
 package com.tstamborski;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Point;
@@ -120,8 +121,11 @@ public class ManualDialog extends JDialog {
                 }
             }
         });
-        
+    }
+    
+    public void showDialog(Component parent) {
         setLocationRelativeTo(parent);
+        setVisible(true);
     }
     
     protected JTextPane getTextPane() {

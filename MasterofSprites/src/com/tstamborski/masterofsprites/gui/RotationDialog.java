@@ -26,7 +26,6 @@ package com.tstamborski.masterofsprites.gui;
 import com.tstamborski.AbstractInputDialog;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -40,9 +39,7 @@ public class RotationDialog extends AbstractInputDialog {
     private final JLabel rotationLabel, degreesLabel;
     private final JSpinner spinner;
     
-    public RotationDialog(JFrame parent) {
-        super(parent);
-        
+    public RotationDialog() {
         rotationLabel = new JLabel("Rotation:    ");
         degreesLabel = new JLabel(" ° ");
         spinner = new JSpinner(new SpinnerNumberModel(90, -360, 360, 1));

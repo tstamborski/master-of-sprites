@@ -4,11 +4,11 @@ package com.tstamborski;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URL;
 import javax.swing.*;
 
 /**
@@ -25,7 +25,7 @@ public class AboutDialog extends JDialog {
     protected final JTextArea licenseArea;
     protected final JButton okButton;
     
-    public AboutDialog(JFrame parent) {
+    public AboutDialog() {
         GroupLayout layout;
         
         iconLabel = new JLabel();
@@ -74,10 +74,14 @@ public class AboutDialog extends JDialog {
         setSize(400, 300);
         setResizable(false);
         setModal(true);
-        setLocationRelativeTo(parent);
         getRootPane().setDefaultButton(okButton);
         setDefaultCloseOperation(HIDE_ON_CLOSE);
         enableEvents(WindowEvent.WINDOW_EVENT_MASK | ActionEvent.ACTION_EVENT_MASK);
+    }
+    
+    public void showDialog(Component parent) {
+        setLocationRelativeTo(parent);
+        setVisible(true);
     }
     
     public void setApplicationIcon(ImageIcon i) {
@@ -105,14 +109,8 @@ public class AboutDialog extends JDialog {
         licenseArea.setText(v);
     }
     
-    public void setApplicationLicense(InputStream istream) throws IOException {
-        CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
-        StringBuilder builder = new StringBuilder();
-        byte b[] = new byte[2048];
-        
-        while (istream.read(b, 0, b.length) > 0)
-            builder.append(decoder.decode(ByteBuffer.wrap(b)));
-        licenseArea.setText(builder.toString());
+    public void setApplicationLicense(URL url) throws IOException {
+        licenseArea.read(new BufferedReader(new FileReader(new File(url.getPath()))), null);
     }
     
 }

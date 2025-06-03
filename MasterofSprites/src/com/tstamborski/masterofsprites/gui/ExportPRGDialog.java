@@ -27,7 +27,6 @@ import com.tstamborski.AbstractInputDialog;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
@@ -39,9 +38,7 @@ public class ExportPRGDialog extends AbstractInputDialog {
     private final JLabel startAddressLabel;
     private final AddressSpinner startAddressSpinner;
     
-    public ExportPRGDialog(JFrame parent) {
-        super(parent);
-        
+    public ExportPRGDialog() {
         startAddressSpinner = new AddressSpinner();
         startAddressLabel = new JLabel("Start Address:  ");
         startAddressLabel.setDisplayedMnemonic(KeyEvent.VK_A);

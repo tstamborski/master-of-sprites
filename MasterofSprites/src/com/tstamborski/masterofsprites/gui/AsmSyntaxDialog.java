@@ -28,7 +28,6 @@ import com.tstamborski.masterofsprites.AsmCodeStream;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
 import javax.swing.JRadioButton;
 
 /**
@@ -41,9 +40,7 @@ public class AsmSyntaxDialog extends AbstractInputDialog {
     private final JRadioButton acmeRadioButton;
     private final JRadioButton tmpxRadioButton;
     
-    public AsmSyntaxDialog(JFrame parent) {
-        super(parent);
-        
+    public AsmSyntaxDialog() {
         kickassRadioButton = new JRadioButton("KickAss ");
         acmeRadioButton = new JRadioButton("ACME ");
         tmpxRadioButton = new JRadioButton("TMPx ");

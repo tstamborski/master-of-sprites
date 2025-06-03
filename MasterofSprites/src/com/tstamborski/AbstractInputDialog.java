@@ -24,11 +24,11 @@
 package com.tstamborski;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
@@ -45,9 +45,7 @@ public abstract class AbstractInputDialog extends JDialog {
     
     private boolean acceptedFlag;
     
-    public AbstractInputDialog(JFrame parent) {
-        super(parent);
-        
+    public AbstractInputDialog() {
         acceptedFlag = false;
         centralPanel = new JPanel();
         
@@ -70,7 +68,6 @@ public abstract class AbstractInputDialog extends JDialog {
         getRootPane().setDefaultButton(okButton);
         okButton.requestFocusInWindow();
         setModal(true);
-        setLocationRelativeTo(parent);
         setResizable(false);
     }
     
@@ -78,8 +75,9 @@ public abstract class AbstractInputDialog extends JDialog {
         return centralPanel;
     }
     
-    public boolean showDialog() {
+    public boolean showDialog(Component parent) {
         acceptedFlag = false;
+        setLocationRelativeTo(parent);
         setVisible(true);
         return acceptedFlag;
     }

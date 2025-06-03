@@ -36,7 +36,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EtchedBorder;
@@ -50,9 +49,7 @@ public class GhostSkinningDialog extends AbstractInputDialog {
     JRadioButton noSkinningBtn, memSkinningBtn, selSkinningBtn, ovSkinningBtn, iSkinningBtn;
     GhostSkinning intelligentMode, overlayMode, selectionMode, memoryMode;
     
-    public GhostSkinningDialog(JFrame parent) {
-        super(parent);
-        
+    public GhostSkinningDialog() {
         intelligentMode = new IntelligentSkinning();
         overlayMode = new OverlaySkinning();
         selectionMode = new SelectionSkinning();

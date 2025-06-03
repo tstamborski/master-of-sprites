@@ -27,7 +27,6 @@ import com.tstamborski.AbstractInputDialog;
 import com.tstamborski.masterofsprites.model.C64Color;
 import java.awt.Color;
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
@@ -38,9 +37,7 @@ import javax.swing.border.EtchedBorder;
 public class C64ColorDialog extends AbstractInputDialog {
     private final C64ColorPicker picker;
     
-    public C64ColorDialog(JFrame parent) {
-        super(parent);
-        
+    public C64ColorDialog() {
         JPanel panel = getCentralPanel();
         picker = new C64ColorPicker();
         picker.setCurrentC64Color(C64Color.Red);

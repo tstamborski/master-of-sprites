@@ -23,13 +23,15 @@
  */
 package com.tstamborski.masterofsprites;
 
+import com.tstamborski.masterofsprites.gui.C64ColorDialog;
+import com.tstamborski.masterofsprites.gui.FlagDialog;
+import com.tstamborski.masterofsprites.gui.GhostSkinningDialog;
 import com.tstamborski.masterofsprites.gui.MainMenu;
 import com.tstamborski.masterofsprites.gui.MainWindow;
-import java.awt.event.ActionEvent;
+import com.tstamborski.masterofsprites.gui.RotationDialog;
 import java.awt.event.WindowEvent;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -142,9 +144,10 @@ public class MenuManager {
             wnd.getEditorPanel().getSpriteEditor().onCurrentSpriteData((sd)->sd.reflectTop2Bottom());
         });
         menu.spriteMenu.rotateMenuItem.addActionListener(ae -> {
-            if (wnd.getRotationDialog().showDialog())
+            RotationDialog dlg = wnd.getDialogManager().getRotateDialog();
+            if (dlg.showDialog(wnd))
                 wnd.getEditorPanel().getSpriteEditor().onCurrentSpriteData(
-                        sd -> SpriteRotator.rotate(sd, wnd.getRotationDialog().getRadians())
+                        sd -> SpriteRotator.rotate(sd, dlg.getRadians())
                 );
         });
         menu.spriteMenu.rotate90CWMenuItem.addActionListener(ae -> {
@@ -205,9 +208,10 @@ public class MenuManager {
                 wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(sd -> sd.flipVertically())
         );
         menu.selectionMenu.rotateMenuItem.addActionListener(ae -> {
-                if (wnd.getRotationDialog().showDialog())
+                RotationDialog dlg = wnd.getDialogManager().getRotateDialog();
+                if (dlg.showDialog(wnd))
                     wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(
-                                sd -> SpriteRotator.rotate(sd, wnd.getRotationDialog().getRadians())
+                                sd -> SpriteRotator.rotate(sd, dlg.getRadians())
                             );
         });
         menu.selectionMenu.rotate90CWMenuItem.addActionListener(ae -> {
@@ -224,21 +228,24 @@ public class MenuManager {
                 wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(sd -> sd.negate())
         );
         menu.selectionMenu.applySpriteColorMenuItem.addActionListener(ae -> {
-                if (wnd.getApplyColorDialog().showDialog())
+                C64ColorDialog dlg = wnd.getDialogManager().getApplyColorDialog();
+                if (dlg.showDialog(wnd))
                     wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setSpriteC64Color(wnd.getApplyColorDialog().getC64Color())
+                            sd -> sd.setSpriteC64Color(dlg.getC64Color())
                     );
         });
         menu.selectionMenu.applyMulticolorMenuItem.addActionListener(ae -> {
-                if (wnd.getApplyMulticolorDialog().showDialog())
+                FlagDialog dlg = wnd.getDialogManager().getApplyMulticolorDialog();
+                if (dlg.showDialog(wnd))
                     wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setMulticolor(wnd.getApplyMulticolorDialog().getValue())
+                            sd -> sd.setMulticolor(dlg.getValue())
                     );
         });
         menu.selectionMenu.applyOverlayMenuItem.addActionListener(ae -> {
-                if (wnd.getApplyOverlayDialog().showDialog())
+                FlagDialog dlg = wnd.getDialogManager().getApplyOverlayDialog();
+                if (dlg.showDialog(wnd))
                     wnd.getMemoryPanel().getMemoryView().onSelectedSpriteData(
-                            sd -> sd.setOverlay(wnd.getApplyOverlayDialog().getValue())
+                            sd -> sd.setOverlay(dlg.getValue())
                     );
         });
         
@@ -247,19 +254,15 @@ public class MenuManager {
             wnd.getTabbedPane().requestFocusInWindow();
         });
         menu.viewMenu.ghostSkinningMenuItem.addActionListener(ae -> {
-            if (wnd.getGhostSkinningDialog().showDialog()) {
-                wnd.getEditorPanel().getSpriteEditor().setGhostSkinning(wnd.getGhostSkinningDialog().getGhostSkinning());
+            GhostSkinningDialog dlg = wnd.getDialogManager().getGhostDialog();
+            if (dlg.showDialog(wnd)) {
+                wnd.getEditorPanel().getSpriteEditor().setGhostSkinning(dlg.getGhostSkinning());
             }
         });
         menu.viewMenu.editorGridMenuItem.addActionListener(ae -> {
             wnd.getEditorPanel().getSpriteEditor().setGrid(menu.viewMenu.editorGridMenuItem.isSelected());
         });
-        menu.viewMenu.runNewWindowMenuItem.addActionListener((ActionEvent ae) -> {
-            SwingUtilities.invokeLater(() -> {
-                MainWindow new_wnd = new MainWindow();
-                new_wnd.setVisible(true);
-            });
-        });
+        menu.viewMenu.runNewWindowMenuItem.addActionListener(ae -> MasterofSprites.runNewWindow());
 
         menu.helpMenu.manualMenuItem.addActionListener((ae) -> wnd.showManualDialog());
         menu.helpMenu.aboutMenuItem.addActionListener((ae) -> wnd.showAboutDialog());

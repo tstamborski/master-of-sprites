@@ -91,12 +91,10 @@ public class MasterofSprites {
             return;
         }
         
-        SwingUtilities.invokeLater(() -> {
-            MainWindow mainWnd = new MainWindow();
-            if (inputPath != null)
-                mainWnd.openFile(new File(inputPath));
-            mainWnd.setVisible(true);
-        });
+        if (inputPath == null)
+            runNewWindow();
+        else
+            runNewWindow(new File(inputPath));
     }
     
     public static void runNewInstance() {
@@ -121,6 +119,21 @@ public class MasterofSprites {
         } catch (IOException ex) {
             Util.showError(null, ex.getMessage());
         }
+    }
+    
+    public static void runNewWindow() {
+        SwingUtilities.invokeLater(() -> {
+            MainWindow mainWnd = new MainWindow();
+            mainWnd.setVisible(true);
+        });
+    }
+    
+    public static void runNewWindow(File file) {
+        SwingUtilities.invokeLater(() -> {
+            MainWindow mainWnd = new MainWindow();
+            mainWnd.openFile(file);
+            mainWnd.setVisible(true);
+        });
     }
 
     private static void export() {
