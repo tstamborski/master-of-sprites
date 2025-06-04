@@ -74,11 +74,12 @@ public class MainWindow extends JFrame {
         loadSettings();
         newFile();
         
-        enableEvents(WindowEvent.WINDOW_EVENT_MASK);
         wireUp();
     }
     
     private void wireUp() {
+        enableEvents(WindowEvent.WINDOW_EVENT_MASK);
+        
         timer = new Timer(1000, e->{
             project.getWorkTime().advance(1);
             statusBarManager.showStatusTime(project.getWorkTime());
@@ -88,7 +89,6 @@ public class MainWindow extends JFrame {
         memoryPanel.getMemoryView().addSelectionListener((se)->{
             editorPanel.setSelection(se.getSelection());
             previewPanel.setSelection(se.getSelection());
-            
             menuManager.enableBySelection(se.getSelection());
         });
         memoryPanel.getMemoryView().addActionListener((ae)->{
@@ -226,7 +226,6 @@ public class MainWindow extends JFrame {
         newHistory();
         reloadProject();
         setSaved(true);
-        //updateTitlebar();
 
         try {
             oistream.close();
