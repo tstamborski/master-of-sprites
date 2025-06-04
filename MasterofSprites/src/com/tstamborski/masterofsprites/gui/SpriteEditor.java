@@ -10,6 +10,7 @@ import com.tstamborski.masterofsprites.GhostSkinning;
 import com.tstamborski.masterofsprites.Palette;
 import com.tstamborski.masterofsprites.Selection;
 import com.tstamborski.masterofsprites.SpriteImage;
+import com.tstamborski.masterofsprites.StatusMessageHolder;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.SpriteColor;
 import com.tstamborski.masterofsprites.model.SpriteData;
@@ -32,7 +33,7 @@ import javax.swing.JComponent;
  *
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
-public class SpriteEditor extends JComponent {
+public class SpriteEditor extends JComponent implements StatusMessageHolder {
     private Palette palette;
     private SpriteImage spriteImg;
     private SpriteData spriteData;
@@ -361,5 +362,15 @@ public class SpriteEditor extends JComponent {
         g2d.drawLine(0, height-1, width, height-1);
         
         g2d.dispose();
+    }
+
+    @Override
+    public String getStatusHint() {
+        return "CTRL+LCLICK to fill the shape; RCLICK to erase; MWHEEL to change color;";
+    }
+
+    @Override
+    public String getStatusMessage(int mousex, int mousey) {
+        return String.format("x: %d y: %d", getSpriteX(mousex), getSpriteY(mousey));
     }
 }

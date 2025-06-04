@@ -183,23 +183,23 @@ public class DialogManager {
         return ghostDialog;
     }
 
-    public JFileChooser getPrgDialog() {
+    public JFileChooser getPrgFileDialog() {
         return prgDialog;
     }
 
-    public JFileChooser getRawDialog() {
+    public JFileChooser getRawFileDialog() {
         return rawDialog;
     }
 
-    public JFileChooser getBitmapDialog() {
+    public JFileChooser getBitmapFileDialog() {
         return bitmapDialog;
     }
 
-    public JFileChooser getProjectDialog() {
+    public JFileChooser getProjectFileDialog() {
         return projectDialog;
     }
 
-    public JFileChooser getAsmDialog() {
+    public JFileChooser getAsmFileDialog() {
         return asmDialog;
     }
 }

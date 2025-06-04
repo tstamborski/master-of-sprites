@@ -12,6 +12,7 @@ import com.tstamborski.masterofsprites.SelectionImage;
 import com.tstamborski.masterofsprites.SelectionListener;
 import com.tstamborski.masterofsprites.SpriteDataTransferable;
 import com.tstamborski.masterofsprites.SpriteImage;
+import com.tstamborski.masterofsprites.StatusMessageHolder;
 import com.tstamborski.masterofsprites.model.C64Color;
 import com.tstamborski.masterofsprites.model.MemoryData;
 import com.tstamborski.masterofsprites.model.SpriteData;
@@ -43,7 +44,7 @@ import javax.swing.*;
  * @author Tobiasz Stamborski <tstamborski@outlook.com>
  */
 
-public class MemoryView extends JComponent implements ClipboardOwner {
+public class MemoryView extends JComponent implements ClipboardOwner, StatusMessageHolder {
     private int zoom;
     private int columns;
     private boolean grid;
@@ -556,5 +557,15 @@ public class MemoryView extends JComponent implements ClipboardOwner {
     
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    }
+
+    @Override
+    public String getStatusHint() {
+        return "Hold CTRL or SHIFT to make multiple selection; ALT for block selection;";
+    }
+
+    @Override
+    public String getStatusMessage(int mousex, int mousey) {
+        return String.format("Sprite #%d", getIndexAt(mousex, mousey));
     }
 }

@@ -13,12 +13,10 @@ import com.tstamborski.masterofsprites.DialogManager;
 import com.tstamborski.masterofsprites.History;
 import com.tstamborski.masterofsprites.MenuManager;
 import com.tstamborski.masterofsprites.Selection;
+import com.tstamborski.masterofsprites.StatusBarManager;
 import com.tstamborski.masterofsprites.model.SpriteProject;
 
 import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -43,12 +41,12 @@ public class MainWindow extends JFrame {
     
     private final MenuManager menuManager;
     private final DialogManager dialogManager;
+    private final StatusBarManager statusBarManager;
 
     private final JTabbedPane centralPane;
     private final MemoryPanel memoryPanel;
     private final PreviewPanel previewPanel;
     private final EditorPanel editorPanel;
-    private final StatusBar statusBar;
 
     public MainWindow() {
         setIconImage(new ImageIcon(getClass().getResource("icons/commodore-puppet48.png")).getImage());
@@ -56,21 +54,21 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         instanceCounter++;
 
+        menuManager = new MenuManager();
+        setJMenuBar(menuManager.createMenu());
+        dialogManager = new DialogManager();
+        statusBarManager = new StatusBarManager();
+        
         centralPane = new JTabbedPane();
         memoryPanel = new MemoryPanel();
         previewPanel = new PreviewPanel();
         centralPane.add("Memory", memoryPanel);
         centralPane.add("Preview", previewPanel);
         editorPanel = new EditorPanel();
-        statusBar = new StatusBar();
         
         add(centralPane, BorderLayout.CENTER);
         add(editorPanel, BorderLayout.WEST);
-        add(statusBar, BorderLayout.SOUTH);
-        
-        menuManager = new MenuManager();
-        setJMenuBar(menuManager.createMenu());
-        dialogManager = new DialogManager();
+        add(statusBarManager.createStatusBar(), BorderLayout.SOUTH);
 
         settings = new Settings();
         loadSettings();
@@ -83,7 +81,7 @@ public class MainWindow extends JFrame {
     private void wireUp() {
         timer = new Timer(1000, e->{
             project.getWorkTime().advance(1);
-            statusBar.showTime(project.getWorkTime());
+            statusBarManager.showStatusTime(project.getWorkTime());
         });
         timer.start();
         
@@ -97,36 +95,6 @@ public class MainWindow extends JFrame {
             editorPanel.reload();
             previewPanel.reload();
             pushHistory();
-        });
-        memoryPanel.getMemoryView().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-                
-                statusBar.showContextInfo("");
-                statusBar.showHint("");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-                
-                if (!memoryPanel.getMemoryView().isEnabled())
-                    return;
-                
-                statusBar.showHint(
-                        "Hold CTRL or SHIFT to make multiple selection; ALT for block selection;");
-            }
-        });
-        memoryPanel.getMemoryView().addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                if (!memoryPanel.getMemoryView().isEnabled())
-                    return;
-                
-                statusBar.showContextInfo(String.format("Sprite #%d",
-                        memoryPanel.getMemoryView().getIndexAt(e.getX(), e.getY())));
-            }
         });
         
         editorPanel.addActionListener(ae -> {
@@ -143,47 +111,18 @@ public class MainWindow extends JFrame {
             previewPanel.reload();
             pushHistory();
         });
-        editorPanel.getSpriteEditor().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseExited(MouseEvent e) {
-                super.mouseExited(e);
-                
-                statusBar.showContextInfo("");
-                statusBar.showHint("");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                super.mouseEntered(e);
-                
-                if (!editorPanel.getSpriteEditor().isEnabled())
-                    return;
-                
-                statusBar.showHint("CTRL+LCLICK to fill the shape; RCLICK to erase; MWHEEL to change color;");
-            }
-        });
-        editorPanel.getSpriteEditor().addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                SpriteEditor editor = editorPanel.getSpriteEditor();
-                
-                if (!editor.isEnabled())
-                    return;
-                
-                statusBar.showContextInfo(String.format("x: %d y: %d",
-                        editor.getSpriteX(e.getX()), editor.getSpriteY(e.getY())));
-            }
-        });
         
+        statusBarManager.addStatusMessageHolder(editorPanel.getSpriteEditor());
+        statusBarManager.addStatusMessageHolder(memoryPanel.getMemoryView());
         menuManager.wireMenu(this);
     }
     
     private void loadSettings() {
-        settings.loadFileChooser(dialogManager.getProjectDialog(), Settings.PROJECT_FILE_DLG);
-        settings.loadFileChooser(dialogManager.getPrgDialog(), Settings.PRG_FILE_DLG);
-        settings.loadFileChooser(dialogManager.getRawDialog(), Settings.RAW_FILE_DLG);
-        settings.loadFileChooser(dialogManager.getBitmapDialog(), Settings.BITMAP_FILE_DLG);
-        settings.loadFileChooser(dialogManager.getAsmDialog(), Settings.ASM_FILE_DLG);
+        settings.loadFileChooser(dialogManager.getProjectFileDialog(), Settings.PROJECT_FILE_DLG);
+        settings.loadFileChooser(dialogManager.getPrgFileDialog(), Settings.PRG_FILE_DLG);
+        settings.loadFileChooser(dialogManager.getRawFileDialog(), Settings.RAW_FILE_DLG);
+        settings.loadFileChooser(dialogManager.getBitmapFileDialog(), Settings.BITMAP_FILE_DLG);
+        settings.loadFileChooser(dialogManager.getAsmFileDialog(), Settings.ASM_FILE_DLG);
         
         settings.loadAsmSyntaxDialog(dialogManager.getAsmSyntaxDialog());
         settings.loadGhostSkinningDialog(dialogManager.getGhostDialog());
@@ -194,11 +133,11 @@ public class MainWindow extends JFrame {
     }
     
     private void saveSettings() {
-        settings.saveFileChooser(dialogManager.getProjectDialog(), Settings.PROJECT_FILE_DLG);
-        settings.saveFileChooser(dialogManager.getPrgDialog(), Settings.PRG_FILE_DLG);
-        settings.saveFileChooser(dialogManager.getRawDialog(), Settings.RAW_FILE_DLG);
-        settings.saveFileChooser(dialogManager.getBitmapDialog(), Settings.BITMAP_FILE_DLG);
-        settings.saveFileChooser(dialogManager.getAsmDialog(), Settings.ASM_FILE_DLG);
+        settings.saveFileChooser(dialogManager.getProjectFileDialog(), Settings.PROJECT_FILE_DLG);
+        settings.saveFileChooser(dialogManager.getPrgFileDialog(), Settings.PRG_FILE_DLG);
+        settings.saveFileChooser(dialogManager.getRawFileDialog(), Settings.RAW_FILE_DLG);
+        settings.saveFileChooser(dialogManager.getBitmapFileDialog(), Settings.BITMAP_FILE_DLG);
+        settings.saveFileChooser(dialogManager.getAsmFileDialog(), Settings.ASM_FILE_DLG);
         
         settings.saveAsmSyntaxDialog(dialogManager.getAsmSyntaxDialog());
         settings.saveGhostSkinningDialog(dialogManager.getGhostDialog());
@@ -225,16 +164,15 @@ public class MainWindow extends JFrame {
     
     public final void newFile() {
         project = SpriteProject.getNewProject(64, false);
-        
-        newHistory();
         file = null;
         reloadProject();
-        updateTitlebar();
+        
+        newHistory();
     }
 
     public void openFile() {
-        if (dialogManager.getProjectDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
-            openFile(dialogManager.getProjectDialog().getSelectedFile());
+        if (dialogManager.getProjectFileDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+            openFile(dialogManager.getProjectFileDialog().getSelectedFile());
     }
     
     public void openFile(File f) {
@@ -337,10 +275,10 @@ public class MainWindow extends JFrame {
         ObjectOutputStream oostream;
         File myProjectFile;
         
-        if (dialogManager.getProjectDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (dialogManager.getProjectFileDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             myProjectFile = Util.addExtension(
-                    dialogManager.getProjectDialog().getSelectedFile(),
-                    ((FileNameExtensionFilter)dialogManager.getProjectDialog().getFileFilter()).getExtensions());
+                    dialogManager.getProjectFileDialog().getSelectedFile(),
+                    ((FileNameExtensionFilter)dialogManager.getProjectFileDialog().getFileFilter()).getExtensions());
             
             try {
                 ostream = new FileOutputStream(myProjectFile);
@@ -377,9 +315,9 @@ public class MainWindow extends JFrame {
     public void importPRGFile() {
         InputStream istream;
 
-        if (dialogManager.getPrgDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (dialogManager.getPrgFileDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
-                istream = new FileInputStream(dialogManager.getPrgDialog().getSelectedFile());
+                istream = new FileInputStream(dialogManager.getPrgFileDialog().getSelectedFile());
             } catch (FileNotFoundException e) {
                 Util.showError(this, e.getMessage());
                 return;
@@ -407,9 +345,9 @@ public class MainWindow extends JFrame {
     public void importRawData() {
         InputStream istream;
 
-        if (dialogManager.getRawDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        if (dialogManager.getRawFileDialog().showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
-                istream = new FileInputStream(dialogManager.getRawDialog().getSelectedFile());
+                istream = new FileInputStream(dialogManager.getRawFileDialog().getSelectedFile());
             } catch (FileNotFoundException e) {
                 Util.showError(this, e.getMessage());
                 return;
@@ -444,10 +382,10 @@ public class MainWindow extends JFrame {
             
             project.setDefaultAddress(addr);
 
-            if (dialogManager.getPrgDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (dialogManager.getPrgFileDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 myPRGFile = Util.addExtension(
-                        dialogManager.getPrgDialog().getSelectedFile(),
-                        ((FileNameExtensionFilter)dialogManager.getPrgDialog().getFileFilter()).getExtensions());
+                        dialogManager.getPrgFileDialog().getSelectedFile(),
+                        ((FileNameExtensionFilter)dialogManager.getPrgFileDialog().getFileFilter()).getExtensions());
                 
                 if (showOverwriteDialog(myPRGFile) == false)
                     return;
@@ -479,10 +417,10 @@ public class MainWindow extends JFrame {
             OutputStream ostream;
             File myAsmFile;
 
-            if (dialogManager.getAsmDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (dialogManager.getAsmFileDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 myAsmFile = Util.addExtension(
-                        dialogManager.getAsmDialog().getSelectedFile(),
-                        ((FileNameExtensionFilter)dialogManager.getAsmDialog().getFileFilter()).getExtensions());
+                        dialogManager.getAsmFileDialog().getSelectedFile(),
+                        ((FileNameExtensionFilter)dialogManager.getAsmFileDialog().getFileFilter()).getExtensions());
                 
                 if (showOverwriteDialog(myAsmFile) == false)
                     return;
@@ -511,12 +449,12 @@ public class MainWindow extends JFrame {
     public void exportRawData() {
         OutputStream ostream;
 
-        if (dialogManager.getRawDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            if (showOverwriteDialog(dialogManager.getRawDialog().getSelectedFile()) == false)
+        if (dialogManager.getRawFileDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (showOverwriteDialog(dialogManager.getRawFileDialog().getSelectedFile()) == false)
                 return;
             
             try {
-                ostream = new FileOutputStream(dialogManager.getRawDialog().getSelectedFile());
+                ostream = new FileOutputStream(dialogManager.getRawFileDialog().getSelectedFile());
                 project.exportToRAWData(ostream);
             }
             catch (FileNotFoundException e) {
@@ -541,12 +479,12 @@ public class MainWindow extends JFrame {
         FileNameExtensionFilter filter;
         String extensions[];
 
-        if (dialogManager.getBitmapDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            if (showOverwriteDialog(dialogManager.getBitmapDialog().getSelectedFile()) == false)
+        if (dialogManager.getBitmapFileDialog().showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (showOverwriteDialog(dialogManager.getBitmapFileDialog().getSelectedFile()) == false)
                 return;
             
-            bitmapFile = dialogManager.getBitmapDialog().getSelectedFile();
-            filter = (FileNameExtensionFilter) dialogManager.getBitmapDialog().getFileFilter();
+            bitmapFile = dialogManager.getBitmapFileDialog().getSelectedFile();
+            filter = (FileNameExtensionFilter) dialogManager.getBitmapFileDialog().getFileFilter();
             extensions = filter.getExtensions();
 
             bitmapFile = Util.addExtension(bitmapFile, extensions);
