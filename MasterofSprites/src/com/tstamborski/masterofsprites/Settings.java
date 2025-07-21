@@ -78,7 +78,8 @@ public class Settings {
     }
     
     public void loadGhostSkinningDialog(GhostSkinningDialog dlg) {
-        dlg.setSkinningIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 0));
+        dlg.setSkinningIndex(prefs.getInt(GHOST_SKINNING_DLG+SKINNING, 3));
+        //domyslnie 3 - overlay stack skinning
     }
     
     public void saveSpriteEditor(SpriteEditor ed) {
