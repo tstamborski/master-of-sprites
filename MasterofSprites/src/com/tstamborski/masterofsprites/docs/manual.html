@@ -91,6 +91,7 @@ THE SOFTWARE.
             </ol>
             <ol type="1">
                 <li><a href="#foreword">Foreword</a></li>
+                <li><a href="#newfeatures">New features in the version 1.0</a></li>
                 <li><a href="#quickguidetothegui">Quick Guide to the GUI</a></li>
                 <li><a href="#commandlineparameters">Command Line Parameters</a></li>
             </ol>
@@ -131,8 +132,8 @@ THE SOFTWARE.
                 command line interface. The preview tab of its main window contains nice
                 animation preview with support for both overlay and multisprites. The "Overlay
                 Distance" setting makes easy to "arrange" memory bank in the way which takes
-                into account both animation and overlay. <em>If you check "Overlay Next Sprite"
-                option then current sprite will automatically overlay the sprite, further by
+                into account both animation and overlay. <em>If you check "Overlay by Next Sprite"
+                option then current sprite will be automatically overlayed by the sprite, further by
                 "Overlay Distance", in the memory bank. It is just that simple.</em>
             </p>
             <p>
@@ -146,7 +147,41 @@ THE SOFTWARE.
         </article>
         
         <article>
-            <h2><a name="quickguidetothegui">2. Quick Guide to the GUI</a></h2>
+            <h2><a name="newfeatures">2. New features in the version 1.0</a></h2>
+            <p>
+                The version 1.0 introduce a new feature - ghost skinning. There are 4 different
+                ghost skinning modes designed to work with animations or overlayed sprites or both.
+                To switch between these modes go to the <i>View->Set Ghost Skinning</i> dialog window
+                and choose which one to use. The dialog is hidden also under convienient keyboard shortcut
+                <i>CTRL + SPACEBAR</i>.
+            </p>
+            <p>
+                This application by default use <i>"Overlay stack skinning"</i>
+                which is helpful to show overlayed sprites in the editor component instead of only
+                in the <i>"Preview"</i> tab. <i>"Previous in memory skinning"</i> and <i>"Previous in selection skinning"</i>
+                are probably self-explaining. They are useful in creation of animations. <i>"Intelligent animation & overlay mode"</i>
+                combines <i>"Overlay stack skinning"</i> and <i>"Previous in memory skinning"</i>. Additionaly it wraps memory in
+                the portions defined by <i>"Overlay Distance"</i>.
+            </p>
+            <p>
+                The <i>"Selection"</i> menu was somewhat rearranged - most commands you can find now in the <i>"Commands"</i> submenu.
+                The <i>"View"</i> menu has now two new options - <i>"Editor Grid"</i> and <i>"Set Ghost Skinning"</i>. In the <i>"File"</i>
+                menu, you can find now a few example projects.
+            </p>
+            <P>
+                The <i>"Memory"</i> tab has now new block selection mode - try to hold <i>ALT</i> to select any rectangular area of memory.
+            </P>
+            <p>
+                In previous version 0.12 sprites was overlayed in opposive direction. Now it is changed to order more natural for machine and
+                identical as in SpritePad, so you can easily import files exported from SpritePad. I have also modified format of attributes byte
+                to match with SpritePad.
+            </p>
+            <p><a href="#tableofcontents">Back to the Table of Contents.</a></p>
+            <br><br>
+        </article>
+        
+        <article>
+            <h2><a name="quickguidetothegui">3. Quick Guide to the GUI</a></h2>
             
             <h3>Editor Panel on the Left Side</h3>
             <p>
@@ -179,14 +214,11 @@ THE SOFTWARE.
             </ul>
             <p>
                 Multicolor option is probably obvious too, but lets talk about <i>"Overlay
-                Next Sprite"</i> and <i>"Overlay Distance"</i>. First of all, they change
-                nothing here, in editor view. All of their effects deal with <i>"Preview"</i> tab
-                where you can preview your sprites with overlay. <i>"Overlay Distance"</i> is
+                by Next Sprite"</i> and <i>"Overlay Distance"</i>. <i>"Overlay Distance"</i> is
                 a project wide option which decide how far in memory bank is the next overlayed
                 sprite. By default it is 8 sprites further, so next layer of overlay is one
-                row below in the <i>"Memory"</i> tab. <i>"Overlay Next Sprite"</i> is unchecked
-                by default and you must check it for overlay starts to work. <i>LETS REPEAT IT
-                AGAIN - THESE OPTIONS AFFECT THE PREVIEW NOT THE EDITOR.</i>
+                row below in the <i>"Memory"</i> tab. <i>"Overlay by Next Sprite"</i> is unchecked
+                by default and you must check it to overlay starts work.
             </p>
             <br>
             
@@ -236,9 +268,18 @@ THE SOFTWARE.
         </article>
         
         <article>
-            <h2><a name="commandlineparameters">3. Command Line Parameters</a></h2>
+            <h2><a name="commandlineparameters">4. Command Line Parameters</a></h2>
+            
+            <p>
+                Remember that on Microsoft Windows you must first add your Master of Sprites installation
+                folder to the <i>PATH</i> enviroment variable to can easily use it from command line.
+            </p>
+            <br>
             
             <h3>Opening Project From Command Line</h3>
+            <blockquote>
+                MasterofSprites <i>project_file</i>
+            </blockquote>
             <blockquote>
                 java -jar MasterofSprites.jar <i>project_file</i>
             </blockquote>
@@ -255,6 +296,9 @@ THE SOFTWARE.
                 as well from shell scripts or batch files. Syntax of appropriate command
                 is showed below:
             </p>
+            <blockquote>
+                MasterofSprites -e [format] <i>project_file</i> [-o <i>output_file</i>]
+            </blockquote>
             <blockquote>
                 java -jar MasterofSprites.jar -e [format] <i>project_file</i> [-o <i>output_file</i>]
             </blockquote>
