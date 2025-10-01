@@ -8,6 +8,10 @@ Java editor for Commodore 64 sprites. My small competition for SpritePad.
 
 **If you want to check the most recent version - jar file for download is [here](https://github.com/tstamborski/master-of-sprites/releases/download/v1.0/MasterofSprites.jar).**
 
+**For the version 1.0 there are also available:**
+* [**Windows Installer**](https://github.com/tstamborski/master-of-sprites/releases/download/v1.0/MasterofSprites-1.0.msi) - it doesn't require to install java separately.
+* [**Deb Package for Ubuntu**](https://github.com/tstamborski/master-of-sprites/releases/download/v1.0/masterofsprites_1.0_amd64.deb) - version for Linux (really it's for all Debian-based distros not only for Ubuntu).
+
 ## Features
 
 * Advanced preview with support for animations, sprite overlay and multi sprites made from a few connected single sprites.
